@@ -3,6 +3,8 @@ import './Styles.css'
 
 import Alert from '../Alerts/Alert'
 
+import { postRequest } from '../../Functions/Post'
+import { CREATE_WAREHOUSE } from '../../Functions/Post'
 
 class CreateWarehouse extends Component {
   constructor() {
@@ -46,6 +48,38 @@ class CreateWarehouse extends Component {
     return <Alert type={type} text={text} close={this.close} />
   }
 
+  // Functions related to requests
+  responseHandler = (response, body) => {
+    if (response == 'success') {
+      this.setState({
+        alert: this.buildAlert('success', 'Bodega creada con éxito.'),
+      })
+
+      this.clearInputs()
+      return
+    }
+
+    if (body.message == 'Conflict') {
+      this.setState({
+        alert: this.buildAlert(
+          'attention',
+          'Se encontraron problemas para crear esta bodega.'
+        ),
+      })
+
+      return
+    }
+
+    this.setState({
+      alert: this.buildAlert(
+        'error',
+        'Ha ocurrido un error. Por favor intente más tarde.'
+      ),
+    })
+
+    return
+  }
+
   createWarehouse = () => {
     // Verify that the required fields are filled
     if (!this.checkMandatoryInputs()) {
@@ -55,15 +89,18 @@ class CreateWarehouse extends Component {
           'Verifique que ha llenado todos los campos obligatorios.'
         ),
       })
-      
+
       return
     }
-    this.setState({
-      alert: this.buildAlert(
-        'success',
-        'Se han llenado todos los campos obligatorios.'
-      )
-    })
+
+    let body = {
+      warehouse_name: this.state.name,
+      address: this.state.address,
+      desc: this.state.desc,
+      email: this.state.email,
+    }
+
+    postRequest(CREATE_WAREHOUSE, body, this.responseHandler)
   }
 
   checkMandatoryInputs() {

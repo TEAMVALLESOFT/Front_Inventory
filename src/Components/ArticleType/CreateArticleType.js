@@ -1,4 +1,5 @@
 import React, { Component} from 'react'
+import './Styles.css'
 
 class CreateArticleType extends Component {
   constructor() {
@@ -24,7 +25,7 @@ class CreateArticleType extends Component {
 
   render() {
     return(
-	  <div className='cu-container'>
+	  <div className='ca-container'>
         <span className='global-comp-title'>Crear tipo de artículo</span>
         <span className='global-comp-description'>
           Diligencie el formulario para crear un tipo de artículo. Los campos
