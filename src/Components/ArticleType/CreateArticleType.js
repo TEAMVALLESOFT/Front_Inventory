@@ -3,6 +3,9 @@ import './Styles.css'
 
 import Alert from '../Alerts/Alert'
 
+import { postRequest } from '../../Functions/Post'
+import { CREATE_ARTICLE_TYPE } from '../../Functions/Post'
+
 class CreateArticleType extends Component {
   constructor() {
     super() 
@@ -52,6 +55,37 @@ class CreateArticleType extends Component {
     return <Alert type={type} text={text} close={this.close} />
   }
 
+  responseHandler = (response, body) => {
+    if (response == 'success') {
+      this.setState({
+        alert: this.buildAlert('success', 'Tipo de articulo creada con éxito.'),
+      })
+
+      this.clearInputs()
+      return
+    }
+
+    if (body.message == 'Conflict') {
+      this.setState({
+        alert: this.buildAlert(
+          'attention',
+          'Se encontraron problemas para crear el tipo de artículo.'
+        ),
+      })
+
+      return
+    }
+
+    this.setState({
+      alert: this.buildAlert(
+        'error',
+        'Ha ocurrido un error. Por favor intente más tarde.'
+      ),
+    })
+
+    return
+  }
+
   createArticleType = () => {
     // Verify that the required fields are filled
     if (!this.checkMandatoryInputs()) {
@@ -72,12 +106,7 @@ class CreateArticleType extends Component {
       is_parent: this.state.is_parent
     }
 
-    this.setState({
-      alert: this.buildAlert(
-        'success',
-        'Se han llenado todos los campos obligatorios.'
-      ),
-    })
+    postRequest(CREATE_ARTICLE_TYPE, body, this.responseHandler)
   }
 
   checkMandatoryInputs() {
