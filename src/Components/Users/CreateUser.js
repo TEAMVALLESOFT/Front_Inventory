@@ -2,9 +2,16 @@ import React, { Component } from 'react'
 import './Styles.css'
 
 import Alert from '../Alerts/Alert'
-
+import { validateEmail, setSelectOptions } from '../../Functions/Helpers'
 import { postRequest } from '../../Functions/Post'
-import { CREATE_USER } from '../../Functions/Post'
+import {
+  CREATE_USER,
+  MANDATORY_MESSAGE,
+  EMAIL_MESSAGE,
+  ERROR_MESSAGE,
+  ALERT_TIMEOUT,
+  BRANCHES,
+} from '../../Functions/Constants'
 
 class CreateUser extends Component {
   constructor() {
@@ -17,6 +24,7 @@ class CreateUser extends Component {
       password: '',
       password_check: '',
       alert: '',
+      timeout: '',
     }
   }
 
@@ -27,17 +35,17 @@ class CreateUser extends Component {
 
     if (attribute == 'phone') {
       value = value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1')
-    }
-
-    if (attribute == 'email') {
+    } else if (attribute == 'email') {
       value = value.toLowerCase()
+    } else if (attribute == 'user_name') {
+      value = value.toUpperCase()
     }
 
-    this.setState({ [attribute]: value })
+    return this.setState({ [attribute]: value })
   }
 
   clearInputs = () => {
-    this.setState({
+    return this.setState({
       email: '',
       user_name: '',
       branch: '',
@@ -45,73 +53,67 @@ class CreateUser extends Component {
       password: '',
       password_check: '',
     })
-
-    return
   }
 
   // Functions to handle alerts
   close = () => {
-    this.setState({ alert: '' })
+    return this.setState({ alert: '' })
   }
 
-  buildAlert(type, text) {
-    return <Alert type={type} text={text} close={this.close} />
+  buildAlert = (type, text) => {
+    clearTimeout(this.state.timeout)
+
+    this.setState({
+      timeout: setTimeout(() => this.setState({ alert: '' }), ALERT_TIMEOUT),
+    })
+
+    return this.setState({
+      alert: <Alert type={type} text={text} close={this.close} />,
+    })
   }
 
   // Functions related to requests
   responseHandler = (response, body) => {
     if (response == 'success') {
-      this.setState({
-        alert: this.buildAlert('success', 'Usuario creado con éxito.'),
-      })
-
-      this.clearInputs()
-      return
+      this.buildAlert('success', 'Usuario creado con éxito.')
+      return this.clearInputs()
     }
 
     if (body.message == 'Conflict') {
-      this.setState({
-        alert: this.buildAlert(
-          'attention',
-          'Este usuario ya ha sido creado. Pruebe con un nuevo correo.'
-        ),
-      })
-
-      return
+      return this.buildAlert(
+        'attention',
+        'Este usuario ya ha sido creado. Pruebe con un nuevo correo.'
+      )
     }
 
-    this.setState({
-      alert: this.buildAlert(
-        'error',
-        'Ha ocurrido un error. Por favor intente más tarde.'
-      ),
-    })
-
-    return
+    return this.buildAlert('error', ERROR_MESSAGE)
   }
 
   createUser = () => {
+    this.close()
+
     // Verify that the required fields are filled
     if (!this.checkMandatoryInputs()) {
-      this.setState({
-        alert: this.buildAlert(
-          'attention',
-          'Verifique que ha llenado todos los campos obligatorios.'
-        ),
-      })
+      setTimeout(() => this.buildAlert('attention', MANDATORY_MESSAGE), 10)
+      return
+    }
 
+    // Verify that the email format is valid
+    if (!validateEmail(this.state.email)) {
+      setTimeout(() => this.buildAlert('attention', EMAIL_MESSAGE), 10)
       return
     }
 
     // Verify that the password has been entered correctly
     if (this.state.password != this.state.password_check) {
-      this.setState({
-        alert: this.buildAlert(
-          'attention',
-          'Las contraseñas no coinciden. Por favor, verifíquelas.'
-        ),
-      })
-
+      setTimeout(
+        () =>
+          this.buildAlert(
+            'attention',
+            'Las contraseñas no coinciden. Por favor, verifíquelas.'
+          ),
+        10
+      )
       return
     }
 
@@ -123,7 +125,7 @@ class CreateUser extends Component {
       password: this.state.password,
     }
 
-    postRequest(CREATE_USER, body, this.responseHandler)
+    return postRequest(CREATE_USER, body, this.responseHandler)
   }
 
   // Auxiliary functions
@@ -247,22 +249,16 @@ class CreateUser extends Component {
               value={this.state.branch}
               onChange={this.handleChange}
             >
-              <option value='' selected='true' disabled='disabled'>
+              <option
+                className='global-form-input-select-option'
+                value=''
+                selected={true}
+                disabled='disabled'
+              >
                 Seleccione una rama...
               </option>
-              <option value='Cachorros'>Cachorros</option>
-              <option value='Lobatos'>Lobatos</option>
-              <option value='Webelos'>Webelos</option>
-              <option value='Scouts'>Scouts</option>
-              <option value='Rovers'>Rovers</option>
-              <option value='Sin rama'>Sin rama</option>
+              {setSelectOptions(BRANCHES)}
             </select>
-            {/* <input
-              id='branch'
-              className='global-form-input'
-              value={this.state.branch}
-              onChange={this.handleChange}
-            /> */}
           </div>
 
           <div className='global-form-group'>

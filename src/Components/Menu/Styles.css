@@ -119,6 +119,7 @@
 
 .m-body-container {
   width: 100%;
+  overflow: auto;
   height: calc(100% - 60px);
   margin-top: 60px;
   position: fixed;

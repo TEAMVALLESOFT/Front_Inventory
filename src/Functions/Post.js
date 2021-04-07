@@ -1,4 +1,4 @@
-const HOST = 'http://localhost:3000/api/'
+import { HOST } from './Constants'
 
 function handleErrors(response) {
   if (!response.ok) {
@@ -6,12 +6,6 @@ function handleErrors(response) {
   }
   return response
 }
-
-// SERVICES
-export const LOGIN = 'user/login'
-export const CREATE_USER = 'user/create'
-export const CREATE_WAREHOUSE = 'warehouse/create'
-export const CREATE_ARTICLE_TYPE = 'article_type/create'
 
 // SIMPLE POST REQUES
 export function postRequest(path, data, responseHandler) {

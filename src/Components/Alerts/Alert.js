@@ -4,9 +4,7 @@ import './Styles.css'
 class Alert extends Component {
   closeAlert = () => {
     document.getElementById('alert').style.display = 'none'
-    this.props.close()
-
-    return
+    return this.props.close()
   }
 
   render() {

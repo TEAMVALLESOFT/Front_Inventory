@@ -4,6 +4,7 @@ import './Styles.css'
 import CreateUser from '../Users/CreateUser'
 import CreateArticleType from '../ArticleType/CreateArticleType'
 import CreateWarehouse from '../Warehouses/CreateWarehouse'
+import CreateArticle from '../Articles/CreateArticle'
 
 class MenuView extends Component {
   constructor() {
@@ -19,7 +20,7 @@ class MenuView extends Component {
     document.getElementById(this.state.selected).className = 'm-menu-label'
     document.getElementById(newID).className = 'm-menu-label selected'
 
-    this.setState({ selected: newID })
+    return this.setState({ selected: newID })
   }
 
   showUserMenu() {
@@ -35,10 +36,8 @@ class MenuView extends Component {
   }
 
   logout = () => {
-    sessionStorage.clear()
     this.props.changeView('login')
-
-    return
+    return sessionStorage.clear()
   }
 
   getSubComponent() {
@@ -49,6 +48,8 @@ class MenuView extends Component {
         return <CreateWarehouse />
       case 4:
         return <CreateArticleType />
+      case 5:
+        return <CreateArticle />
       default:
         return <div></div>
     }

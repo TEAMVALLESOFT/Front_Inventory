@@ -2,8 +2,14 @@ import React, { Component } from 'react'
 import './Styles.css'
 
 import Alert from '../Alerts/Alert'
+import { validateEmail } from '../../Functions/Helpers'
 import { postRequest } from '../../Functions/Post'
-import { LOGIN } from '../../Functions/Post'
+import {
+  LOGIN,
+  ERROR_MESSAGE,
+  EMAIL_MESSAGE,
+  ALERT_TIMEOUT,
+} from '../../Functions/Constants'
 
 class LoginView extends Component {
   constructor() {
@@ -11,11 +17,92 @@ class LoginView extends Component {
     this.state = {
       email: '',
       password: '',
-      error: false,
+      alert: '',
+      timeout: '',
     }
   }
 
-  // showPasswd function changes color of icon and background when eye clicked
+  // Functions to handle states
+  handleChange = (event) => {
+    let attribute = event.target.id
+    let value = event.target.value
+
+    if (attribute == 'email') {
+      value = value.toLowerCase()
+    }
+
+    return this.setState({ [attribute]: value })
+  }
+
+  // Functions to handle alerts
+  close = () => {
+    return this.setState({ alert: '' })
+  }
+
+  buildAlert = (type, text) => {
+    clearTimeout(this.state.timeout)
+
+    this.setState({
+      timeout: setTimeout(() => this.setState({ alert: '' }), ALERT_TIMEOUT),
+    })
+
+    return this.setState({
+      alert: <Alert type={type} text={text} close={this.close} />,
+    })
+  }
+
+  // Functions related to requests
+  responseHandler = (response, body) => {
+    if (response == 'success' && body.hasOwnProperty('token')) {
+      sessionStorage.setItem('token', body.token)
+      localStorage.setItem('user_id', body.user.id)
+      localStorage.setItem('user_name', body.user.name)
+      localStorage.setItem('user_email', body.user.email)
+
+      return this.props.changeView('Menu')
+    }
+
+    if (body == 'Error: Not Found') {
+      return this.buildAlert(
+        'attention',
+        'El correo electrónico o la contraseña es incorrecta. Por favor intente de nuevo.'
+      )
+    }
+
+    return this.buildAlert('error', ERROR_MESSAGE)
+  }
+
+  login = () => {
+    this.close()
+
+    // Verify that the required fields are filled
+    if (!this.state.email || !this.state.password) {
+      setTimeout(
+        () =>
+          this.buildAlert(
+            'attention',
+            'Verifique que ha llenado todos los campos.'
+          ),
+        10
+      )
+      return
+    }
+
+    // Verify that the required fields are filled
+    if (!validateEmail(this.state.email)) {
+      setTimeout(() => this.buildAlert('attention', EMAIL_MESSAGE), 10)
+      return
+    }
+
+    let body = {
+      email: this.state.email,
+      password: this.state.password,
+    }
+
+    return postRequest(LOGIN, body, this.responseHandler)
+  }
+
+  // Auxiliary functions
   showPasswd() {
     let container = document.getElementById('eye-icon-container')
     let icon = document.getElementById('eye-icon')
@@ -34,57 +121,10 @@ class LoginView extends Component {
     return
   }
 
-  handleError = (event) => {
-    this.setState({ error: false })
-  }
-
-  handleChange = (event) => {
-    let attribute = event.target.id
-    let value = event.target.value
-
-    this.setState({ [attribute]: value })
-  }
-
-  responseHandler = (response, body) => {
-    if (response == 'success' && body.hasOwnProperty('token')) {
-      sessionStorage.setItem('token', body.token)
-      localStorage.setItem('user_id', body.user.id)
-      localStorage.setItem('user_name', body.user.name)
-      localStorage.setItem('user_email', body.user.email)
-
-      this.props.changeView('Menu')
-      return
-    }
-
-    this.setState({ error: true })
-    return
-  }
-
-  login = () => {
-    let body = {
-      email: this.state.email,
-      password: this.state.password,
-    }
-
-    postRequest(LOGIN, body, this.responseHandler)
-  }
-
   render() {
-    let alert = ''
-
-    if (this.state.error) {
-      alert = (
-        <Alert
-          type='attention'
-          text='Su correo electrónico o contraseña es incorrecta. Por favor, intente de nuevo.'
-          close={this.handleError}
-        />
-      )
-    }
-
     return (
       <div className='lg-container'>
-        {alert}
+        {this.state.alert}
         <div className='lg-card'>
           <div className='lg-content'>
             {/* HEADER */}
