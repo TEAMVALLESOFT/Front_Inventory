@@ -27,11 +27,12 @@ export const STATES = [
 ]
 
 // SERVICES
-export const HOST = 'http://localhost:3000/api/'
+export const HOST = 'http://localhost:3001/api/'
 export const LOGIN = 'user/login'
 export const CREATE_USER = 'user/create'
 export const CREATE_WAREHOUSE = 'warehouse/create'
 export const CREATE_ARTICLE_TYPE = 'article_type/create'
+export const LIST_WAREHOUSES = 'warehouse/list'
 
 // ALERTS
 export const MANDATORY_MESSAGE =

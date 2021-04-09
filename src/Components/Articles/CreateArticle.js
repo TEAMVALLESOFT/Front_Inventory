@@ -1,8 +1,11 @@
 import React, { Component } from 'react'
+import './Styles.css'
 
 import Alert from '../Alerts/Alert'
+import SecondaryForm from './SecondaryForm'
 import { setSelectOptions } from '../../Functions/Helpers'
 import { postRequest } from '../../Functions/Post'
+import { getWarehouses } from '../../Functions/Get'
 import {
   MANDATORY_MESSAGE,
   ERROR_MESSAGE,
@@ -30,13 +33,64 @@ class CreateArticle extends Component {
       classif: '',
       alert: '',
       timeout: '',
+      cont: 0,
+      secondaryArticles: [],
+      warehouses: [],
+      article_types: [
+        {
+          value: 1,
+          name: 'Carpa pequeña',
+          is_parent: true,
+        },
+        { value: 2, name: 'Estacas', is_parent: false },
+      ],
     }
+  }
+
+  componentDidMount() {
+    getWarehouses(this.setWarehouses)
   }
 
   // Functions to handle states
   handleChange = (event) => {
     let attribute = event.target.id
     let value = event.target.value
+
+    if (
+      (this.state.warehouse_fk > 0 || attribute == 'warehouse_fk') &&
+      (this.state.classif.length > 0 || attribute == 'classif')
+    ) {
+      document.getElementById('article_type_fk').disabled = false
+    }
+
+    if (attribute == 'article_type_fk') {
+      for (let i = 0; i < this.state.article_types.length; i++) {
+        let obj = this.state.article_types[i]
+        if (obj.value == value && obj.is_parent) {
+          let array = []
+          array.push(
+            <SecondaryForm
+              id='sf-0'
+              key='sf-0'
+              delete={this.deleteSecondaryForm}
+            />
+          )
+          this.setState({
+            secondaryArticles: array,
+            cont: 0,
+          })
+          continue
+        }
+
+        if (obj.value == value && !obj.is_parent) {
+          this.setState({
+            secondaryArticles: [],
+            cont: 0,
+          })
+          continue
+        }
+      }
+    }
 
     return this.setState({ [attribute]: value })
   }
@@ -51,6 +105,18 @@ class CreateArticle extends Component {
       article_type_fk: 0,
       classif: '',
     })
+  }
+
+  setWarehouses = (response, body) => {
+    if (response == 'success') {
+      return this.setState({ warehouses: body })
+    }
+
+    if (body == 'No items') {
+      return this.buildAlert('attention', 'No hay bodegas creadas.')
+    }
+
+    return this.buildAlert('error', ERROR_MESSAGE)
   }
 
   // Functions to handle alerts
@@ -131,7 +197,81 @@ class CreateArticle extends Component {
     return true
   }
 
+  addNewSecondaryForm = () => {
+    let array = this.state.secondaryArticles
+    let newCont = this.state.cont + 1
+
+    array.push(
+      <SecondaryForm
+        id={'sf-' + newCont}
+        key={'sf-' + newCont}
+        delete={this.deleteSecondaryForm}
+      />
+    )
+
+    return this.setState({ secondaryArticles: array, cont: newCont })
+  }
+
+  deleteSecondaryForm = (key) => {
+    if (this.state.secondaryArticles.length == 1) {
+      return
+    }
+
+    let array = this.state.secondaryArticles
+    for (let i = 0; i < array.length; i++) {
+      if (array[i].key == key) {
+        array.splice(i, 1)
+        continue
+      }
+    }
+
+    this.setState({ secondaryArticles: [] })
+
+    return this.setState({ secondaryArticles: array })
+  }
+
+  enableChildForms = () => {
+    let length = this.state.secondaryArticles.length
+
+    if (length > 0) {
+      let array = []
+
+      for (let i = 0; i < length; i++) {
+        array.push(this.state.secondaryArticles[i])
+      }
+
+      return (
+        <div className='ca-secondary-form-container'>
+          {array}
+          <div className='ca-secondary-form-add-container'>
+            <img
+              className='ca-add-icon'
+              src='./add_gray.png'
+              alt='add'
+              onClick={this.addNewSecondaryForm}
+            />
+            <span
+              className='sf-header-title'
+              style={{ cursor: 'pointer' }}
+              onClick={this.addNewSecondaryForm}
+            >
+              Agregar artículo
+            </span>
+          </div>
+        </div>
+      )
+    }
+
+    return (
+      <span className='global-body-text'>
+        El tipo de artículo seleccionado no posee elementos secundarios.
+      </span>
+    )
+  }
+
   render() {
+    let forms = this.enableChildForms()
+
     return (
       <div className='cu-container'>
         {this.state.alert}
@@ -159,7 +299,7 @@ class CreateArticle extends Component {
               <option value={0} selected={true} disabled='disabled'>
                 Seleccione una bodega...
               </option>
-              {/* TODO */}
+              {setSelectOptions(this.state.warehouses)}
             </select>
           </div>
 
@@ -196,16 +336,17 @@ class CreateArticle extends Component {
               className='global-form-input-select'
               value={this.state.article_type_fk}
               onChange={this.handleChange}
+              disabled={true}
             >
               <option
                 value={0}
                 className='global-form-input-select-option'
                 selected={true}
-                disabled='disabled'
+                disabled={true}
               >
                 Seleccione un tipo de artículo...
               </option>
-              {/* TODO */}
+              {setSelectOptions(this.state.article_types)}
             </select>
           </div>
 
@@ -224,7 +365,7 @@ class CreateArticle extends Component {
                 value=''
                 className='global-form-input-select-option'
                 selected={true}
-                disabled='disabled'
+                disabled={true}
               >
                 Seleccione una disponibilidad...
               </option>
@@ -247,7 +388,7 @@ class CreateArticle extends Component {
                 value=''
                 className='global-form-input-select-option'
                 selected={true}
-                disabled='disabled'
+                disabled={true}
               >
                 Seleccione un estado...
               </option>
@@ -270,7 +411,7 @@ class CreateArticle extends Component {
                 value=''
                 className='global-form-input-select-option'
                 selected={true}
-                disabled='disabled'
+                disabled={true}
               >
                 Seleccione una rama...
               </option>
@@ -290,9 +431,7 @@ class CreateArticle extends Component {
           </div>
 
           <span className='global-comp-sub-title'>ARTÍCULOS SECUNDARIOS</span>
-          <span className='global-body-text'>
-            El tipo de artículo seleccionado no posee elementos secundarios.
-          </span>
+          {forms}
 
           <div
             className='global-form-buttons-container'
