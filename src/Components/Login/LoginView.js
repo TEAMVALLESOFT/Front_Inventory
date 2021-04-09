@@ -55,9 +55,9 @@ class LoginView extends Component {
   responseHandler = (response, body) => {
     if (response == 'success' && body.hasOwnProperty('token')) {
       sessionStorage.setItem('token', body.token)
-      localStorage.setItem('user_id', body.user.id)
-      localStorage.setItem('user_name', body.user.name)
-      localStorage.setItem('user_email', body.user.email)
+      sessionStorage.setItem('user_id', body.user.id)
+      sessionStorage.setItem('user_name', body.user.name)
+      sessionStorage.setItem('user_email', body.user.email)
 
       return this.props.changeView('Menu')
     }

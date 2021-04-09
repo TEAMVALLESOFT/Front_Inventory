@@ -5,6 +5,7 @@ import CreateUser from '../Users/CreateUser'
 import CreateArticleType from '../ArticleType/CreateArticleType'
 import CreateWarehouse from '../Warehouses/CreateWarehouse'
 import CreateArticle from '../Articles/CreateArticle'
+import CreateBorrowing from '../Borrowing/CreateBorrowing'
 
 class MenuView extends Component {
   constructor() {
@@ -50,6 +51,8 @@ class MenuView extends Component {
         return <CreateArticleType />
       case 5:
         return <CreateArticle />
+      case 6:
+        return <CreateBorrowing />
       default:
         return <div></div>
     }
@@ -57,7 +60,7 @@ class MenuView extends Component {
 
   render() {
     let component = this.getSubComponent()
-    let name = localStorage.getItem('user_name')
+    let name = sessionStorage.getItem('user_name')
 
     if (!name) {
       name = 'Nombre Apellido'
