@@ -59,6 +59,10 @@ class MenuView extends Component {
     let component = this.getSubComponent()
     let name = localStorage.getItem('user_name')
 
+    if (!name) {
+      name = 'Nombre Apellido'
+    }
+
     return (
       <div className='m-container'>
         <div
