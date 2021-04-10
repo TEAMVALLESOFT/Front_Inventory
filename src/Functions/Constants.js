@@ -32,6 +32,7 @@ export const LOGIN = 'user/login'
 export const CREATE_USER = 'user/create'
 export const CREATE_WAREHOUSE = 'warehouse/create'
 export const CREATE_ARTICLE_TYPE = 'article_type/create'
+export const CREATE_BORROWING = 'borrowing/create'
 export const LIST_WAREHOUSES = 'warehouse/list'
 
 // ALERTS

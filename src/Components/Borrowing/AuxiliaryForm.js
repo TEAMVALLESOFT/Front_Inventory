@@ -8,8 +8,8 @@ import {
 } from '../../Functions/Constants'
 
 class AuxiliaryForm extends Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.state = {
       // Request states
       article_fk: '',
@@ -26,10 +26,24 @@ class AuxiliaryForm extends Component {
       ],
       articles: [
         {
-          value: 'BCP-01',
+          value: '1',
           name: 'Bolsa para dormir',
         },
+        {
+          value: '2',
+          name: 'Bolsa para mimir',
+        },
       ],
+    }
+
+    this.prevState = {
+      // validate previous states
+      article_fk: '',
+  
+      // validate previous form states
+      classif: '',
+      article_type_fk: 0,
+      branch: '',
     }
   }
 
@@ -56,6 +70,32 @@ class AuxiliaryForm extends Component {
 
   delete = () => {
     return this.props.delete(this.props.id)
+  }
+
+  componentDidUpdate() {
+    // Uso tipico (no olvides de comparar las props):
+    if (this.state.article_fk !== this.prevState.article_fk) {
+      if (this.checkMandatoryInputs()){
+        localStorage.setItem(this.props.id, this.state.article_fk)
+      }
+    }
+  }
+
+  checkMandatoryInputs() {
+    if (this.state.article_type_fk < 0) {
+      return false
+    }
+
+
+    if (!this.state.branch) {
+      return false
+    }
+
+    if (!this.state.classif) {
+      return false
+    }
+
+    return true
   }
 
   render() {

@@ -4,9 +4,13 @@ import './Styles.css'
 import AuxiliaryForm from './AuxiliaryForm'
 import { setSelectOptions } from '../../Functions/Helpers'
 import { getWarehouses } from '../../Functions/Get'
+import { validateEmail } from '../../Functions/Helpers'
+import { postRequest } from '../../Functions/Post'
 import {
+  CREATE_BORROWING,
   MANDATORY_MESSAGE,
   ERROR_MESSAGE,
+  EMAIL_MESSAGE,
 } from '../../Functions/Constants'
 
 class CreateBorrowing extends Component {
@@ -16,6 +20,7 @@ class CreateBorrowing extends Component {
     this.state = {
       // Request states
       name: sessionStorage.getItem('user_name'),
+      user_id: sessionStorage.getItem('user_id'),
       email: sessionStorage.getItem('user_email'),
       warehouse_fk: 0,
       pick_up_date:'',
@@ -32,14 +37,6 @@ class CreateBorrowing extends Component {
         delete={this.deleteSecondaryForm}
       />],
       warehouses: [],
-      branch: '',
-      Articles: [],
-      article_types: [
-        {
-          value: 1,
-          name: 'Carpa pequeña',
-        },
-      ],
     }
   }
 
@@ -56,9 +53,8 @@ class CreateBorrowing extends Component {
   }
 
   clearInputs = () => {
+    localStorage.clear();
     return this.setState({
-      name: '',
-      email: '',
       warehouse_fk: 0,
       pick_up_date:'',
       return_date: '',  
@@ -89,11 +85,14 @@ class CreateBorrowing extends Component {
       return this.clearInputs()
     }
 
-    return this.buildAlert('error', ERROR_MESSAGE)
+    return alert(ERROR_MESSAGE)
   }
 
-  CreateBorrowing = () => {
-    this.close()
+  componentWillUnmount() {
+    localStorage.clear();
+  }
+
+  createBorrowing = () => {
     this.scroll()
 
     // Verify that the required fields are filled
@@ -103,12 +102,22 @@ class CreateBorrowing extends Component {
     }
 
     let body = {
-      name: this.state.name,
-      email: this.state.email,
-      warehouse_fk: this.state.warehouse_fk,
+      user_id: this.state.user_id,
       pick_up_date: this.state.pick_up_date,
       return_date: this.state.return_date,
+      article_list: []
     }
+
+    for (let i = 0; i < this.state.cont; i++) {
+      if (!localStorage.getItem('sf-'+this.state.cont)) {
+        return alert('Asegurese de diligenciar correctamente todos los campos del formulario de articulo número ' + this.state.cont)
+      }
+      body.article_list.push({'article_id': localStorage.getItem('sf-'+this.state.cont)})
+    }
+
+    console.log(body)
+
+    return postRequest(CREATE_BORROWING, body, this.responseHandler)
 
   }
 
@@ -198,7 +207,7 @@ class CreateBorrowing extends Component {
     return
   }
 
-  render() {
+  render() {   
     let forms = this.enableChildForms()
 
     return (
