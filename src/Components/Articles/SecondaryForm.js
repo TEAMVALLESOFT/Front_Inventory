@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import './Styles.css'
 
 import { setSelectOptions } from '../../Functions/Helpers'
+import { getArticleTypes } from '../../Functions/Get'
 import {
   CLASSIFICATIONS,
   AVAILABILITIES,
@@ -21,7 +22,7 @@ class SecondaryForm extends Component {
       // Auxiliary form states
       classif: '',
       article_type: 'Nuevo artículo',
-      article_label: 'Referencia',
+      article_types: [],
     }
   }
 
@@ -31,9 +32,76 @@ class SecondaryForm extends Component {
     let attribute = comp_attribute[2]
     let value = event.target.value
 
+    if (attribute == 'classif') {
+      getArticleTypes(value, this.setArticleTypes)
+    }
+
+    if (attribute == 'article_type_fk') {
+      this.setArticleTypeName(value)
+    }
+
+    this.setSecondaryForm()
+
     return this.setState({ [attribute]: value })
   }
 
+  setArticleTypes = (response, body) => {
+    if (response == 'success') {
+      let array = body
+      let filtered_array = []
+
+      for (let i = 0; i < array.length; i++) {
+        let obj = array[i]
+
+        if (!obj.is_parent) {
+          filtered_array.push(obj)
+        }
+      }
+
+      if (filtered_array.length < 1) {
+        this.props.scroll()
+        return this.props.responseHandler('error', 'No items')
+      }
+
+      return this.setState({ article_types: filtered_array })
+    }
+
+    if (body == 'No items') {
+      this.props.scroll()
+      return this.props.responseHandler('error', 'No items')
+    }
+
+    this.props.scroll()
+    return this.props.responseHandler('error', body)
+  }
+
+  setSecondaryForm = () => {
+    let body = {
+      key: this.props.id,
+      available_state: this.state.available_state,
+      physical_state: this.state.physical_state,
+      obs: this.state.obs,
+      article_type_fk: this.state.article_type_fk,
+    }
+
+    return this.props.setSecondaryFormList(body)
+  }
+
+  setArticleTypeName = (value) => {
+    let array = this.state.article_types
+
+    for (let i = 0; i < array.length; i++) {
+      let obj = array[i]
+
+      if (obj.value == value) {
+        return this.setState({ article_type: obj.name })
+      }
+    }
+
+    return
+  }
+
+  // Auxiliary functions
   collapse = () => {
     let component = document.getElementById(this.props.id)
 
@@ -61,9 +129,7 @@ class SecondaryForm extends Component {
             onClick={this.delete}
           />
           <div className='sf-header'>
-            <span className='sf-header-title'>
-              {this.state.article_type + ': ' + this.state.article_label}
-            </span>
+            <span className='sf-header-title'>{this.state.article_type}</span>
             <img
               className='sf-arrow-icon'
               src='./arrow_gray.png'
@@ -119,7 +185,7 @@ class SecondaryForm extends Component {
               >
                 Seleccione un tipo de artículo...
               </option>
-              {/* TODO */}
+              {setSelectOptions(this.state.article_types)}
             </select>
           </div>
 

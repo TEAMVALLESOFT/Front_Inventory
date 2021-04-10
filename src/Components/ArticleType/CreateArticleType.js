@@ -72,6 +72,10 @@ class CreateArticleType extends Component {
   responseHandler = (response, body) => {
     if (response == 'success') {
       this.buildAlert('success', 'Tipo de articulo creado con éxito.')
+      sessionStorage.removeItem('article_types_kitchen')
+      sessionStorage.removeItem('article_types_cleaning')
+      sessionStorage.removeItem('article_types_camp')
+
       return this.clearInputs()
     }
 
