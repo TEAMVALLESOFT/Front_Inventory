@@ -4,7 +4,6 @@ import './Styles.css'
 import AuxiliaryForm from './AuxiliaryForm'
 import { setSelectOptions } from '../../Functions/Helpers'
 import { getWarehouses } from '../../Functions/Get'
-import { validateEmail } from '../../Functions/Helpers'
 import { postRequest } from '../../Functions/Post'
 import {
   CREATE_BORROWING,
@@ -53,11 +52,21 @@ class CreateBorrowing extends Component {
   }
 
   clearInputs = () => {
-    localStorage.clear();
     return this.setState({
-      warehouse_fk: 0,
-      pick_up_date:'',
-      return_date: '',  
+        warehouse_fk: 0,
+        pick_up_date:'',
+        return_date: '',
+  
+        // Auxiliary form states
+        classif: '',
+        alert: '',
+        timeout: '',
+        cont: 1,
+        secondaryArticles: [<AuxiliaryForm
+          id={'sf-1'}
+          key={'sf-1'}
+          delete={this.deleteSecondaryForm}
+        />],
     })
   }
 
@@ -89,7 +98,7 @@ class CreateBorrowing extends Component {
   }
 
   componentWillUnmount() {
-    localStorage.clear();
+    localStorage.clear()
   }
 
   createBorrowing = () => {
@@ -108,17 +117,19 @@ class CreateBorrowing extends Component {
       article_list: []
     }
 
-    for (let i = 0; i < this.state.cont; i++) {
-      if (!localStorage.getItem('sf-'+this.state.cont)) {
-        return alert('Asegurese de diligenciar correctamente todos los campos del formulario de articulo número ' + this.state.cont)
+    for (let i = 1; i <= this.state.cont; i++) {
+      if (localStorage.getItem('sf-' + i) == 'delete') {
+        continue
       }
-      body.article_list.push({'article_id': localStorage.getItem('sf-'+this.state.cont)})
+      if (localStorage.getItem('sf-' + i) == 'incomplete') {
+        return alert('Asegúrese de diligenciar correctamente todos los campos de sus formulario para artículos')
+      }
+      else {
+        body.article_list.push({'article_id': localStorage.getItem('sf-'+ i)})
+      }
     }
-
-    console.log(body)
-
+    
     return postRequest(CREATE_BORROWING, body, this.responseHandler)
-
   }
 
   // Auxiliary functions

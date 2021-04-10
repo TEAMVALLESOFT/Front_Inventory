@@ -26,3 +26,27 @@ export function setSelectOptions(options) {
 
   return select_options
 }
+
+export function setSelectArticleOptions(options) {
+  if (options.length < 1) {
+    return
+  }
+
+  let select_options = []
+
+  for (let i = 0; i < options.length; i++) {
+    let op = options[i]
+
+    select_options.push(
+      <option
+        key={op.name}
+        className='global-form-input-select-option'
+        value={op.id}
+      >
+        {op.name} - {op.label}
+      </option>
+    )
+  }
+
+  return select_options
+}

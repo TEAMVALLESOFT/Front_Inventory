@@ -34,6 +34,7 @@ export const CREATE_WAREHOUSE = 'warehouse/create'
 export const CREATE_ARTICLE_TYPE = 'article_type/create'
 export const CREATE_BORROWING = 'borrowing/create'
 export const LIST_WAREHOUSES = 'warehouse/list'
+export const LIST_ARTICLES = 'article/list'
 
 // ALERTS
 export const MANDATORY_MESSAGE =
