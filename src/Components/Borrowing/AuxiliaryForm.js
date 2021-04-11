@@ -2,14 +2,16 @@ import React, { Component } from 'react'
 import './Styles.css'
 
 import { setSelectOptions } from '../../Functions/Helpers'
+import { setSelectArticleOptions } from '../../Functions/Helpers'
+import { getArticles } from '../../Functions/Get'
 import {
   CLASSIFICATIONS,
   BRANCHES,
 } from '../../Functions/Constants'
 
 class AuxiliaryForm extends Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.state = {
       // Request states
       article_fk: '',
@@ -24,12 +26,17 @@ class AuxiliaryForm extends Component {
           name: 'Carpa pequeña',
         },
       ],
-      articles: [
-        {
-          value: 'BCP-01',
-          name: 'Bolsa para dormir',
-        },
-      ],
+      articles: [],
+    }
+
+    this.prevState = {
+      // validate previous states
+      article_fk: '',
+  
+      // validate previous form states
+      classif: '',
+      article_type_fk: 0,
+      branch: '',
     }
   }
 
@@ -40,6 +47,15 @@ class AuxiliaryForm extends Component {
     let value = event.target.value
 
     return this.setState({ [attribute]: value })
+  }
+  
+  componentDidMount() {
+    localStorage.setItem(this.props.id, 'incomplete')
+    getArticles(this.setArticles)
+  }
+
+  componentWillUnmount() {
+    localStorage.setItem(this.props.id, 'delete')
   }
 
   collapse = () => {
@@ -56,6 +72,64 @@ class AuxiliaryForm extends Component {
 
   delete = () => {
     return this.props.delete(this.props.id)
+  }
+
+  setArticles = (response, body) => {
+    if (response == 'success') {
+  
+      return this.setState({ articles: body })
+    }
+
+    if (body == 'No items') {
+      alert('No hay artículos creados.')
+    }
+
+    return alert(ERROR_MESSAGE)
+  }
+
+  componentDidUpdate() {
+    // Uso tipico (no olvides de comparar las props):
+    if (this.state.article_fk !== this.prevState.article_fk) {
+      if (this.checkMandatoryInputs()){
+        localStorage.setItem(this.props.id, this.state.article_fk)
+        console.log(localStorage.getItem(this.props.id), this.props.id)
+      }
+    }
+  }
+
+  clearInputs = () => {
+    return this.setState({
+      // Request states
+      article_fk: '',
+
+      // Auxiliary form states
+      classif: '',
+      article_type_fk: 0,
+      branch: '',
+      article_types: [
+        {
+          value: 1,
+          name: 'Carpa pequeña',
+        },
+      ],
+      articles: [],
+    })
+  }
+
+  checkMandatoryInputs() {
+    if (this.state.article_type_fk < 0) {
+      return false
+    }
+
+    if (!this.state.branch) {
+      return false
+    }
+
+    if (!this.state.classif) {
+      return false
+    }
+
+    return true
   }
 
   render() {
@@ -173,7 +247,7 @@ class AuxiliaryForm extends Component {
               >
                 Seleccione un artículo...
               </option>
-              {setSelectOptions(this.state.articles)}
+              {setSelectArticleOptions(this.state.articles)}
             </select>
           </div>
 

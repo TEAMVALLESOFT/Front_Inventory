@@ -5,8 +5,9 @@ import Alert from '../Alerts/Alert'
 import SecondaryForm from './SecondaryForm'
 import { setSelectOptions } from '../../Functions/Helpers'
 import { postRequest } from '../../Functions/Post'
-import { getWarehouses } from '../../Functions/Get'
+import { getWarehouses, getArticleTypes } from '../../Functions/Get'
 import {
+  CREATE_ARTICLE,
   MANDATORY_MESSAGE,
   ERROR_MESSAGE,
   ALERT_TIMEOUT,
@@ -34,16 +35,10 @@ class CreateArticle extends Component {
       alert: '',
       timeout: '',
       cont: 0,
-      secondaryArticles: [],
+      secondary_articles: [],
+      secondary_article_list: [],
       warehouses: [],
-      article_types: [
-        {
-          value: 1,
-          name: 'Carpa pequeña',
-          is_parent: true,
-        },
-        { value: 2, name: 'Estacas', is_parent: false },
-      ],
+      article_types: [],
     }
   }
 
@@ -56,13 +51,6 @@ class CreateArticle extends Component {
     let attribute = event.target.id
     let value = event.target.value
 
-    if (
-      (this.state.warehouse_fk > 0 || attribute == 'warehouse_fk') &&
-      (this.state.classif.length > 0 || attribute == 'classif')
-    ) {
-      document.getElementById('article_type_fk').disabled = false
-    }
-
     if (attribute == 'article_type_fk') {
       for (let i = 0; i < this.state.article_types.length; i++) {
         let obj = this.state.article_types[i]
@@ -72,11 +60,14 @@ class CreateArticle extends Component {
             <SecondaryForm
               id='sf-0'
               key='sf-0'
+              scroll={this.scroll}
               delete={this.deleteSecondaryForm}
+              responseHandler={this.responseHandler}
+              setSecondaryFormList={this.setSecondaryFormList}
             />
           )
           this.setState({
-            secondaryArticles: array,
+            secondary_articles: array,
             cont: 0,
           })
           continue
@@ -84,12 +75,16 @@ class CreateArticle extends Component {
 
         if (obj.value == value && !obj.is_parent) {
           this.setState({
-            secondaryArticles: [],
+            secondary_articles: [],
             cont: 0,
           })
           continue
         }
       }
+    }
+
+    if (attribute == 'classif') {
+      getArticleTypes(value, this.setArticleTypes)
     }
 
     return this.setState({ [attribute]: value })
@@ -104,6 +99,9 @@ class CreateArticle extends Component {
       warehouse_fk: 0,
       article_type_fk: 0,
       classif: '',
+      cont: 0,
+      secondary_articles: [],
+      secondary_article_list: [],
     })
   }
 
@@ -115,6 +113,29 @@ class CreateArticle extends Component {
     if (body == 'No items') {
       return this.buildAlert('attention', 'No hay bodegas creadas.')
     }
+
+    return this.buildAlert('error', ERROR_MESSAGE)
+  }
+
+  setArticleTypes = (response, body) => {
+    if (response == 'success') {
+      document.getElementById('article_type_fk').disabled = false
+
+      return this.setState({ article_types: body })
+    }
+
+    if (body == 'No items') {
+      document.getElementById('article_type_fk').disabled = true
+      this.setState({ article_types: [] })
+
+      return this.buildAlert(
+        'attention',
+        'No hay tipos de artículo asociados a la clasificación seleccionada.'
+      )
+    }
+
+    document.getElementById('article_type_fk').disabled = true
+    this.setState({ article_types: [] })
 
     return this.buildAlert('error', ERROR_MESSAGE)
   }
@@ -147,6 +168,13 @@ class CreateArticle extends Component {
       return this.clearInputs()
     }
 
+    if (body == 'No items') {
+      return this.buildAlert(
+        'attention',
+        'No hay tipos de artículo asociados a la clasificación seleccionada.'
+      )
+    }
+
     return this.buildAlert('error', ERROR_MESSAGE)
   }
 
@@ -169,7 +197,16 @@ class CreateArticle extends Component {
       article_type_fk: this.state.article_type_fk,
     }
 
-    // return postRequest(CREATE_ARTICLE, body, this.responseHandler)
+    if (this.state.secondary_articles.length > 0) {
+      if (!this.checkSecondaryMandatoryInputs) {
+        setTimeout(() => this.buildAlert('attention', MANDATORY_MESSAGE), 10)
+        return
+      } else {
+        body.secondary_article_list = this.state.secondary_article_list
+      }
+    }
+
+    return postRequest(CREATE_ARTICLE, body, this.responseHandler)
   }
 
   // Auxiliary functions
@@ -197,27 +234,95 @@ class CreateArticle extends Component {
     return true
   }
 
+  checkSecondaryMandatoryInputs() {
+    let array = this.state.secondary_article_list
+
+    if (array.length < 1) {
+      return false
+    }
+
+    for (let i = 0; i < array.length; i++) {
+      let obj = array[i]
+
+      if (!obj.warehouse_fk < 0) {
+        return false
+      }
+
+      if (!obj.article_type_fk < 0) {
+        return false
+      }
+
+      if (!obj.available_state) {
+        return false
+      }
+
+      if (!obj.physical_state) {
+        return false
+      }
+
+      if (!obj.branch) {
+        return false
+      }
+    }
+
+    return true
+  }
+
+  setSecondaryFormList = (body) => {
+    let array = this.state.secondary_article_list
+    let set = false
+
+    for (let i = 0; i < array.length; i++) {
+      if (array[i].key == body.key) {
+        set = true
+        array[i] = body
+        array[i].warehouse_fk = this.state.warehouse_fk
+        array[i].branch = this.state.branch
+
+        continue
+      }
+    }
+
+    if (!set) {
+      array.push(body)
+    }
+
+    return
+  }
+
   addNewSecondaryForm = () => {
-    let array = this.state.secondaryArticles
+    let array = this.state.secondary_articles
     let newCont = this.state.cont + 1
 
     array.push(
       <SecondaryForm
         id={'sf-' + newCont}
         key={'sf-' + newCont}
+        scroll={this.scroll}
         delete={this.deleteSecondaryForm}
+        responseHandler={this.responseHandler}
+        setSecondaryFormList={this.setSecondaryFormList}
       />
     )
 
-    return this.setState({ secondaryArticles: array, cont: newCont })
+    return this.setState({ secondary_articles: array, cont: newCont })
   }
 
   deleteSecondaryForm = (key) => {
-    if (this.state.secondaryArticles.length == 1) {
+    if (this.state.secondary_articles.length == 1) {
+      this.scroll()
+      setTimeout(
+        () =>
+          this.buildAlert(
+            'attention',
+            'Los artículos compuestos deben tener al menos un artículo secundario.'
+          ),
+        10
+      )
       return
     }
 
-    let array = this.state.secondaryArticles
+    let array = this.state.secondary_articles
     for (let i = 0; i < array.length; i++) {
       if (array[i].key == key) {
         array.splice(i, 1)
@@ -225,19 +330,19 @@ class CreateArticle extends Component {
       }
     }
 
-    this.setState({ secondaryArticles: [] })
+    this.setState({ secondary_articles: [] })
 
-    return this.setState({ secondaryArticles: array })
+    return this.setState({ secondary_articles: array })
   }
 
   enableChildForms = () => {
-    let length = this.state.secondaryArticles.length
+    let length = this.state.secondary_articles.length
 
     if (length > 0) {
       let array = []
 
       for (let i = 0; i < length; i++) {
-        array.push(this.state.secondaryArticles[i])
+        array.push(this.state.secondary_articles[i])
       }
 
       return (
