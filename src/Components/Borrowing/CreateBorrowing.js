@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import './Styles.css'
 
+import Alert from '../Alerts/Alert'
 import AuxiliaryForm from './AuxiliaryForm'
 import { setSelectOptions } from '../../Functions/Helpers'
 import { getWarehouses } from '../../Functions/Get'
@@ -8,8 +9,8 @@ import { postRequest } from '../../Functions/Post'
 import {
   CREATE_BORROWING,
   MANDATORY_MESSAGE,
+  ALERT_TIMEOUT,
   ERROR_MESSAGE,
-  EMAIL_MESSAGE,
 } from '../../Functions/Constants'
 
 class CreateBorrowing extends Component {
@@ -59,8 +60,6 @@ class CreateBorrowing extends Component {
   
         // Auxiliary form states
         classif: '',
-        alert: '',
-        timeout: '',
         cont: 1,
         secondaryArticles: [<AuxiliaryForm
           id={'sf-1'}
@@ -76,10 +75,10 @@ class CreateBorrowing extends Component {
     }
 
     if (body == 'No items') {
-      alert('No hay bodegas creadas.')
+      return this.buildAlert('attention', 'No hay bodegas creadas.')
     }
 
-    return alert(ERROR_MESSAGE)
+    return this.buildAlert('error', ERROR_MESSAGE)
   }
 
 
@@ -90,23 +89,47 @@ class CreateBorrowing extends Component {
   // Functions related to requests
   responseHandler = (response, body) => {
     if (response == 'success') {
-      alert('Petición de solicitud creada con éxito.')
+      this.buildAlert('success', 'Solicitud creada con éxito.')
       return this.clearInputs()
     }
 
-    return alert(ERROR_MESSAGE)
+    if (body == 'No items') {
+      return this.buildAlert(
+        'attention',
+        'No hay tipos de artículo asociados a la clasificación seleccionada.'
+      )
+    }
+
+    return this.buildAlert('error', ERROR_MESSAGE)
   }
 
   componentWillUnmount() {
     localStorage.clear()
   }
 
+  close = () => {
+    return this.setState({ alert: '' })
+  }
+
+  buildAlert = (type, text) => {
+    clearTimeout(this.state.timeout)
+
+    this.setState({
+      timeout: setTimeout(() => this.setState({ alert: '' }), ALERT_TIMEOUT),
+    })
+
+    return this.setState({
+      alert: <Alert type={type} text={text} close={this.close} />,
+    })
+  }
+
   createBorrowing = () => {
+    this.close()
     this.scroll()
 
     // Verify that the required fields are filled
     if (!this.checkMandatoryInputs()) {
-      alert(MANDATORY_MESSAGE)
+      setTimeout(() => this.buildAlert('attention', MANDATORY_MESSAGE), 10)
       return
     }
 
@@ -122,7 +145,8 @@ class CreateBorrowing extends Component {
         continue
       }
       if (localStorage.getItem('sf-' + i) == 'incomplete') {
-        return alert('Asegúrese de diligenciar correctamente todos los campos de sus formulario para artículos')
+        setTimeout(() => this.buildAlert('attention', 'Asegúrese de diligenciar correctamente todos los campos de sus formulario para artículos'), 10)
+        return
       }
       else {
         body.article_list.push({'article_id': localStorage.getItem('sf-'+ i)})

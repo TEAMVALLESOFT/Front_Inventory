@@ -92,7 +92,6 @@ class AuxiliaryForm extends Component {
     if (this.state.article_fk !== this.prevState.article_fk) {
       if (this.checkMandatoryInputs()){
         localStorage.setItem(this.props.id, this.state.article_fk)
-        console.log(localStorage.getItem(this.props.id), this.props.id)
       }
     }
   }
