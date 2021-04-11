@@ -1,3 +1,5 @@
+const { REACT_APP_HOST } = process.env
+
 // SELECT OPTIONS
 export const BRANCHES = [
   { name: 'Cachorros', value: 'Cachorros' },
@@ -29,7 +31,7 @@ export const STATES = [
 ]
 
 // SERVICES
-export const HOST = 'http://localhost:3001/api/'
+export const HOST = REACT_APP_HOST
 export const LOGIN = 'user/login'
 export const CREATE_USER = 'user/create'
 export const CREATE_WAREHOUSE = 'warehouse/create'
