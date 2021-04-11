@@ -5,7 +5,9 @@ export const BRANCHES = [
   { name: 'Webelos', value: 'Webelos' },
   { name: 'Scouts', value: 'Scouts' },
   { name: 'Rovers', value: 'Rovers' },
-  { name: 'Sin rama', value: 'Sin rama' },
+  { name: 'Tropa', value: 'Tropa' },
+  { name: 'Intendencia', value: 'Intendencia' },
+  { name: 'Auxiliar', value: 'Auxiliar' },
 ]
 
 export const CLASSIFICATIONS = [

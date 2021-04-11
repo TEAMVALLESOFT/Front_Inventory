@@ -4,10 +4,7 @@ import './Styles.css'
 import { setSelectOptions } from '../../Functions/Helpers'
 import { setSelectArticleOptions } from '../../Functions/Helpers'
 import { getArticles } from '../../Functions/Get'
-import {
-  CLASSIFICATIONS,
-  BRANCHES,
-} from '../../Functions/Constants'
+import { CLASSIFICATIONS, BRANCHES } from '../../Functions/Constants'
 
 class AuxiliaryForm extends Component {
   constructor(props) {
@@ -30,10 +27,10 @@ class AuxiliaryForm extends Component {
     }
 
     this.prevState = {
-      // validate previous states
+      // Validate previous states
       article_fk: '',
-  
-      // validate previous form states
+
+      // Validate previous form states
       classif: '',
       article_type_fk: 0,
       branch: '',
@@ -48,7 +45,7 @@ class AuxiliaryForm extends Component {
 
     return this.setState({ [attribute]: value })
   }
-  
+
   componentDidMount() {
     localStorage.setItem(this.props.id, 'incomplete')
     getArticles(this.setArticles)
@@ -76,7 +73,6 @@ class AuxiliaryForm extends Component {
 
   setArticles = (response, body) => {
     if (response == 'success') {
-  
       return this.setState({ articles: body })
     }
 
@@ -88,9 +84,8 @@ class AuxiliaryForm extends Component {
   }
 
   componentDidUpdate() {
-    // Uso tipico (no olvides de comparar las props):
     if (this.state.article_fk !== this.prevState.article_fk) {
-      if (this.checkMandatoryInputs()){
+      if (this.checkMandatoryInputs()) {
         localStorage.setItem(this.props.id, this.state.article_fk)
       }
     }
@@ -143,7 +138,11 @@ class AuxiliaryForm extends Component {
           />
           <div className='af-header'>
             <span className='af-header-title'>
-              {(this.state.article_type_fk && this.state.article_fk)?(this.state.article_types[0]['name']+' - '+this.state.article_fk): 'Nuevo Artículo'}
+              {this.state.article_type_fk && this.state.article_fk
+                ? this.state.article_types[0]['name'] +
+                  ' - ' +
+                  this.state.article_fk
+                : 'Nuevo Artículo'}
             </span>
             <img
               className='af-arrow-icon'
@@ -249,7 +248,6 @@ class AuxiliaryForm extends Component {
               {setSelectArticleOptions(this.state.articles)}
             </select>
           </div>
-
         </div>
       </div>
     )

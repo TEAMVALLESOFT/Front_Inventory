@@ -23,7 +23,7 @@ class CreateBorrowing extends Component {
       user_id: sessionStorage.getItem('user_id'),
       email: sessionStorage.getItem('user_email'),
       warehouse_fk: 0,
-      pick_up_date:'',
+      pick_up_date: '',
       return_date: '',
 
       // Auxiliary form states
@@ -31,11 +31,13 @@ class CreateBorrowing extends Component {
       alert: '',
       timeout: '',
       cont: 1,
-      secondaryArticles: [<AuxiliaryForm
-        id={'sf-1'}
-        key={'sf-1'}
-        delete={this.deleteSecondaryForm}
-      />],
+      secondaryArticles: [
+        <AuxiliaryForm
+          id={'sf-1'}
+          key={'sf-1'}
+          delete={this.deleteSecondaryForm}
+        />,
+      ],
       warehouses: [],
     }
   }
@@ -54,6 +56,7 @@ class CreateBorrowing extends Component {
 
   clearInputs = () => {
     return this.setState({
+<<<<<<< HEAD
         warehouse_fk: 0,
         pick_up_date:'',
         return_date: '',
@@ -62,10 +65,24 @@ class CreateBorrowing extends Component {
         classif: '',
         cont: 1,
         secondaryArticles: [<AuxiliaryForm
+=======
+      warehouse_fk: 0,
+      pick_up_date: '',
+      return_date: '',
+
+      // Auxiliary form states
+      classif: '',
+      alert: '',
+      timeout: '',
+      cont: 1,
+      secondaryArticles: [
+        <AuxiliaryForm
+>>>>>>> 3873001ff3864849870b42c2e880229105768abd
           id={'sf-1'}
           key={'sf-1'}
           delete={this.deleteSecondaryForm}
-        />],
+        />,
+      ],
     })
   }
 
@@ -80,7 +97,6 @@ class CreateBorrowing extends Component {
 
     return this.buildAlert('error', ERROR_MESSAGE)
   }
-
 
   scroll = () => {
     this.myRef.current.scrollIntoView({ behavior: 'smooth' })
@@ -137,7 +153,7 @@ class CreateBorrowing extends Component {
       user_id: this.state.user_id,
       pick_up_date: this.state.pick_up_date,
       return_date: this.state.return_date,
-      article_list: []
+      article_list: [],
     }
 
     for (let i = 1; i <= this.state.cont; i++) {
@@ -145,14 +161,22 @@ class CreateBorrowing extends Component {
         continue
       }
       if (localStorage.getItem('sf-' + i) == 'incomplete') {
+<<<<<<< HEAD
         setTimeout(() => this.buildAlert('attention', 'Asegúrese de diligenciar correctamente todos los campos de sus formulario para artículos'), 10)
         return
       }
       else {
         body.article_list.push({'article_id': localStorage.getItem('sf-'+ i)})
+=======
+        return alert(
+          'Asegúrese de diligenciar correctamente todos los campos de sus formulario para artículos'
+        )
+      } else {
+        body.article_list.push({ article_id: localStorage.getItem('sf-' + i) })
+>>>>>>> 3873001ff3864849870b42c2e880229105768abd
       }
     }
-    
+
     return postRequest(CREATE_BORROWING, body, this.responseHandler)
   }
 
@@ -161,7 +185,6 @@ class CreateBorrowing extends Component {
     if (this.state.warehouse_fk < 0) {
       return false
     }
-
 
     if (!this.state.pick_up_date) {
       return false
@@ -242,22 +265,23 @@ class CreateBorrowing extends Component {
     return
   }
 
-  render() {   
+  render() {
     let forms = this.enableChildForms()
 
     return (
-        <div className='cu-container'>
+      <div className='cu-container'>
         {this.state.alert}
         <span className='global-comp-title' ref={this.myRef}>
           Solicitud de préstamo
         </span>
         <span className='global-comp-description'>
-          Diligencie el formulario para solicitar un préstamo. Todos los campos son obligatorios.
+          Diligencie el formulario para solicitar un préstamo. Todos los campos
+          son obligatorios.
         </span>
         <div className='global-comp-form-container'>
           <span className='global-comp-sub-title'>SOLICITUD</span>
-		  
-		  <div className='global-form-group'>
+
+          <div className='global-form-group'>
             <span className='global-form-label'>
               Nombre solicitante
               <strong className='global-form-mandatory'> *</strong>
@@ -268,7 +292,7 @@ class CreateBorrowing extends Component {
               value={this.state.name}
               onChange={this.handleChange}
               className='global-form-input'
-              disabled = 'disabled'
+              disabled='disabled'
             />
           </div>
 
@@ -283,10 +307,10 @@ class CreateBorrowing extends Component {
               onChange={this.handleChange}
               className='global-form-input'
               type='email'
-              disabled = 'disabled'
+              disabled='disabled'
             />
           </div>
-		  
+
           <div className='global-form-group'>
             <span className='global-form-label'>
               Bodega

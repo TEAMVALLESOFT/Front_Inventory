@@ -198,7 +198,7 @@ class CreateArticle extends Component {
     }
 
     if (this.state.secondary_articles.length > 0) {
-      if (!this.checkSecondaryMandatoryInputs) {
+      if (!this.checkSecondaryMandatoryInputs()) {
         setTimeout(() => this.buildAlert('attention', MANDATORY_MESSAGE), 10)
         return
       } else {
@@ -244,11 +244,11 @@ class CreateArticle extends Component {
     for (let i = 0; i < array.length; i++) {
       let obj = array[i]
 
-      if (!obj.warehouse_fk < 0) {
+      if (obj.warehouse_fk < 0) {
         return false
       }
 
-      if (!obj.article_type_fk < 0) {
+      if (obj.article_type_fk < 0) {
         return false
       }
 
