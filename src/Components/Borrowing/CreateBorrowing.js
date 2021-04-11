@@ -56,7 +56,6 @@ class CreateBorrowing extends Component {
 
   clearInputs = () => {
     return this.setState({
-<<<<<<< HEAD
         warehouse_fk: 0,
         pick_up_date:'',
         return_date: '',
@@ -65,19 +64,6 @@ class CreateBorrowing extends Component {
         classif: '',
         cont: 1,
         secondaryArticles: [<AuxiliaryForm
-=======
-      warehouse_fk: 0,
-      pick_up_date: '',
-      return_date: '',
-
-      // Auxiliary form states
-      classif: '',
-      alert: '',
-      timeout: '',
-      cont: 1,
-      secondaryArticles: [
-        <AuxiliaryForm
->>>>>>> 3873001ff3864849870b42c2e880229105768abd
           id={'sf-1'}
           key={'sf-1'}
           delete={this.deleteSecondaryForm}
@@ -161,19 +147,11 @@ class CreateBorrowing extends Component {
         continue
       }
       if (localStorage.getItem('sf-' + i) == 'incomplete') {
-<<<<<<< HEAD
         setTimeout(() => this.buildAlert('attention', 'Asegúrese de diligenciar correctamente todos los campos de sus formulario para artículos'), 10)
         return
       }
       else {
         body.article_list.push({'article_id': localStorage.getItem('sf-'+ i)})
-=======
-        return alert(
-          'Asegúrese de diligenciar correctamente todos los campos de sus formulario para artículos'
-        )
-      } else {
-        body.article_list.push({ article_id: localStorage.getItem('sf-' + i) })
->>>>>>> 3873001ff3864849870b42c2e880229105768abd
       }
     }
 
