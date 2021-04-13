@@ -17,6 +17,14 @@ class AuthBorrowingRequest extends Component {
           return_date: 'Dummy',
           auth_state: 'Dummy',
         },
+        {
+          borrowing_id: 2,
+          user_name: 'Dummy',
+          creation_date: 'Dummy',
+          pick_up_date: 'Dummy',
+          return_date: 'Dummy',
+          auth_state: 'Dummy',
+        },
       ],
     }
   }
