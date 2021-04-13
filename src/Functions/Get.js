@@ -3,6 +3,7 @@ import {
   LIST_WAREHOUSES,
   ARTICLE_TYPE_LIST,
   LIST_ARTICLES,
+  LIST_BORROWINGS,
 } from './Constants'
 
 function handleErrors(response) {
@@ -156,6 +157,48 @@ export function getArticles(warehouse, article_type, branch, responseHandler) {
       }
 
       responseHandler('success', articles)
+    })
+    .catch((error) => responseHandler('error', error))
+}
+
+export function getBorrowings(responseHandler) {
+  // Get information from session storage
+  let session_object = sessionStorage.getItem('borrowings')
+  let json_object = JSON.parse(session_object)
+
+  if (json_object && json_object.length > 0) {
+    responseHandler('success', json_object)
+    return
+  }
+
+  // Make the request if there is nothing stored
+  let url = HOST + LIST_BORROWINGS
+
+  fetch(url, {
+    method: 'GET',
+  })
+    .then(handleErrors)
+    .then((res) => res.json())
+    .then((response) => {
+      let rows = response.rows
+
+      if (rows.length < 1) {
+        responseHandler('error', 'No items')
+        return
+      }
+
+      console.log(rows)
+
+      // let borrowings = []
+      // for (let i = 0; i < rows.length; i++) {
+      //   let obj = rows[i]
+
+      //   borrowings.push({ value: obj.id, name: obj.warehouse_name })
+      // }
+
+      // let json = JSON.stringify(warehouses)
+      // sessionStorage.setItem('warehouses', json)
+      // responseHandler('success', warehouses)
     })
     .catch((error) => responseHandler('error', error))
 }

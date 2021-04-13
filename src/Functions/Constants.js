@@ -35,12 +35,13 @@ export const HOST = REACT_APP_HOST
 export const LOGIN = 'user/login'
 export const CREATE_USER = 'user/create'
 export const CREATE_WAREHOUSE = 'warehouse/create'
-export const CREATE_ARTICLE_TYPE = 'article_type/create'
-export const CREATE_BORROWING = 'borrowing/create'
 export const LIST_WAREHOUSES = 'warehouse/list'
-export const LIST_ARTICLES = 'article/list'
-export const CREATE_ARTICLE = 'article/create'
+export const CREATE_ARTICLE_TYPE = 'article_type/create'
 export const ARTICLE_TYPE_LIST = 'article_type/list'
+export const CREATE_ARTICLE = 'article/create'
+export const LIST_ARTICLES = 'article/list'
+export const CREATE_BORROWING = 'borrowing/create'
+export const LIST_BORROWINGS = 'borrowing/list'
 
 // ALERTS
 export const MANDATORY_MESSAGE =
