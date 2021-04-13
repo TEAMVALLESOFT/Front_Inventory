@@ -3,19 +3,27 @@ import {
   LIST_WAREHOUSES,
   ARTICLE_TYPE_LIST,
   LIST_ARTICLES,
+  LIST_BORROWINGS,
 } from './Constants'
 
 function handleErrors(response) {
+  if (response.status == 204) {
+    throw Error('No items')
+  }
+
   if (!response.ok) {
     throw Error(response.statusText)
   }
+
   return response
 }
 
 // COMMON POST REQUEST
 export function getWarehouses(responseHandler) {
-  if (sessionStorage.getItem('warehouses')) {
-    let storage_warehouses = JSON.parse(sessionStorage.getItem('warehouses'))
+  let session_warehouses = sessionStorage.getItem('warehouses')
+
+  if (session_warehouses && session_warehouses != '[]') {
+    let storage_warehouses = JSON.parse(session_warehouses)
 
     responseHandler('success', storage_warehouses)
     return
@@ -29,14 +37,16 @@ export function getWarehouses(responseHandler) {
     .then(handleErrors)
     .then((res) => res.json())
     .then((response) => {
-      if (response.length < 1) {
+      let rows = response.rows
+
+      if (rows.length < 1) {
         responseHandler('error', 'No items')
         return
       }
 
       let warehouses = []
-      for (let i = 0; i < response.length; i++) {
-        let obj = response[i]
+      for (let i = 0; i < rows.length; i++) {
+        let obj = rows[i]
 
         warehouses.push({ value: obj.id, name: obj.warehouse_name })
       }
@@ -66,7 +76,8 @@ export function getArticleTypes(classif, responseHandler) {
     return responseHandler('error', 'No valid classif')
   }
 
-  if (sessionStorage.getItem('article_types_' + session_classif)) {
+  let condition = sessionStorage.getItem('article_types_' + session_classif)
+  if (condition && condition != '[]') {
     let storage_article_types = JSON.parse(
       sessionStorage.getItem('article_types_' + session_classif)
     )
@@ -77,21 +88,22 @@ export function getArticleTypes(classif, responseHandler) {
 
   // CAN BE IMPROVED
   let url = HOST + ARTICLE_TYPE_LIST + '?classif=' + classif
-
   fetch(url, {
     method: 'GET',
   })
     .then(handleErrors)
     .then((res) => res.json())
     .then((response) => {
-      if (response.length < 1) {
+      let rows = response.rows
+
+      if (rows.length < 1) {
         responseHandler('error', 'No items')
         return
       }
 
       let article_types = []
-      for (let i = 0; i < response.length; i++) {
-        let obj = response[i]
+      for (let i = 0; i < rows.length; i++) {
+        let obj = rows[i]
 
         article_types.push({
           value: obj.id,
@@ -107,32 +119,15 @@ export function getArticleTypes(classif, responseHandler) {
     .catch((error) => responseHandler('error', error))
 }
 
-export function getArticles(responseHandler) {
-  if (sessionStorage.getItem('articles')) {
-    let storageArticles = JSON.parse(sessionStorage.getItem('articles'))
-    if (storageArticles[0].hasOwnProperty('label')) {
-      let articles = []
-      for (let i = 0; i < storageArticles.length; i++) {
-        let obj = storageArticles[i]
-        articles.push({
-          id: obj.id,
-          label: obj.label,
-          branch: obj.branch,
-          name: obj.name,
-          classif: obj.classif,
-        })
-      }
-
-      sessionStorage.setItem('articles', JSON.stringify(articles))
-      responseHandler('success', articles)
-      return
-    }
-
-    responseHandler('success', storageArticles)
-    return
-  }
-
-  let url = HOST + LIST_ARTICLES
+export function getArticles(warehouse, article_type, branch, responseHandler) {
+  let params =
+    '?warehouse_id=' +
+    warehouse +
+    '&article_type=' +
+    article_type +
+    '&branch=' +
+    branch
+  let url = HOST + LIST_ARTICLES + params
 
   fetch(url, {
     method: 'GET',
@@ -140,27 +135,70 @@ export function getArticles(responseHandler) {
     .then(handleErrors)
     .then((res) => res.json())
     .then((response) => {
-      if (response.length < 1) {
+      let rows = response.rows
+
+      if (rows.length < 1) {
         responseHandler('error', 'No items')
         return
       }
 
       let articles = []
-      for (let i = 0; i < response.length; i++) {
-        let obj = response[i]
+      for (let i = 0; i < rows.length; i++) {
+        let obj = rows[i]
 
         articles.push({
           id: obj.id,
           label: obj.label,
           branch: obj.branch,
-          name: obj.Tipo.article_type_name,
+          value: obj.id,
+          name: obj.Tipo.article_type_name + ': ' + obj.label,
           classif: obj.Tipo.classif,
         })
       }
 
-      let json = JSON.stringify(articles)
-      sessionStorage.setItem('articles', json)
       responseHandler('success', articles)
+    })
+    .catch((error) => responseHandler('error', error))
+}
+
+export function getBorrowings(responseHandler) {
+  // Get information from session storage
+  let session_object = sessionStorage.getItem('borrowings')
+  let json_object = JSON.parse(session_object)
+
+  if (json_object && json_object.length > 0) {
+    responseHandler('success', json_object)
+    return
+  }
+
+  // Make the request if there is nothing stored
+  let url = HOST + LIST_BORROWINGS
+
+  fetch(url, {
+    method: 'GET',
+  })
+    .then(handleErrors)
+    .then((res) => res.json())
+    .then((response) => {
+      let rows = response.rows
+
+      if (rows.length < 1) {
+        responseHandler('error', 'No items')
+        return
+      }
+
+      console.log(rows)
+
+      // let borrowings = []
+      // for (let i = 0; i < rows.length; i++) {
+      //   let obj = rows[i]
+
+      //   borrowings.push({ value: obj.id, name: obj.warehouse_name })
+      // }
+
+      // let json = JSON.stringify(warehouses)
+      // sessionStorage.setItem('warehouses', json)
+      // responseHandler('success', warehouses)
     })
     .catch((error) => responseHandler('error', error))
 }

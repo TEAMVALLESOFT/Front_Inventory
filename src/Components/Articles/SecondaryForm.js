@@ -40,9 +40,9 @@ class SecondaryForm extends Component {
       this.setArticleTypeName(value)
     }
 
-    this.setSecondaryForm()
+    this.setState({ [attribute]: value })
 
-    return this.setState({ [attribute]: value })
+    return this.setSecondaryForm(attribute, value)
   }
 
   setArticleTypes = (response, body) => {
@@ -75,7 +75,7 @@ class SecondaryForm extends Component {
     return this.props.responseHandler('error', body)
   }
 
-  setSecondaryForm = () => {
+  setSecondaryForm = (attribute, value) => {
     let body = {
       key: this.props.id,
       available_state: this.state.available_state,
@@ -83,6 +83,8 @@ class SecondaryForm extends Component {
       obs: this.state.obs,
       article_type_fk: this.state.article_type_fk,
     }
+
+    body[attribute] = value
 
     return this.props.setSecondaryFormList(body)
   }

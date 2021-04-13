@@ -1,3 +1,5 @@
+const { REACT_APP_HOST } = process.env
+
 // SELECT OPTIONS
 export const BRANCHES = [
   { name: 'Cachorros', value: 'Cachorros' },
@@ -5,7 +7,9 @@ export const BRANCHES = [
   { name: 'Webelos', value: 'Webelos' },
   { name: 'Scouts', value: 'Scouts' },
   { name: 'Rovers', value: 'Rovers' },
-  { name: 'Sin rama', value: 'Sin rama' },
+  { name: 'Tropa', value: 'Tropa' },
+  { name: 'Intendencia', value: 'Intendencia' },
+  { name: 'Auxiliar', value: 'Auxiliar' },
 ]
 
 export const CLASSIFICATIONS = [
@@ -27,16 +31,17 @@ export const STATES = [
 ]
 
 // SERVICES
-export const HOST = 'http://localhost:3001/api/'
+export const HOST = REACT_APP_HOST
 export const LOGIN = 'user/login'
 export const CREATE_USER = 'user/create'
 export const CREATE_WAREHOUSE = 'warehouse/create'
-export const CREATE_ARTICLE_TYPE = 'article_type/create'
-export const CREATE_BORROWING = 'borrowing/create'
 export const LIST_WAREHOUSES = 'warehouse/list'
-export const LIST_ARTICLES = 'article/list'
-export const CREATE_ARTICLE = 'article/create'
+export const CREATE_ARTICLE_TYPE = 'article_type/create'
 export const ARTICLE_TYPE_LIST = 'article_type/list'
+export const CREATE_ARTICLE = 'article/create'
+export const LIST_ARTICLES = 'article/list'
+export const CREATE_BORROWING = 'borrowing/create'
+export const LIST_BORROWINGS = 'borrowing/list'
 
 // ALERTS
 export const MANDATORY_MESSAGE =

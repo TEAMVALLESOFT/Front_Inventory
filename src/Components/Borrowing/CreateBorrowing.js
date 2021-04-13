@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import './Styles.css'
 
+import Alert from '../Alerts/Alert'
 import AuxiliaryForm from './AuxiliaryForm'
 import { setSelectOptions } from '../../Functions/Helpers'
 import { getWarehouses } from '../../Functions/Get'
@@ -8,8 +9,8 @@ import { postRequest } from '../../Functions/Post'
 import {
   CREATE_BORROWING,
   MANDATORY_MESSAGE,
+  ALERT_TIMEOUT,
   ERROR_MESSAGE,
-  EMAIL_MESSAGE,
 } from '../../Functions/Constants'
 
 class CreateBorrowing extends Component {
@@ -22,7 +23,7 @@ class CreateBorrowing extends Component {
       user_id: sessionStorage.getItem('user_id'),
       email: sessionStorage.getItem('user_email'),
       warehouse_fk: 0,
-      pick_up_date:'',
+      pick_up_date: '',
       return_date: '',
 
       // Auxiliary form states
@@ -30,11 +31,15 @@ class CreateBorrowing extends Component {
       alert: '',
       timeout: '',
       cont: 1,
-      secondaryArticles: [<AuxiliaryForm
-        id={'sf-1'}
-        key={'sf-1'}
-        delete={this.deleteSecondaryForm}
-      />],
+      secondaryArticles: [
+        <AuxiliaryForm
+          id={'sf-1'}
+          key={'sf-1'}
+          scroll={this.scroll}
+          responseHandler={this.responseHandler}
+          delete={this.deleteSecondaryForm}
+        />,
+      ],
       warehouses: [],
     }
   }
@@ -48,25 +53,31 @@ class CreateBorrowing extends Component {
     let attribute = event.target.id
     let value = event.target.value
 
+    if (attribute == 'warehouse_fk') {
+      sessionStorage.setItem('borrowing_warehouse_fk', value)
+    }
+
     return this.setState({ [attribute]: value })
   }
 
   clearInputs = () => {
     return this.setState({
-        warehouse_fk: 0,
-        pick_up_date:'',
-        return_date: '',
-  
-        // Auxiliary form states
-        classif: '',
-        alert: '',
-        timeout: '',
-        cont: 1,
-        secondaryArticles: [<AuxiliaryForm
+      warehouse_fk: 0,
+      pick_up_date: '',
+      return_date: '',
+
+      // Auxiliary form states
+      classif: '',
+      cont: 1,
+      secondaryArticles: [
+        <AuxiliaryForm
           id={'sf-1'}
           key={'sf-1'}
+          scroll={this.scroll}
+          responseHandler={this.responseHandler}
           delete={this.deleteSecondaryForm}
-        />],
+        />,
+      ],
     })
   }
 
@@ -75,13 +86,12 @@ class CreateBorrowing extends Component {
       return this.setState({ warehouses: body })
     }
 
-    if (body == 'No items') {
-      alert('No hay bodegas creadas.')
+    if (body == 'No items' || body.message == 'Not Found') {
+      return this.buildAlert('attention', 'No hay bodegas creadas.')
     }
 
-    return alert(ERROR_MESSAGE)
+    return this.buildAlert('error', ERROR_MESSAGE)
   }
-
 
   scroll = () => {
     this.myRef.current.scrollIntoView({ behavior: 'smooth' })
@@ -90,23 +100,47 @@ class CreateBorrowing extends Component {
   // Functions related to requests
   responseHandler = (response, body) => {
     if (response == 'success') {
-      alert('Petición de solicitud creada con éxito.')
+      this.buildAlert('success', 'Solicitud creada con éxito.')
       return this.clearInputs()
     }
 
-    return alert(ERROR_MESSAGE)
+    if (body == 'No items' || body.message == 'Not Found') {
+      return this.buildAlert(
+        'attention',
+        'No hay elementos que mostrar con las selecciones que ha realizado.'
+      )
+    }
+
+    return this.buildAlert('error', ERROR_MESSAGE)
   }
 
   componentWillUnmount() {
     localStorage.clear()
   }
 
+  close = () => {
+    return this.setState({ alert: '' })
+  }
+
+  buildAlert = (type, text) => {
+    clearTimeout(this.state.timeout)
+
+    this.setState({
+      timeout: setTimeout(() => this.setState({ alert: '' }), ALERT_TIMEOUT),
+    })
+
+    return this.setState({
+      alert: <Alert type={type} text={text} close={this.close} />,
+    })
+  }
+
   createBorrowing = () => {
+    this.close()
     this.scroll()
 
     // Verify that the required fields are filled
     if (!this.checkMandatoryInputs()) {
-      alert(MANDATORY_MESSAGE)
+      setTimeout(() => this.buildAlert('attention', MANDATORY_MESSAGE), 10)
       return
     }
 
@@ -114,7 +148,7 @@ class CreateBorrowing extends Component {
       user_id: this.state.user_id,
       pick_up_date: this.state.pick_up_date,
       return_date: this.state.return_date,
-      article_list: []
+      article_list: [],
     }
 
     for (let i = 1; i <= this.state.cont; i++) {
@@ -122,13 +156,20 @@ class CreateBorrowing extends Component {
         continue
       }
       if (localStorage.getItem('sf-' + i) == 'incomplete') {
-        return alert('Asegúrese de diligenciar correctamente todos los campos de sus formulario para artículos')
-      }
-      else {
-        body.article_list.push({'article_id': localStorage.getItem('sf-'+ i)})
+        setTimeout(
+          () =>
+            this.buildAlert(
+              'attention',
+              'Asegúrese de diligenciar correctamente todos los campos de sus formulario para artículos'
+            ),
+          10
+        )
+        return
+      } else {
+        body.article_list.push({ article_id: localStorage.getItem('sf-' + i) })
       }
     }
-    
+
     return postRequest(CREATE_BORROWING, body, this.responseHandler)
   }
 
@@ -137,7 +178,6 @@ class CreateBorrowing extends Component {
     if (this.state.warehouse_fk < 0) {
       return false
     }
-
 
     if (!this.state.pick_up_date) {
       return false
@@ -158,6 +198,8 @@ class CreateBorrowing extends Component {
       <AuxiliaryForm
         id={'sf-' + newCont}
         key={'sf-' + newCont}
+        scroll={this.scroll}
+        responseHandler={this.responseHandler}
         delete={this.deleteSecondaryForm}
       />
     )
@@ -218,22 +260,23 @@ class CreateBorrowing extends Component {
     return
   }
 
-  render() {   
+  render() {
     let forms = this.enableChildForms()
 
     return (
-        <div className='cu-container'>
+      <div className='cu-container'>
         {this.state.alert}
         <span className='global-comp-title' ref={this.myRef}>
           Solicitud de préstamo
         </span>
         <span className='global-comp-description'>
-          Diligencie el formulario para solicitar un préstamo. Todos los campos son obligatorios.
+          Diligencie el formulario para solicitar un préstamo. Todos los campos
+          son obligatorios.
         </span>
         <div className='global-comp-form-container'>
           <span className='global-comp-sub-title'>SOLICITUD</span>
-		  
-		  <div className='global-form-group'>
+
+          <div className='global-form-group'>
             <span className='global-form-label'>
               Nombre solicitante
               <strong className='global-form-mandatory'> *</strong>
@@ -244,7 +287,7 @@ class CreateBorrowing extends Component {
               value={this.state.name}
               onChange={this.handleChange}
               className='global-form-input'
-              disabled = 'disabled'
+              disabled='disabled'
             />
           </div>
 
@@ -259,10 +302,10 @@ class CreateBorrowing extends Component {
               onChange={this.handleChange}
               className='global-form-input'
               type='email'
-              disabled = 'disabled'
+              disabled='disabled'
             />
           </div>
-		  
+
           <div className='global-form-group'>
             <span className='global-form-label'>
               Bodega
