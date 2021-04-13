@@ -61,7 +61,7 @@ class AuthBorrowingRequest extends Component {
           <td>{obj.return_date}</td>
           <td>{obj.user_name}</td>
           <td>
-            <span className='abr-link' onClick={this.showModal}>
+            <span className='global-table-link' onClick={this.showModal}>
               Autorizar
             </span>
           </td>

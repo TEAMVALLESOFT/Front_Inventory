@@ -20,7 +20,7 @@ class Modal extends Component {
           <div className='global-modal-header'>
             <span className='global-modal-title'>Autorizar solicitud #</span>
             <img
-              className='bmo-icon'
+              className='global-modal-icon'
               src='./close_white.png'
               alt='close'
               onClick={this.closeModal}

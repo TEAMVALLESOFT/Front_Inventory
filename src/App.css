@@ -209,6 +209,12 @@ ul li::before {
   cursor: pointer;
 }
 
+/* TABLE GLOBAL STYLES */
+.global-table-link {
+  color: var(--link-blue);
+  cursor: pointer;
+}
+
 /* MODAL GLOBAL STYLES */
 .global-modal-background {
   position: fixed;
@@ -245,6 +251,12 @@ ul li::before {
 .global-modal-title {
   font-size: 18px;
   color: var(--white);
+}
+
+.global-modal-icon {
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
 }
 
 .global-modal-body {
