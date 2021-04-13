@@ -69,3 +69,14 @@
   padding: 20px 15px 0px 15px;
   border: 1px solid var(--soft-gray);
 }
+
+.abr-link {
+  color: var(--link-blue);
+  cursor: pointer;
+}
+
+.bmo-icon {
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+}

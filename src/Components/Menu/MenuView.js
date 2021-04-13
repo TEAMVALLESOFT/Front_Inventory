@@ -6,12 +6,14 @@ import CreateArticleType from '../ArticleType/CreateArticleType'
 import CreateWarehouse from '../Warehouses/CreateWarehouse'
 import CreateArticle from '../Articles/CreateArticle'
 import CreateBorrowing from '../Borrowing/CreateBorrowing'
+import AuthBorrowingRequest from '../Borrowing/AuthBorrowingRequest'
 
 class MenuView extends Component {
   constructor() {
     super()
     this.state = {
       selected: 1,
+      modal: '',
     }
   }
 
@@ -36,6 +38,14 @@ class MenuView extends Component {
     return
   }
 
+  showModal = (modal) => {
+    this.setState({ modal: modal })
+  }
+
+  closeModal = () => {
+    this.setState({ modal: '' })
+  }
+
   logout = () => {
     this.props.changeView('login')
     return sessionStorage.clear()
@@ -53,6 +63,13 @@ class MenuView extends Component {
         return <CreateArticle />
       case 6:
         return <CreateBorrowing />
+      case 7:
+        return (
+          <AuthBorrowingRequest
+            showModal={this.showModal}
+            closeModal={this.closeModal}
+          />
+        )
       default:
         return <div></div>
     }
@@ -68,6 +85,7 @@ class MenuView extends Component {
 
     return (
       <div className='m-container'>
+        {this.state.modal}
         <div
           id='logout'
           className='m-close-session'
