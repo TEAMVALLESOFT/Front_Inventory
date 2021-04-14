@@ -7,6 +7,7 @@ import CreateWarehouse from '../Warehouses/CreateWarehouse'
 import CreateArticle from '../Articles/CreateArticle'
 import CreateBorrowing from '../Borrowing/CreateBorrowing'
 import AuthBorrowingRequest from '../Borrowing/AuthBorrowingRequest'
+import CreateReturning from '../Returning/CreateReturning'
 
 class MenuView extends Component {
   constructor() {
@@ -66,6 +67,13 @@ class MenuView extends Component {
       case 7:
         return (
           <AuthBorrowingRequest
+            showModal={this.showModal}
+            closeModal={this.closeModal}
+          />
+        )
+      case 8:
+        return (
+          <CreateReturning
             showModal={this.showModal}
             closeModal={this.closeModal}
           />
@@ -216,6 +224,13 @@ class MenuView extends Component {
             <div className='m-menu-group'>
               <div
                 id={8}
+                className='m-menu-label'
+                onClick={this.changeSelected}
+              >
+                Crear constancia
+              </div>
+              <div
+                id={9}
                 className='m-menu-label'
                 onClick={this.changeSelected}
               >
