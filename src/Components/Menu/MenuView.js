@@ -8,6 +8,7 @@ import CreateArticle from '../Articles/CreateArticle'
 import CreateBorrowing from '../Borrowing/CreateBorrowing'
 import AuthBorrowingRequest from '../Borrowing/AuthBorrowingRequest'
 import CreateReturning from '../Returning/CreateReturning'
+import ListArticle from '../Articles/ListArticle'
 
 class MenuView extends Component {
   constructor() {
@@ -79,7 +80,12 @@ class MenuView extends Component {
           />
         )
       default:
-        return <div></div>
+        return (
+          <ListArticle
+            showModal={this.showModal}
+            closeModal={this.closeModal}
+          />
+        )
     }
   }
 

@@ -15,6 +15,8 @@ class CreationModal extends Component {
     this.state = {
       // Information states
       user_name: '',
+      warehouse_name: '',
+      article_list: [],
 
       // Form states
       physical_state: 'Funcional',
@@ -43,8 +45,21 @@ class CreationModal extends Component {
   // Functions related to requests
   setBorrowingInformation = (response, body) => {
     if (response == 'success') {
+      document.getElementById('modal').style.display = 'block'
+
+      let array = body.article_list
+      let list = []
+
+      for (let i = 0; i < array.length; i++) {
+        let obj = array[i].Articulo
+
+        list.push(obj.Tipo.article_type_name + ' - ' + obj.label)
+      }
+
       return this.setState({
         user_name: body.Asociado.user_name,
+        warehouse_name: body.article_list[0].Articulo.Bodega.warehouse_name,
+        article_list: list,
       })
     }
 
@@ -71,29 +86,29 @@ class CreationModal extends Component {
 
   // Auxiliary functions
   setArticleList() {
-    // let articles = this.props.borrowing.article_list
+    let articles = this.state.article_list
 
-    // let list = []
-    // for (let i = 0; i < articles.length; i++) {
-    //   let a = articles[i]
-    //   list.push(
-    //     <li>
-    //       <span className='global-modal-text'>
-    //         {a.article_type_name + ': ' + a.article_label}
-    //       </span>
-    //     </li>
-    //   )
-    // }
+    let list = []
+    for (let i = 0; i < articles.length; i++) {
+      list.push(
+        <li key={articles[i]}>
+          <span className='global-modal-text'>{articles[i]}</span>
+        </li>
+      )
+    }
 
-    // return list
-    return []
+    return list
   }
 
   render() {
     let article_list = this.setArticleList()
 
     return (
-      <div className='global-modal-background'>
+      <div
+        id='modal'
+        className='global-modal-background'
+        style={{ display: 'none' }}
+      >
         <div className='global-modal-container'>
           <div className='global-modal-header'>
             <span className='global-modal-title'>
@@ -114,7 +129,7 @@ class CreationModal extends Component {
             <div className='global-modal-group-container'>
               <span className='global-form-label'>Bodega</span>
               <span className='global-modal-text'>
-                {/* {this.props.borrowing.warehouse_name} */}
+                {this.state.warehouse_name}
               </span>
             </div>
             <div
