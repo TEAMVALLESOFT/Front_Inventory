@@ -1,10 +1,14 @@
 import React, { Component } from 'react'
 import './Styles.css'
 
+import Alert from '../Alerts/Alert'
 import Modal from './Modal'
 import { getArticles, getWarehouses, getAllArticleTypes } from '../../Functions/Get'
 import { setSelectOptions } from '../../Functions/Helpers'
-import { AVAILABILITIES } from '../../Functions/Constants'
+import { AVAILABILITIES,
+  ALERT_TIMEOUT,
+  NON_ITEM_MESSAGE
+} from '../../Functions/Constants'
 
 class ListArticle extends Component {
   constructor() {
@@ -17,6 +21,10 @@ class ListArticle extends Component {
       article_type_fk: '',
       available_state_fk: '',
       value: '',
+
+      // Auxiliary form states
+      alert: '',
+      timeout: '',
     }
   }
 
@@ -105,8 +113,8 @@ class ListArticle extends Component {
       }
 
       if (!temp.length) {
-        alert('No hay items')
-        return this.setState({ articles: temp })
+        this.setState({ articles: temp })
+        return this.buildAlert('attention', NON_ITEM_MESSAGE)
       }
       
       return this.setState({ articles: temp })
@@ -114,11 +122,11 @@ class ListArticle extends Component {
 
     if (body == 'No items' || body.message == 'No items') {
       this.setState({ articles: [] })
-      return alert('No items')
+      return this.buildAlert('attention', NON_ITEM_MESSAGE)
     }
 
     this.setState({ articles: [] })
-    return alert('no items')
+    return this.buildAlert('attention', NON_ITEM_MESSAGE)
   }
 
   setWarehouses = (response, body) => {
@@ -127,7 +135,7 @@ class ListArticle extends Component {
     }
 
     if (body == 'No items' || body.message == 'Not Found') {
-      return alert('No hay bodegas creadas.')
+      return this.buildAlert('attention', 'No hay bodegas registradas en el sistema.')
     }
 
     return alert(ERROR_MESSAGE)
@@ -142,8 +150,24 @@ class ListArticle extends Component {
       document.getElementById('article_type_fk').disabled = true
       this.setState({ article_types: [] })
 
-      return alert('No hay tipos de artículo asociados a la clasificación seleccionada.')
+      return this.buildAlert('attention', 'Aun no ha registrado algun tipo de artículo.')
     }
+  }
+
+  close = () => {
+    return this.setState({ alert: '' })
+  }
+
+  buildAlert = (type, text) => {
+    clearTimeout(this.state.timeout)
+
+    this.setState({
+      timeout: setTimeout(() => this.setState({ alert: '' }), ALERT_TIMEOUT),
+    })
+
+    return this.setState({
+      alert: <Alert type={type} text={text} close={this.close} />,
+    })
   }
 
   // Auxiliary functions
