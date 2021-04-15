@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import './Styles.css'
 
 import { setSelectOptions } from '../../Functions/Helpers'
-import { setSelectArticleOptions } from '../../Functions/Helpers'
 import { getArticles, getArticleTypes } from '../../Functions/Get'
 import { CLASSIFICATIONS, BRANCHES } from '../../Functions/Constants'
 
