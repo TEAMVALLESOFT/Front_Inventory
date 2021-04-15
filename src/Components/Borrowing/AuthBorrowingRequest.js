@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
 import './Styles.css'
 
+import Alert from '../Alerts/Alert'
 import AuthModal from './AuthModal'
 import { formatDateToLocal } from '../../Functions/Helpers'
 import { getBorrowings } from '../../Functions/Get'
+import { ERROR_MESSAGE, ALERT_TIMEOUT } from '../../Functions/Constants'
 
 class AuthBorrowingRequest extends Component {
   constructor() {
@@ -24,7 +26,8 @@ class AuthBorrowingRequest extends Component {
     if (response == 'success') {
       sessionStorage.removeItem('borrowings')
       sessionStorage.removeItem('filtered_borrowings')
-      this.setState({ borrowing_requests: [] })
+
+      getBorrowings(this.setBorrowings)
 
       return this.buildAlert(
         'success',

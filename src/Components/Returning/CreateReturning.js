@@ -25,7 +25,8 @@ class CreateReturning extends Component {
     if (response == 'success') {
       sessionStorage.removeItem('borrowings')
       sessionStorage.removeItem('filtered_borrowings')
-      this.setState({ borrowing_requests: [] })
+
+      getFilteredBorrowings(this.setBorrowings)
 
       return this.buildAlert(
         'success',

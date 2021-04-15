@@ -45,6 +45,8 @@ export const LIST_ARTICLES = 'article/list'
 export const CREATE_BORROWING = 'borrowing/create'
 export const LIST_BORROWINGS = 'borrowing/list'
 export const BORROWING_BY_ID = 'borrowing/id'
+export const BORROWING_APPROVED = 'borrowing/approved'
+export const BORROWING_REJECTED = 'borrowing/rejected'
 export const CREATE_RETURNING = 'returning/create'
 
 // ALERTS
