@@ -1,7 +1,10 @@
 import React, { Component } from 'react'
 import './Styles.css'
 
-import { setSelectOptions, setSelectArticleOptions } from '../../Functions/Helpers'
+import {
+  setSelectOptions,
+  setSelectArticleOptions,
+} from '../../Functions/Helpers'
 import { getArticles, getArticleTypes } from '../../Functions/Get'
 import { CLASSIFICATIONS, BRANCHES } from '../../Functions/Constants'
 
@@ -137,7 +140,7 @@ class AuxiliaryForm extends Component {
       let obj = array[i]
 
       if (obj.id == value) {
-        return this.setState({ form_name: (obj.name + ':' + obj.label) })
+        return this.setState({ form_name: obj.name + ':' + obj.label })
       }
     }
 
@@ -229,13 +232,13 @@ class AuxiliaryForm extends Component {
               id={this.props.id + '-' + 'classif'}
               className='global-form-input-select'
               value={this.state.classif}
+              defaultValue=''
               onChange={this.handleChange}
             >
               <option
                 value=''
                 className='global-form-input-select-option'
-                selected={true}
-                disabled='disabled'
+                disabled={true}
               >
                 Seleccione una clasificación...
               </option>
@@ -252,13 +255,13 @@ class AuxiliaryForm extends Component {
               id={this.props.id + '-' + 'article_type_fk'}
               className='global-form-input-select'
               value={this.state.article_type_fk}
+              defaultValue={0}
               onChange={this.handleChange}
             >
               <option
                 value={0}
                 className='global-form-input-select-option'
-                selected={true}
-                disabled='disabled'
+                disabled={true}
               >
                 Seleccione un tipo de artículo...
               </option>
@@ -275,13 +278,13 @@ class AuxiliaryForm extends Component {
               id={this.props.id + '-' + 'branch'}
               className='global-form-input-select'
               value={this.state.branch}
+              defaultValue=''
               onChange={this.handleChange}
             >
               <option
                 value=''
                 className='global-form-input-select-option'
-                selected={true}
-                disabled='disabled'
+                disabled={true}
               >
                 Seleccione una rama...
               </option>
@@ -298,13 +301,13 @@ class AuxiliaryForm extends Component {
               id={this.props.id + '-' + 'article_fk'}
               className='global-form-input-select'
               value={this.state.article_fk}
+              defaultValue={0}
               onChange={this.handleChange}
             >
               <option
                 value={0}
                 className='global-form-input-select-option'
-                selected={true}
-                disabled='disabled'
+                disabled={true}
               >
                 Seleccione un artículo...
               </option>

@@ -154,13 +154,13 @@ class SecondaryForm extends Component {
               id={this.props.id + '-' + 'classif'}
               className='global-form-input-select'
               value={this.state.classif}
+              defaultValue=''
               onChange={this.handleChange}
             >
               <option
                 value=''
                 className='global-form-input-select-option'
-                selected={true}
-                disabled='disabled'
+                disabled={true}
               >
                 Seleccione una clasificación...
               </option>
@@ -177,13 +177,13 @@ class SecondaryForm extends Component {
               id={this.props.id + '-' + 'article_type_fk'}
               className='global-form-input-select'
               value={this.state.article_type_fk}
+              defaultValue={0}
               onChange={this.handleChange}
             >
               <option
                 value={0}
                 className='global-form-input-select-option'
-                selected={true}
-                disabled='disabled'
+                disabled={true}
               >
                 Seleccione un tipo de artículo...
               </option>
@@ -200,13 +200,13 @@ class SecondaryForm extends Component {
               id={this.props.id + '-' + 'available_state'}
               className='global-form-input-select'
               value={this.state.available_state}
+              defaultValue=''
               onChange={this.handleChange}
             >
               <option
                 value=''
                 className='global-form-input-select-option'
-                selected={true}
-                disabled='disabled'
+                disabled={true}
               >
                 Seleccione una disponibilidad...
               </option>
@@ -223,13 +223,13 @@ class SecondaryForm extends Component {
               id={this.props.id + '-' + 'physical_state'}
               className='global-form-input-select'
               value={this.state.physical_state}
+              defaultValue=''
               onChange={this.handleChange}
             >
               <option
                 value=''
                 className='global-form-input-select-option'
-                selected={true}
-                disabled='disabled'
+                disabled={true}
               >
                 Seleccione un estado...
               </option>

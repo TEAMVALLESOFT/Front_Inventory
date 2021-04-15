@@ -290,7 +290,7 @@ class CreateBorrowing extends Component {
               value={this.state.name}
               onChange={this.handleChange}
               className='global-form-input'
-              disabled='disabled'
+              disabled={true}
             />
           </div>
 
@@ -305,7 +305,7 @@ class CreateBorrowing extends Component {
               onChange={this.handleChange}
               className='global-form-input'
               type='email'
-              disabled='disabled'
+              disabled={true}
             />
           </div>
 
@@ -318,9 +318,10 @@ class CreateBorrowing extends Component {
               id='warehouse_fk'
               className='global-form-input-select'
               value={this.state.warehouse_fk}
+              defaultValue={0}
               onChange={this.handleChange}
             >
-              <option value={0} selected={true} disabled='disabled'>
+              <option value={0} disabled={true}>
                 Seleccione una bodega...
               </option>
               {setSelectOptions(this.state.warehouses)}

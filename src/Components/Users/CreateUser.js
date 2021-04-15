@@ -247,13 +247,13 @@ class CreateUser extends Component {
               id='branch'
               className='global-form-input-select'
               value={this.state.branch}
+              defaultValue=''
               onChange={this.handleChange}
             >
               <option
                 className='global-form-input-select-option'
                 value=''
-                selected={true}
-                disabled='disabled'
+                disabled={true}
               >
                 Seleccione una rama...
               </option>

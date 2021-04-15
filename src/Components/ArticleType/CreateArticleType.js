@@ -156,13 +156,13 @@ class CreateArticleType extends Component {
               id='classif'
               value={this.state.classif}
               onChange={this.handleChange}
+              defaultValue=''
               className='global-form-input-select'
             >
               <option
                 className='global-form-input-select-option'
                 value=''
-                selected={true}
-                disabled='disabled'
+                disabled={true}
               >
                 Seleccione una clasificación...
               </option>
