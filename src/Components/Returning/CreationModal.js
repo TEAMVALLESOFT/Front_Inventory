@@ -45,6 +45,7 @@ class CreationModal extends Component {
   // Functions related to requests
   setBorrowingInformation = (response, body) => {
     if (response == 'success') {
+      // This line renders the modal only if the request was successful
       document.getElementById('modal').style.display = 'block'
 
       let array = body.article_list
@@ -53,7 +54,7 @@ class CreationModal extends Component {
       for (let i = 0; i < array.length; i++) {
         let obj = array[i].Articulo
 
-        list.push(obj.Tipo.article_type_name + ' - ' + obj.label)
+        list.push(obj.Tipo.article_type_name + ' - ' + obj.label.toUpperCase())
       }
 
       return this.setState({

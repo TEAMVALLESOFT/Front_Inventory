@@ -15,6 +15,8 @@ class Modal extends Component {
     this.state = {
       // Information states
       user_name: '',
+      warehouse_name: '',
+      article_list: [],
 
       // Form states
       obs: '',
@@ -42,8 +44,22 @@ class Modal extends Component {
   // Functions related to requests
   setBorrowingInformation = (response, body) => {
     if (response == 'success') {
+      // This line renders the modal only if the request was successful
+      document.getElementById('modal').style.display = 'block'
+
+      let array = body.article_list
+      let list = []
+
+      for (let i = 0; i < array.length; i++) {
+        let obj = array[i].Articulo
+
+        list.push(obj.Tipo.article_type_name + ' - ' + obj.label.toUpperCase())
+      }
+
       return this.setState({
         user_name: body.Asociado.user_name,
+        warehouse_name: body.article_list[0].Articulo.Bodega.warehouse_name,
+        article_list: list,
       })
     }
 
@@ -71,9 +87,27 @@ class Modal extends Component {
     return putRequest(BORROWING_REJECTED, body, this.responseHandler)
   }
 
+  // Auxiliary functions
+  setArticleList() {
+    let articles = this.state.article_list
+
+    let list = []
+    for (let i = 0; i < articles.length; i++) {
+      list.push(
+        <li key={articles[i]}>
+          <span className='global-modal-text'>{articles[i]}</span>
+        </li>
+      )
+    }
+
+    return list
+  }
+
   render() {
+    let article_list = this.setArticleList()
+
     return (
-      <div className='global-modal-background'>
+      <div id='modal' className='global-modal-background'>
         <div className='global-modal-container'>
           <div className='global-modal-header'>
             <span className='global-modal-title'>
@@ -93,24 +127,16 @@ class Modal extends Component {
             </div>
             <div className='global-modal-group-container'>
               <span className='global-form-label'>Bodega</span>
-              <span className='global-modal-text'>Dummy</span>
+              <span className='global-modal-text'>
+                {this.state.warehouse_name}
+              </span>
             </div>
             <div
               className='global-modal-group-container'
               style={{ alignItems: 'flex-start' }}
             >
               <span className='global-form-label'>Artículos solicitados</span>
-              <ul>
-                <li>
-                  <span className='global-modal-text'>Coffee</span>
-                </li>
-                <li>
-                  <span className='global-modal-text'>Coffee</span>
-                </li>
-                <li>
-                  <span className='global-modal-text'>Coffee</span>
-                </li>
-              </ul>
+              <ul>{article_list}</ul>
             </div>
             <div className='global-modal-group-container'>
               <span className='global-form-label'>Agregar observaciones</span>
