@@ -32,6 +32,8 @@ export const STATES = [
 
 // SERVICES
 export const HOST = REACT_APP_HOST
+  ? REACT_APP_HOST
+  : 'http://localhost:3001/api/'
 export const LOGIN = 'user/login'
 export const CREATE_USER = 'user/create'
 export const CREATE_WAREHOUSE = 'warehouse/create'
@@ -42,6 +44,10 @@ export const CREATE_ARTICLE = 'article/create'
 export const LIST_ARTICLES = 'article/list'
 export const CREATE_BORROWING = 'borrowing/create'
 export const LIST_BORROWINGS = 'borrowing/list'
+export const BORROWING_BY_ID = 'borrowing/id'
+export const BORROWING_APPROVED = 'borrowing/approved'
+export const BORROWING_REJECTED = 'borrowing/rejected'
+export const CREATE_RETURNING = 'returning/create'
 
 // ALERTS
 export const MANDATORY_MESSAGE =
@@ -53,3 +59,12 @@ export const EMAIL_MESSAGE =
 export const NON_ITEM_MESSAGE =
   'No hay ningun artículo para esta selección.'
 export const ALERT_TIMEOUT = 6000
+
+// OTHERS
+export const DAY_IN_MS = 1000 * 60 * 60 * 24
+export const DATE_OPTIONS = {
+  weekday: 'short',
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+}

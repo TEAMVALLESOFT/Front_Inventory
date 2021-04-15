@@ -1,3 +1,5 @@
+import { DATE_OPTIONS } from './Constants'
+
 export function validateEmail(email) {
   const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
   return re.test(String(email).toLowerCase())
@@ -25,6 +27,16 @@ export function setSelectOptions(options) {
   }
 
   return select_options
+}
+
+export function formatDateToLocal(date_string) {
+  let date = new Date(date_string)
+
+  return (
+    date.toLocaleDateString('es-CO', DATE_OPTIONS) +
+    ' ' +
+    date.toLocaleTimeString()
+  )
 }
 
 export function setSelectArticleOptions(options) {

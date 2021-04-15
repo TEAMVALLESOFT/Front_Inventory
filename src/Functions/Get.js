@@ -4,6 +4,7 @@ import {
   ARTICLE_TYPE_LIST,
   LIST_ARTICLES,
   LIST_BORROWINGS,
+  DAY_IN_MS,
 } from './Constants'
 
 function handleErrors(response) {
@@ -18,7 +19,7 @@ function handleErrors(response) {
   return response
 }
 
-// COMMON POST REQUEST
+// CUSTOM GET REQUEST
 export function getWarehouses(responseHandler) {
   let session_warehouses = sessionStorage.getItem('warehouses')
 
@@ -190,16 +191,78 @@ export function getBorrowings(responseHandler) {
         return
       }
 
-      // let borrowings = []
-      // for (let i = 0; i < rows.length; i++) {
-      //   let obj = rows[i]
+      let json = JSON.stringify(rows)
+      sessionStorage.setItem('borrowings', json)
+      responseHandler('success', rows)
+    })
+    .catch((error) => responseHandler('error', error))
+}
 
-      //   borrowings.push({ value: obj.id, name: obj.warehouse_name })
-      // }
+export function getFilteredBorrowings(responseHandler) {
+  // Get information from session storage
+  let session_object = sessionStorage.getItem('filtered_borrowings')
+  let json_object = JSON.parse(session_object)
 
-      // let json = JSON.stringify(warehouses)
-      // sessionStorage.setItem('warehouses', json)
-      // responseHandler('success', warehouses)
+  if (json_object && json_object.length > 0) {
+    responseHandler('success', json_object)
+    return
+  }
+
+  // Make the request if there is nothing stored
+  let url = HOST + LIST_BORROWINGS + '?has_returning=false'
+
+  fetch(url, {
+    method: 'GET',
+  })
+    .then(handleErrors)
+    .then((res) => res.json())
+    .then((response) => {
+      let rows = response.rows
+
+      if (rows.length < 1) {
+        responseHandler('error', 'No items')
+        return
+      }
+
+      // Calculation of the delay of a returning
+      for (let i = 0; i < rows.length; i++) {
+        if (Date.parse(rows[i].return_date) > Date.now()) {
+          rows[i].delay = 'No hay retraso'
+        } else {
+          let delay_days =
+            (Date.now() - Date.parse(rows[i].return_date)) / DAY_IN_MS
+          if (delay_days < 1) {
+            rows[i].delay = 'Se debe entregar hoy'
+          } else if (delay_days < 2) {
+            rows[i].delay = 'La entrega está retrasada por 1 día'
+          } else {
+            rows[i].delay =
+              'La entrega está retrasada por ' +
+              Math.trunc(delay_days) +
+              ' días'
+          }
+        }
+      }
+
+      let json = JSON.stringify(rows)
+      sessionStorage.setItem('filtered_borrowings', json)
+      responseHandler('success', rows)
+    })
+    .catch((error) => responseHandler('error', error))
+}
+
+// SIMPLE GET REQUESTS
+export function getElementById(path, responseHandler) {
+  // Path should have id as param
+  let url = HOST + path
+
+  fetch(url, {
+    method: 'GET',
+  })
+    .then(handleErrors)
+    .then((res) => res.json())
+    .then((response) => {
+      responseHandler('success', response[0])
     })
     .catch((error) => responseHandler('error', error))
 }

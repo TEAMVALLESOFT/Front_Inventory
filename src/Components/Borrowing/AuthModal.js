@@ -1,15 +1,15 @@
 import React, { Component } from 'react'
+import './Styles.css'
 
-import { setSelectOptions } from '../../Functions/Helpers'
 import { getElementById } from '../../Functions/Get'
-import { postRequest } from '../../Functions/Post'
+import { putRequest } from '../../Functions/Post'
 import {
   BORROWING_BY_ID,
-  CREATE_RETURNING,
-  STATES,
+  BORROWING_REJECTED,
+  BORROWING_APPROVED,
 } from '../../Functions/Constants'
 
-class CreationModal extends Component {
+class Modal extends Component {
   constructor() {
     super()
     this.state = {
@@ -19,7 +19,6 @@ class CreationModal extends Component {
       article_list: [],
 
       // Form states
-      physical_state: 'Funcional',
       obs: '',
     }
   }
@@ -74,15 +73,18 @@ class CreationModal extends Component {
     return this.props.closeModal()
   }
 
-  createReturning = () => {
+  authorize = (event) => {
     let body = {
-      state: this.state.physical_state,
-      obs: this.state.obs,
-      borrowing_fk: this.props.borrowing_id,
+      borrowing_id: this.props.borrowing_id,
       auth_user_fk: sessionStorage.getItem('user_id'),
+      obs: this.state.obs,
     }
 
-    postRequest(CREATE_RETURNING, body, this.responseHandler)
+    if (event.target.id == 'approve') {
+      return putRequest(BORROWING_APPROVED, body, this.responseHandler)
+    }
+
+    return putRequest(BORROWING_REJECTED, body, this.responseHandler)
   }
 
   // Auxiliary functions
@@ -105,15 +107,11 @@ class CreationModal extends Component {
     let article_list = this.setArticleList()
 
     return (
-      <div
-        id='modal'
-        className='global-modal-background'
-        style={{ display: 'none' }}
-      >
+      <div id='modal' className='global-modal-background'>
         <div className='global-modal-container'>
           <div className='global-modal-header'>
             <span className='global-modal-title'>
-              Crear constancia para solicitud # {this.props.borrowing_id}
+              Autorizar solicitud # {this.props.borrowing_id}
             </span>
             <img
               className='global-modal-icon'
@@ -124,7 +122,7 @@ class CreationModal extends Component {
           </div>
           <div className='global-modal-body'>
             <div className='global-modal-group-container'>
-              <span className='global-form-label'>Nombre responsable</span>
+              <span className='global-form-label'>Nombre solicitante</span>
               <span className='global-modal-text'>{this.state.user_name}</span>
             </div>
             <div className='global-modal-group-container'>
@@ -137,28 +135,11 @@ class CreationModal extends Component {
               className='global-modal-group-container'
               style={{ alignItems: 'flex-start' }}
             >
-              <span className='global-form-label'>Artículos a devolver</span>
+              <span className='global-form-label'>Artículos solicitados</span>
               <ul>{article_list}</ul>
             </div>
-
             <div className='global-modal-group-container'>
-              <span className='global-form-label'>
-                Estado
-                <strong className='global-form-mandatory'> *</strong>
-              </span>
-              <select
-                id='physical_state'
-                className='global-form-input-select'
-                defaultValue={'Funcional'}
-                value={this.state.physical_state}
-                onChange={this.handleChange}
-              >
-                {setSelectOptions(STATES)}
-              </select>
-            </div>
-
-            <div className='global-modal-group-container'>
-              <span className='global-form-label'>Observaciones</span>
+              <span className='global-form-label'>Agregar observaciones</span>
               <input
                 id='obs'
                 type='text'
@@ -169,18 +150,20 @@ class CreationModal extends Component {
             </div>
             <div className='global-modal-button-container'>
               <button
+                id='reject'
                 className='global-form-outline-button'
                 style={{ height: '30px' }}
-                onClick={this.closeModal}
+                onClick={this.authorize}
               >
-                Cancelar
+                Denegar
               </button>
               <button
+                id='approve'
                 className='global-form-solid-button'
                 style={{ height: '30px' }}
-                onClick={this.createReturning}
+                onClick={this.authorize}
               >
-                Enviar
+                Aprobar
               </button>
             </div>
           </div>
@@ -190,4 +173,4 @@ class CreationModal extends Component {
   }
 }
 
-export default CreationModal
+export default Modal

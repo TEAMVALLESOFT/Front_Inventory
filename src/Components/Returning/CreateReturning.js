@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 
 import Alert from '../Alerts/Alert'
 import CreationModal from './CreationModal'
-// import { getBorrowings } from '../../Functions/Get'
+import { formatDateToLocal } from '../../Functions/Helpers'
+import { getFilteredBorrowings } from '../../Functions/Get'
 import { ERROR_MESSAGE, ALERT_TIMEOUT } from '../../Functions/Constants'
 
 class CreateReturning extends Component {
@@ -11,44 +12,22 @@ class CreateReturning extends Component {
     this.state = {
       alert: '',
       timeout: '',
-      borrowing_requests: [
-        {
-          id: 1,
-          user_name: 'Dummy',
-          warehouse_name: 'Dummy',
-          return_date: 'Dummy',
-          delay: 'Dummy',
-          auth_state: 'Dummy',
-          article_list: [
-            { article_type_name: 'dummy', article_label: 'dummy' },
-            { article_type_name: 'dummy', article_label: 'dummy' },
-          ],
-        },
-        {
-          id: 2,
-          user_name: 'Dummy',
-          warehouse_name: 'Dummy',
-          return_date: 'Dummy',
-          delay: 'Dummy',
-          auth_state: 'Dummy',
-          article_list: [
-            { article_type_name: 'dummy', article_label: 'dummy' },
-          ],
-        },
-      ],
+      borrowing_requests: [],
     }
   }
 
   componentDidMount() {
-    // getBorrowings(this.setBorrowings)
+    getFilteredBorrowings(this.setBorrowings)
   }
 
   // Functions related to requests
-  setBorrowings = (response, body) => {}
-
-  // Functions to handle alerts
-  showAlert = (response, body) => {
+  responseHandler = (response, body) => {
     if (response == 'success') {
+      sessionStorage.removeItem('borrowings')
+      sessionStorage.removeItem('filtered_borrowings')
+
+      getFilteredBorrowings(this.setBorrowings)
+
       return this.buildAlert(
         'success',
         'Constancia de devolución creada con éxito.'
@@ -58,6 +37,23 @@ class CreateReturning extends Component {
     return this.buildAlert('error', ERROR_MESSAGE)
   }
 
+  setBorrowings = (response, body) => {
+    if (response == 'success') {
+      return this.setState({ borrowing_requests: body })
+    }
+
+    if (
+      body == 'No items' ||
+      body.message == 'No items' ||
+      body.message == 'Not Found'
+    ) {
+      return this.setState({ borrowing_requests: [] })
+    }
+
+    return this.buildAlert('error', ERROR_MESSAGE)
+  }
+
+  // Functions to handle alerts
   close = () => {
     return this.setState({ alert: '' })
   }
@@ -77,23 +73,18 @@ class CreateReturning extends Component {
   // Functions to handle modal
   showModal = (event) => {
     let id = event.target.id
-    let array = this.state.borrowing_requests
 
-    let borrowing = {}
-    for (let i = 0; i < array.length; i++) {
-      let obj = array[i]
-      if (parseInt(obj.id) == parseInt(id)) {
-        borrowing = obj
-        continue
-      }
-    }
-
-    if (borrowing == {}) {
+    if (parseInt(id) < 1) {
+      setTimeout(() => this.buildAlert('attention', ERROR_MESSAGE), 10)
       return
     }
 
     return this.props.showModal(
-      <CreationModal borrowing={borrowing} closeModal={this.closeModal} />
+      <CreationModal
+        borrowing_id={id}
+        closeModal={this.closeModal}
+        handleAlerts={this.responseHandler}
+      />
     )
   }
 
@@ -117,12 +108,13 @@ class CreateReturning extends Component {
     let table_rows = []
     for (let i = 0; i < rows.length; i++) {
       let obj = rows[i]
+      let date = formatDateToLocal(obj.return_date)
 
       table_rows.push(
         <tr key={'tr-' + obj.id}>
           <td>{obj.id}</td>
-          <td>{obj.user_name}</td>
-          <td>{obj.return_date}</td>
+          <td>{obj.Asociado.user_name}</td>
+          <td>{date}</td>
           <td>{obj.delay}</td>
           <td>{obj.auth_state}</td>
           <td>

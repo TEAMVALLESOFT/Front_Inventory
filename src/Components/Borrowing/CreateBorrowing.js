@@ -100,7 +100,10 @@ class CreateBorrowing extends Component {
   // Functions related to requests
   responseHandler = (response, body) => {
     if (response == 'success') {
+      sessionStorage.removeItem('borrowings')
+      sessionStorage.removeItem('filtered_borrowings')
       this.buildAlert('success', 'Solicitud creada con éxito.')
+
       return this.clearInputs()
     }
 
@@ -146,8 +149,8 @@ class CreateBorrowing extends Component {
 
     let body = {
       user_id: this.state.user_id,
-      pick_up_date: this.state.pick_up_date,
-      return_date: this.state.return_date,
+      pick_up_date: this.state.pick_up_date + '-05:00',
+      return_date: this.state.return_date + '-05:00',
       article_list: [],
     }
 
@@ -334,7 +337,7 @@ class CreateBorrowing extends Component {
               value={this.state.pick_up_date}
               onChange={this.handleChange}
               className='global-form-input'
-              type='date'
+              type='datetime-local'
             />
           </div>
 
@@ -348,7 +351,7 @@ class CreateBorrowing extends Component {
               value={this.state.return_date}
               onChange={this.handleChange}
               className='global-form-input'
-              type='date'
+              type='datetime-local'
             />
           </div>
 
