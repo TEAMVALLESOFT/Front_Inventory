@@ -154,7 +154,6 @@ export function getArticles(warehouse, article_type, branch, responseHandler) {
           physical_state: obj.physical_state,
           obs: obj.obs,
           name: obj.Tipo.article_type_name,
-          label: obj.label,
           classif: obj.Tipo.classif,
           warehouse_fk: obj.Bodega.id,
         })
