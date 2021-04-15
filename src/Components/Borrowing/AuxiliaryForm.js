@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import './Styles.css'
 
 import { setSelectOptions } from '../../Functions/Helpers'
-import { setSelectArticleOptions } from '../../Functions/Helpers'
 import { getArticles, getArticleTypes } from '../../Functions/Get'
 import { CLASSIFICATIONS, BRANCHES } from '../../Functions/Constants'
 
@@ -137,8 +136,8 @@ class AuxiliaryForm extends Component {
     for (let i = 0; i < array.length; i++) {
       let obj = array[i]
 
-      if (obj.value == value) {
-        return this.setState({ form_name: obj.name })
+      if (obj.id == value) {
+        return this.setState({ form_name: (obj.name + ':' + obj.label) })
       }
     }
 
@@ -309,7 +308,7 @@ class AuxiliaryForm extends Component {
               >
                 Seleccione un artículo...
               </option>
-              {setSelectOptions(this.state.articles)}
+              {setSelectArticleOptions(this.state.articles)}
             </select>
           </div>
         </div>

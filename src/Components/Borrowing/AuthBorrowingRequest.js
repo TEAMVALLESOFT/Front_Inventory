@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import './Styles.css'
 
 import Modal from './Modal'
-import { getBorrowings } from '../../Functions/Get'
+// import { getBorrowings } from '../../Functions/Get'
 
 class AuthBorrowingRequest extends Component {
   constructor() {
@@ -33,8 +33,17 @@ class AuthBorrowingRequest extends Component {
     // getBorrowings(this.setBorrowings)
   }
 
-  // Functions to handle states
+  // Functions related to requests
   setBorrowings = (response, body) => {}
+
+  // Functions to handle modal
+  showModal = () => {
+    return this.props.showModal(<Modal closeModal={this.closeModal} />)
+  }
+
+  closeModal = () => {
+    return this.props.closeModal()
+  }
 
   // Auxiliary functions
   setTable() {
@@ -59,7 +68,7 @@ class AuthBorrowingRequest extends Component {
           <td>{obj.creation_date}</td>
           <td>{obj.pick_up_date}</td>
           <td>{obj.return_date}</td>
-          <td>{obj.user_name}</td>
+          <td>{obj.auth_state}</td>
           <td>
             <span className='global-table-link' onClick={this.showModal}>
               Autorizar
@@ -85,14 +94,6 @@ class AuthBorrowingRequest extends Component {
     )
 
     return table
-  }
-
-  showModal = () => {
-    return this.props.showModal(<Modal closeModal={this.closeModal} />)
-  }
-
-  closeModal = () => {
-    return this.props.closeModal()
   }
 
   render() {

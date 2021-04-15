@@ -150,9 +150,13 @@ export function getArticles(warehouse, article_type, branch, responseHandler) {
           id: obj.id,
           label: obj.label,
           branch: obj.branch,
-          value: obj.id,
-          name: obj.Tipo.article_type_name + ': ' + obj.label,
+          available_state: obj.available_state,
+          physical_state: obj.physical_state,
+          obs: obj.obs,
+          name: obj.Tipo.article_type_name,
+          label: obj.label,
           classif: obj.Tipo.classif,
+          warehouse_fk: obj.Bodega.id,
         })
       }
 
@@ -187,8 +191,6 @@ export function getBorrowings(responseHandler) {
         return
       }
 
-      console.log(rows)
-
       // let borrowings = []
       // for (let i = 0; i < rows.length; i++) {
       //   let obj = rows[i]
@@ -199,6 +201,37 @@ export function getBorrowings(responseHandler) {
       // let json = JSON.stringify(warehouses)
       // sessionStorage.setItem('warehouses', json)
       // responseHandler('success', warehouses)
+    })
+    .catch((error) => responseHandler('error', error))
+}
+
+export function getAllArticleTypes(responseHandler) {
+  let url = HOST + ARTICLE_TYPE_LIST
+
+  fetch(url, {
+    method: 'GET',
+  })
+    .then(handleErrors)
+    .then((res) => res.json())
+    .then((response) => {
+      let rows = response.rows
+
+      if (rows.length < 1) {
+        responseHandler('error', 'No items')
+        return
+      }
+
+      let articles = []
+      for (let i = 0; i < rows.length; i++) {
+        let obj = rows[i]
+
+        articles.push({
+          value: obj.id,
+          name: obj.article_type_name,
+        })
+      }
+
+      responseHandler('success', articles)
     })
     .catch((error) => responseHandler('error', error))
 }
