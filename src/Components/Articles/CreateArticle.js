@@ -182,6 +182,8 @@ class CreateArticle extends Component {
     this.close()
     this.scroll()
 
+    console.log(this.state.obs)
+
     // Verify that the required fields are filled
     if (!this.checkMandatoryInputs()) {
       setTimeout(() => this.buildAlert('attention', MANDATORY_MESSAGE), 10)

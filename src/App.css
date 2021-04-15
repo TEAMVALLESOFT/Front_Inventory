@@ -282,3 +282,36 @@ ul li::before {
   display: flex;
   flex-direction: row-reverse;
 }
+
+.global-special-form-group {
+  width: -webkit-fill-available;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.global-special-form-input-select {
+  height: 33px;
+  width: 25%;
+  padding: 0px 10px;
+  outline: none;
+  color: var(--body-gray);
+  font-size: 12px;
+  border: 1px solid var(--background);
+  transition: border 0.3s;
+  cursor: pointer;
+}
+
+.global-special-sec-form-input-select {
+  height: 33px;
+  width: 25%;
+  padding: 0px 10px;
+  margin-left: 15px;
+  outline: none;
+  color: var(--body-gray);
+  font-size: 12px;
+  border: 1px solid var(--background);
+  transition: border 0.3s;
+  cursor: pointer;
+}

@@ -7,6 +7,7 @@ import CreateWarehouse from '../Warehouses/CreateWarehouse'
 import CreateArticle from '../Articles/CreateArticle'
 import CreateBorrowing from '../Borrowing/CreateBorrowing'
 import AuthBorrowingRequest from '../Borrowing/AuthBorrowingRequest'
+import ListArticle from '../Articles/ListArticle'
 
 class MenuView extends Component {
   constructor() {
@@ -71,7 +72,12 @@ class MenuView extends Component {
           />
         )
       default:
-        return <div></div>
+        return (
+          <ListArticle
+            showModal={this.showModal}
+            closeModal={this.closeModal}
+          />
+        )
     }
   }
 
