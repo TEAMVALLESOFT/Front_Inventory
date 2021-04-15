@@ -1,6 +1,10 @@
 import React, { Component } from 'react'
 import './Styles.css'
 
+import { getElementById } from '../../Functions/Get'
+// import { putRequest } from '../../Functions/Post'
+import { BORROWING_BY_ID } from '../../Functions/Constants'
+
 class Modal extends Component {
   constructor() {
     super()
@@ -9,7 +13,31 @@ class Modal extends Component {
     }
   }
 
+  componentDidMount() {
+    let path = BORROWING_BY_ID + '?borrowing_id=' + this.props.borrowing_id
+    return getElementById(path, this.setBorrowingInformation)
+  }
+
+  // Functions to handle modal
   closeModal = () => {
+    return this.props.closeModal()
+  }
+
+  // Functions related to requests
+  setBorrowingInformation = (response, body) => {
+    if (response == 'success') {
+      return this.setState({
+        user_name: body.Asociado.user_name,
+      })
+    }
+
+    this.props.handleAlerts(response, body)
+
+    return this.props.closeModal()
+  }
+
+  responseHandler = (response, body) => {
+    this.props.handleAlerts(response, body)
     return this.props.closeModal()
   }
 

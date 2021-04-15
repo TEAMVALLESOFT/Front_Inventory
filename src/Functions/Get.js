@@ -162,9 +162,42 @@ export function getArticles(warehouse, article_type, branch, responseHandler) {
     .catch((error) => responseHandler('error', error))
 }
 
-export function getFilteredBorrowings(responseHandler) {
+export function getBorrowings(responseHandler) {
   // Get information from session storage
   let session_object = sessionStorage.getItem('borrowings')
+  let json_object = JSON.parse(session_object)
+
+  if (json_object && json_object.length > 0) {
+    responseHandler('success', json_object)
+    return
+  }
+
+  // Make the request if there is nothing stored
+  let url = HOST + LIST_BORROWINGS
+
+  fetch(url, {
+    method: 'GET',
+  })
+    .then(handleErrors)
+    .then((res) => res.json())
+    .then((response) => {
+      let rows = response.rows
+
+      if (rows.length < 1) {
+        responseHandler('error', 'No items')
+        return
+      }
+
+      let json = JSON.stringify(rows)
+      sessionStorage.setItem('borrowings', json)
+      responseHandler('success', rows)
+    })
+    .catch((error) => responseHandler('error', error))
+}
+
+export function getFilteredBorrowings(responseHandler) {
+  // Get information from session storage
+  let session_object = sessionStorage.getItem('filtered_borrowings')
   let json_object = JSON.parse(session_object)
 
   if (json_object && json_object.length > 0) {
@@ -209,7 +242,7 @@ export function getFilteredBorrowings(responseHandler) {
       }
 
       let json = JSON.stringify(rows)
-      sessionStorage.setItem('borrowings', json)
+      sessionStorage.setItem('filtered_borrowings', json)
       responseHandler('success', rows)
     })
     .catch((error) => responseHandler('error', error))

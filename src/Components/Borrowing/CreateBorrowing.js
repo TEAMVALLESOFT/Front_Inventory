@@ -101,6 +101,7 @@ class CreateBorrowing extends Component {
   responseHandler = (response, body) => {
     if (response == 'success') {
       sessionStorage.removeItem('borrowings')
+      sessionStorage.removeItem('filtered_borrowings')
       this.buildAlert('success', 'Solicitud creada con éxito.')
 
       return this.clearInputs()
