@@ -191,16 +191,18 @@ class ListArticle extends Component {
 
     let table = (
       <table>
-        <tr>
-          <th>Rótulo</th>
-          <th>Clasificación</th>
-          <th>Tipo de artículo</th>
-          <th>Rama</th>
-          <th>Disponibilidad</th>
-          <th>Estado</th>
-          <th>Observaciones</th>
-        </tr>
-        {table_rows}
+        <tbody>
+          <tr>
+            <th>Rótulo</th>
+            <th>Clasificación</th>
+            <th>Tipo de artículo</th>
+            <th>Rama</th>
+            <th>Disponibilidad</th>
+            <th>Estado</th>
+            <th>Observaciones</th>
+          </tr>
+          {table_rows}
+        </tbody>
       </table>
     )
 

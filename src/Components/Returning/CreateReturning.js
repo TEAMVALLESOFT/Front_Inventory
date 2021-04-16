@@ -132,15 +132,17 @@ class CreateReturning extends Component {
 
     let table = (
       <table>
-        <tr>
-          <th>R. Préstamo</th>
-          <th>Solicitante</th>
-          <th>Fecha acordada de retorno</th>
-          <th>Retraso en la entrega</th>
-          <th>Estado préstamo</th>
-          <th>Acciones</th>
-        </tr>
-        {table_rows}
+        <tbody>
+          <tr>
+            <th>R. Préstamo</th>
+            <th>Solicitante</th>
+            <th>Fecha acordada de retorno</th>
+            <th>Retraso en la entrega</th>
+            <th>Estado préstamo</th>
+            <th>Acciones</th>
+          </tr>
+          {table_rows}
+        </tbody>
       </table>
     )
 

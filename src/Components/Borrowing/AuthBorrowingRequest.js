@@ -140,15 +140,17 @@ class AuthBorrowingRequest extends Component {
 
     let table = (
       <table>
-        <tr>
-          <th>Referencia</th>
-          <th>Solicitante</th>
-          <th>Fecha de recogida</th>
-          <th>Fecha de retorno</th>
-          <th>Estado</th>
-          <th>Acciones</th>
-        </tr>
-        {table_rows}
+        <tbody>
+          <tr>
+            <th>Referencia</th>
+            <th>Solicitante</th>
+            <th>Fecha de recogida</th>
+            <th>Fecha de retorno</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+          {table_rows}
+        </tbody>
       </table>
     )
 
