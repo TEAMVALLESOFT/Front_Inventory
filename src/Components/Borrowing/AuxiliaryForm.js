@@ -218,7 +218,6 @@ class AuxiliaryForm extends Component {
               id={this.props.id + '-' + 'classif'}
               className='global-form-input-select'
               value={this.state.classif}
-              defaultValue=''
               onChange={this.handleChange}
             >
               <option
@@ -241,7 +240,6 @@ class AuxiliaryForm extends Component {
               id={this.props.id + '-' + 'article_type_fk'}
               className='global-form-input-select'
               value={this.state.article_type_fk}
-              defaultValue={0}
               onChange={this.handleChange}
             >
               <option
@@ -264,7 +262,6 @@ class AuxiliaryForm extends Component {
               id={this.props.id + '-' + 'branch'}
               className='global-form-input-select'
               value={this.state.branch}
-              defaultValue=''
               onChange={this.handleChange}
             >
               <option
@@ -287,7 +284,6 @@ class AuxiliaryForm extends Component {
               id={this.props.id + '-' + 'article_fk'}
               className='global-form-input-select'
               value={this.state.article_fk}
-              defaultValue={0}
               onChange={this.handleChange}
             >
               <option

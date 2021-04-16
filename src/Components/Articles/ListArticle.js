@@ -265,7 +265,6 @@ class ListArticle extends Component {
               id='warehouse_fk'
               className='global-special-form-input-select'
               value={this.state.warehouse_fk}
-              defaultValue=''
               onChange={this.handleChange}
             >
               <option value=''>Todas las bodegas...</option>
@@ -275,7 +274,6 @@ class ListArticle extends Component {
               id='article_type_fk'
               className='global-special-sec-form-input-select'
               value={this.state.article_type_fk}
-              defaultValue=''
               onChange={this.handleChange}
             >
               <option value=''>Todos los tipos de artículos...</option>
@@ -285,7 +283,6 @@ class ListArticle extends Component {
               id='available_state_fk'
               className='global-special-sec-form-input-select'
               value={this.state.available_state_fk}
-              defaultValue=''
               onChange={this.handleChange}
             >
               <option value=''>Todos los estados de disponibilidad...</option>

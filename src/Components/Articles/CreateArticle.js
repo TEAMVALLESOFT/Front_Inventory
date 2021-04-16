@@ -399,7 +399,6 @@ class CreateArticle extends Component {
               id='warehouse_fk'
               className='global-form-input-select'
               value={this.state.warehouse_fk}
-              defaultValue={0}
               onChange={this.handleChange}
             >
               <option value={0} disabled={true}>
@@ -418,7 +417,6 @@ class CreateArticle extends Component {
               id='classif'
               className='global-form-input-select'
               value={this.state.classif}
-              defaultValue=''
               onChange={this.handleChange}
             >
               <option
@@ -441,7 +439,6 @@ class CreateArticle extends Component {
               id='article_type_fk'
               className='global-form-input-select'
               value={this.state.article_type_fk}
-              defaultValue={0}
               onChange={this.handleChange}
               disabled={true}
             >
@@ -464,7 +461,6 @@ class CreateArticle extends Component {
             <select
               id='available_state'
               className='global-form-input-select'
-              defaultValue=''
               value={this.state.available_state}
               onChange={this.handleChange}
             >
@@ -488,7 +484,6 @@ class CreateArticle extends Component {
               id='physical_state'
               className='global-form-input-select'
               value={this.state.physical_state}
-              defaultValue=''
               onChange={this.handleChange}
             >
               <option
@@ -511,7 +506,6 @@ class CreateArticle extends Component {
               id='branch'
               className='global-form-input-select'
               value={this.state.branch}
-              defaultValue=''
               onChange={this.handleChange}
             >
               <option

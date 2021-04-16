@@ -154,7 +154,6 @@ class SecondaryForm extends Component {
               id={this.props.id + '-' + 'classif'}
               className='global-form-input-select'
               value={this.state.classif}
-              defaultValue=''
               onChange={this.handleChange}
             >
               <option
@@ -177,7 +176,6 @@ class SecondaryForm extends Component {
               id={this.props.id + '-' + 'article_type_fk'}
               className='global-form-input-select'
               value={this.state.article_type_fk}
-              defaultValue={0}
               onChange={this.handleChange}
             >
               <option
@@ -200,7 +198,6 @@ class SecondaryForm extends Component {
               id={this.props.id + '-' + 'available_state'}
               className='global-form-input-select'
               value={this.state.available_state}
-              defaultValue=''
               onChange={this.handleChange}
             >
               <option
@@ -223,7 +220,6 @@ class SecondaryForm extends Component {
               id={this.props.id + '-' + 'physical_state'}
               className='global-form-input-select'
               value={this.state.physical_state}
-              defaultValue=''
               onChange={this.handleChange}
             >
               <option

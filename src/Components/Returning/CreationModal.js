@@ -149,7 +149,6 @@ class CreationModal extends Component {
               <select
                 id='physical_state'
                 className='global-form-input-select'
-                defaultValue={'Funcional'}
                 value={this.state.physical_state}
                 onChange={this.handleChange}
               >

@@ -363,7 +363,6 @@ class CreateBorrowing extends Component {
               id='warehouse_fk'
               className='global-form-input-select'
               value={this.state.warehouse_fk}
-              defaultValue={0}
               onChange={this.handleChange}
             >
               <option value={0} disabled={true}>
