@@ -1,44 +1,92 @@
 import React, { Component } from 'react'
 import './Styles.css'
 
-import Modal from './Modal'
-// import { getBorrowings } from '../../Functions/Get'
+import Alert from '../Alerts/Alert'
+import AuthModal from './AuthModal'
+import { formatDateToLocal } from '../../Functions/Helpers'
+import { getBorrowings } from '../../Functions/Get'
+import { ERROR_MESSAGE, ALERT_TIMEOUT } from '../../Functions/Constants'
 
 class AuthBorrowingRequest extends Component {
   constructor() {
     super()
     this.state = {
-      borrowing_requests: [
-        {
-          borrowing_id: 1,
-          user_name: 'Dummy',
-          creation_date: 'Dummy',
-          pick_up_date: 'Dummy',
-          return_date: 'Dummy',
-          auth_state: 'Dummy',
-        },
-        {
-          borrowing_id: 2,
-          user_name: 'Dummy',
-          creation_date: 'Dummy',
-          pick_up_date: 'Dummy',
-          return_date: 'Dummy',
-          auth_state: 'Dummy',
-        },
-      ],
+      alert: '',
+      timeout: '',
+      borrowing_requests: [],
     }
   }
 
   componentDidMount() {
-    // getBorrowings(this.setBorrowings)
+    getBorrowings(this.setBorrowings)
   }
 
   // Functions related to requests
-  setBorrowings = (response, body) => {}
+  responseHandler = (response, body) => {
+    if (response == 'success') {
+      sessionStorage.removeItem('borrowings')
+      sessionStorage.removeItem('filtered_borrowings')
+
+      getBorrowings(this.setBorrowings)
+
+      return this.buildAlert(
+        'success',
+        'La solicitud ha sido procesada exitosamente.'
+      )
+    }
+
+    return this.buildAlert('error', ERROR_MESSAGE)
+  }
+
+  setBorrowings = (response, body) => {
+    if (response == 'success') {
+      return this.setState({ borrowing_requests: body })
+    }
+
+    if (
+      body == 'No items' ||
+      body.message == 'No items' ||
+      body.message == 'Not Found'
+    ) {
+      return this.setState({ borrowing_requests: [] })
+    }
+
+    return this.buildAlert('error', ERROR_MESSAGE)
+  }
+
+  // Functions to handle alerts
+  close = () => {
+    return this.setState({ alert: '' })
+  }
+
+  buildAlert = (type, text) => {
+    clearTimeout(this.state.timeout)
+
+    this.setState({
+      timeout: setTimeout(() => this.setState({ alert: '' }), ALERT_TIMEOUT),
+    })
+
+    return this.setState({
+      alert: <Alert type={type} text={text} close={this.close} />,
+    })
+  }
 
   // Functions to handle modal
-  showModal = () => {
-    return this.props.showModal(<Modal closeModal={this.closeModal} />)
+  showModal = (event) => {
+    let id = event.target.id
+
+    if (parseInt(id) < 1) {
+      setTimeout(() => this.buildAlert('attention', ERROR_MESSAGE), 10)
+      return
+    }
+
+    return this.props.showModal(
+      <AuthModal
+        borrowing_id={id}
+        closeModal={this.closeModal}
+        handleAlerts={this.responseHandler}
+      />
+    )
   }
 
   closeModal = () => {
@@ -48,29 +96,37 @@ class AuthBorrowingRequest extends Component {
   // Auxiliary functions
   setTable() {
     let rows = this.state.borrowing_requests
+    let no_items = (
+      <span className='global-body-text' style={{ marginBottom: '0px' }}>
+        Actualmente no hay solicitudes de préstamos para autorizar.
+      </span>
+    )
 
     if (rows.length < 1) {
-      return (
-        <span className='global-body-text' style={{ marginBottom: '0px' }}>
-          Actualmente no hay solicitudes de préstamos para autorizar.
-        </span>
-      )
+      return no_items
     }
 
     let table_rows = []
     for (let i = 0; i < rows.length; i++) {
       let obj = rows[i]
 
+      if (obj.auth_state != 'Pendiente') {
+        continue
+      }
+
       table_rows.push(
-        <tr key={'tr-' + obj.borrowing_id}>
-          <td>{obj.borrowing_id}</td>
-          <td>{obj.user_name}</td>
-          <td>{obj.creation_date}</td>
-          <td>{obj.pick_up_date}</td>
-          <td>{obj.return_date}</td>
+        <tr key={'tr-' + obj.id}>
+          <td>{obj.id}</td>
+          <td>{obj.Asociado.user_name}</td>
+          <td>{formatDateToLocal(obj.pick_up_date)}</td>
+          <td>{formatDateToLocal(obj.return_date)}</td>
           <td>{obj.auth_state}</td>
           <td>
-            <span className='global-table-link' onClick={this.showModal}>
+            <span
+              id={obj.id}
+              className='global-table-link'
+              onClick={this.showModal}
+            >
               Autorizar
             </span>
           </td>
@@ -78,12 +134,15 @@ class AuthBorrowingRequest extends Component {
       )
     }
 
+    if (table_rows.length < 1) {
+      return no_items
+    }
+
     let table = (
       <table>
         <tr>
           <th>Referencia</th>
           <th>Solicitante</th>
-          <th>Fecha solicitud</th>
           <th>Fecha de recogida</th>
           <th>Fecha de retorno</th>
           <th>Estado</th>

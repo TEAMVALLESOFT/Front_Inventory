@@ -62,7 +62,7 @@ class LoginView extends Component {
       return this.props.changeView('Menu')
     }
 
-    if (body == 'Error: Not Found') {
+    if (body == 'Error: Unauthorized') {
       return this.buildAlert(
         'attention',
         'El correo electrónico o la contraseña es incorrecta. Por favor intente de nuevo.'
