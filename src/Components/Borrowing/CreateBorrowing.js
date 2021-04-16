@@ -3,7 +3,7 @@ import './Styles.css'
 
 import Alert from '../Alerts/Alert'
 import AuxiliaryForm from './AuxiliaryForm'
-import { setSelectOptions } from '../../Functions/Helpers'
+import { setSelectOptions, compareDates } from '../../Functions/Helpers'
 import { getWarehouses } from '../../Functions/Get'
 import { postRequest } from '../../Functions/Post'
 import {
@@ -147,10 +147,36 @@ class CreateBorrowing extends Component {
       return
     }
 
+    let pick_up_date = this.state.pick_up_date + '-05:00'
+    let return_date = this.state.return_date + '-05:00'
+    let today = Date.now()
+
+    if (compareDates(today, pick_up_date) || compareDates(today, return_date)) {
+      setTimeout(
+        () =>
+          this.buildAlert(
+            'attention',
+            'Verifique que las fechas ingresadas son mayores a la fecha actual.'
+          ),
+        10
+      )
+    }
+
+    if (compareDates(pick_up_date, return_date)) {
+      setTimeout(
+        () =>
+          this.buildAlert(
+            'attention',
+            'Verifique que la fecha de retorno sea mayo que la fecha de recogida.'
+          ),
+        10
+      )
+    }
+
     let body = {
       user_id: this.state.user_id,
-      pick_up_date: this.state.pick_up_date + '-05:00',
-      return_date: this.state.return_date + '-05:00',
+      pick_up_date: pick_up_date,
+      return_date: return_date,
       article_list: [],
     }
 
@@ -163,7 +189,7 @@ class CreateBorrowing extends Component {
           () =>
             this.buildAlert(
               'attention',
-              'Asegúrese de diligenciar correctamente todos los campos de sus formulario para artículos'
+              'Asegúrese de diligenciar correctamente todos los campos de los formularios de artículos.'
             ),
           10
         )
