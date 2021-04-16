@@ -20,6 +20,10 @@ class CreateReturning extends Component {
     getFilteredBorrowings(this.setBorrowings)
   }
 
+  componentWillUnmount() {
+    clearTimeout(this.state.timeout)
+  }
+
   // Functions related to requests
   responseHandler = (response, body) => {
     if (response == 'success') {

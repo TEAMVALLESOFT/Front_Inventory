@@ -46,6 +46,10 @@ class CreateArticle extends Component {
     getWarehouses(this.setWarehouses)
   }
 
+  componentWillUnmount() {
+    clearTimeout(this.state.timeout)
+  }
+
   // Functions to handle states
   handleChange = (event) => {
     let attribute = event.target.id

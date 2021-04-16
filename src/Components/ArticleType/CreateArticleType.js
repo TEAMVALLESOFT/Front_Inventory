@@ -27,6 +27,10 @@ class CreateArticleType extends Component {
     this.handleInputChange = this.handleInputChange.bind(this)
   }
 
+  componentWillUnmount() {
+    clearTimeout(this.state.timeout)
+  }
+
   // Functions to handle states
   handleInputChange(event) {
     const target = event.target

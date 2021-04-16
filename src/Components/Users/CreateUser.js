@@ -28,6 +28,10 @@ class CreateUser extends Component {
     }
   }
 
+  componentWillUnmount() {
+    clearTimeout(this.state.timeout)
+  }
+
   // Functions to handle states
   handleChange = (event) => {
     let attribute = event.target.id

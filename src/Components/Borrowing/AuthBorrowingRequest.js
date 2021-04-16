@@ -21,6 +21,10 @@ class AuthBorrowingRequest extends Component {
     getBorrowings(this.setBorrowings)
   }
 
+  componentWillUnmount() {
+    clearTimeout(this.state.timeout)
+  }
+
   // Functions related to requests
   responseHandler = (response, body) => {
     if (response == 'success') {

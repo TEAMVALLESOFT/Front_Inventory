@@ -72,13 +72,17 @@ class ListArticle extends Component {
     return this.setState({ [attribute]: value })
   }
 
-  componentDidMount(event) {
+  componentDidMount() {
     let warehouse = ''
     let article_type_fk = ''
 
     getArticles(warehouse, article_type_fk, this.state.value, this.setArticles)
     getWarehouses(this.setWarehouses)
     getAllArticleTypes(this.setArticleTypes)
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.state.timeout)
   }
 
   // Functions to handle states

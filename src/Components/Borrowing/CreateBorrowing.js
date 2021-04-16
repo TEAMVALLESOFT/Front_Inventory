@@ -133,6 +133,7 @@ class CreateBorrowing extends Component {
 
   componentWillUnmount() {
     localStorage.clear()
+    clearTimeout(this.state.timeout)
   }
 
   close = () => {
