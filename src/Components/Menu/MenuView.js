@@ -55,6 +55,13 @@ class MenuView extends Component {
 
   getSubComponent() {
     switch (this.state.selected) {
+      case 1:
+        return (
+          <ListArticle
+            showModal={this.showModal}
+            closeModal={this.closeModal}
+          />
+        )
       case 2:
         return <CreateUser />
       case 3:
@@ -80,12 +87,7 @@ class MenuView extends Component {
           />
         )
       default:
-        return (
-          <ListArticle
-            showModal={this.showModal}
-            closeModal={this.closeModal}
-          />
-        )
+        return <div></div>
     }
   }
 
