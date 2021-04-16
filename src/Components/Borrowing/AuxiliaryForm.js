@@ -13,7 +13,7 @@ class AuxiliaryForm extends Component {
     super(props)
     this.state = {
       // Request states
-      article_fk: '',
+      article_fk: 0,
 
       // Auxiliary form states
       classif: '',
@@ -53,6 +53,15 @@ class AuxiliaryForm extends Component {
 
   // Functions to handle states
   handleChange = (event) => {
+    let warehouse = sessionStorage.getItem('borrowing_warehouse_fk')
+      ? parseInt(sessionStorage.getItem('borrowing_warehouse_fk'))
+      : 0
+
+    if (warehouse < 1) {
+      this.props.scroll()
+      return this.props.responseHandler('error', 'No warehouse')
+    }
+
     let comp_attribute = event.target.id.split('-')
     let attribute = comp_attribute[2]
     let value = event.target.value
@@ -84,10 +93,6 @@ class AuxiliaryForm extends Component {
         article_fk: 0,
         form_name: 'Nuevo Artículo',
       })
-
-      let warehouse = sessionStorage.getItem('borrowing_warehouse_fk')
-        ? parseInt(sessionStorage.getItem('borrowing_warehouse_fk'))
-        : 0
 
       getArticles(
         warehouse,
@@ -161,25 +166,6 @@ class AuxiliaryForm extends Component {
 
   delete = () => {
     return this.props.delete(this.props.id)
-  }
-
-  clearInputs = () => {
-    return this.setState({
-      // Request states
-      article_fk: '',
-
-      // Auxiliary form states
-      classif: '',
-      article_type_fk: 0,
-      branch: '',
-      article_types: [
-        {
-          value: 1,
-          name: 'Carpa pequeña',
-        },
-      ],
-      articles: [],
-    })
   }
 
   checkMandatoryInputs() {

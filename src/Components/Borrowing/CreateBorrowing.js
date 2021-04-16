@@ -61,7 +61,9 @@ class CreateBorrowing extends Component {
   }
 
   clearInputs = () => {
-    return this.setState({
+    sessionStorage.removeItem('borrowing_warehouse_fk')
+
+    this.setState({
       warehouse_fk: 0,
       pick_up_date: '',
       return_date: '',
@@ -69,15 +71,22 @@ class CreateBorrowing extends Component {
       // Auxiliary form states
       classif: '',
       cont: 1,
-      secondaryArticles: [
-        <AuxiliaryForm
-          id={'sf-1'}
-          key={'sf-1'}
-          scroll={this.scroll}
-          responseHandler={this.responseHandler}
-          delete={this.deleteSecondaryForm}
-        />,
-      ],
+      secondaryArticles: [],
+    })
+
+    let array = []
+    array.push(
+      <AuxiliaryForm
+        id={'sf-1'}
+        key={'sf-1'}
+        scroll={this.scroll}
+        responseHandler={this.responseHandler}
+        delete={this.deleteSecondaryForm}
+      />
+    )
+
+    return this.setState({
+      secondaryArticles: array,
     })
   }
 
@@ -102,6 +111,7 @@ class CreateBorrowing extends Component {
     if (response == 'success') {
       sessionStorage.removeItem('borrowings')
       sessionStorage.removeItem('filtered_borrowings')
+      sessionStorage.removeItem('borrowing_warehouse_fk')
       this.buildAlert('success', 'Solicitud creada con éxito.')
 
       return this.clearInputs()
@@ -112,6 +122,10 @@ class CreateBorrowing extends Component {
         'attention',
         'No hay elementos que mostrar con las selecciones que ha realizado.'
       )
+    }
+
+    if (body == 'No warehouse') {
+      return this.buildAlert('attention', 'Primero debe elegir una bodega.')
     }
 
     return this.buildAlert('error', ERROR_MESSAGE)
@@ -149,9 +163,12 @@ class CreateBorrowing extends Component {
 
     let pick_up_date = this.state.pick_up_date + '-05:00'
     let return_date = this.state.return_date + '-05:00'
-    let today = Date.now()
+    let today = new Date()
 
-    if (compareDates(today, pick_up_date) || compareDates(today, return_date)) {
+    if (
+      compareDates(today.toISOString(), pick_up_date) ||
+      compareDates(today.toISOString(), return_date)
+    ) {
       setTimeout(
         () =>
           this.buildAlert(
@@ -160,6 +177,7 @@ class CreateBorrowing extends Component {
           ),
         10
       )
+      return
     }
 
     if (compareDates(pick_up_date, return_date)) {
@@ -167,10 +185,11 @@ class CreateBorrowing extends Component {
         () =>
           this.buildAlert(
             'attention',
-            'Verifique que la fecha de retorno sea mayo que la fecha de recogida.'
+            'Verifique que la fecha de retorno sea mayor que la fecha de recogida.'
           ),
         10
       )
+      return
     }
 
     let body = {
