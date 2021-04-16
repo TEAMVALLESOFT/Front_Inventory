@@ -87,7 +87,6 @@ export function getArticleTypes(classif, responseHandler) {
     return
   }
 
-  // CAN BE IMPROVED
   let url = HOST + ARTICLE_TYPE_LIST + '?classif=' + classif
   fetch(url, {
     method: 'GET',
