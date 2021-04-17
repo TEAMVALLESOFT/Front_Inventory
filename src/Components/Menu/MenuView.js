@@ -9,6 +9,7 @@ import CreateBorrowing from '../Borrowing/CreateBorrowing'
 import AuthBorrowingRequest from '../Borrowing/AuthBorrowingRequest'
 import CreateReturning from '../Returning/CreateReturning'
 import ListArticle from '../Articles/ListArticle'
+import AuthReturningRequest from '../Returning/AuthReturningRequest'
 
 class MenuView extends Component {
   constructor() {
@@ -75,6 +76,13 @@ class MenuView extends Component {
       case 8:
         return (
           <CreateReturning
+            showModal={this.showModal}
+            closeModal={this.closeModal}
+          />
+        )
+      case 9:
+        return (
+          <AuthReturningRequest
             showModal={this.showModal}
             closeModal={this.closeModal}
           />
