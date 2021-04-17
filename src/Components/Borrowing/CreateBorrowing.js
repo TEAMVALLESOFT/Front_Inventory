@@ -3,7 +3,7 @@ import './Styles.css'
 
 import Alert from '../Alerts/Alert'
 import AuxiliaryForm from './AuxiliaryForm'
-import { setSelectOptions } from '../../Functions/Helpers'
+import { setSelectOptions, compareDates } from '../../Functions/Helpers'
 import { getWarehouses } from '../../Functions/Get'
 import { postRequest } from '../../Functions/Post'
 import {
@@ -61,7 +61,9 @@ class CreateBorrowing extends Component {
   }
 
   clearInputs = () => {
-    return this.setState({
+    sessionStorage.removeItem('borrowing_warehouse_fk')
+
+    this.setState({
       warehouse_fk: 0,
       pick_up_date: '',
       return_date: '',
@@ -69,15 +71,22 @@ class CreateBorrowing extends Component {
       // Auxiliary form states
       classif: '',
       cont: 1,
-      secondaryArticles: [
-        <AuxiliaryForm
-          id={'sf-1'}
-          key={'sf-1'}
-          scroll={this.scroll}
-          responseHandler={this.responseHandler}
-          delete={this.deleteSecondaryForm}
-        />,
-      ],
+      secondaryArticles: [],
+    })
+
+    let array = []
+    array.push(
+      <AuxiliaryForm
+        id={'sf-1'}
+        key={'sf-1'}
+        scroll={this.scroll}
+        responseHandler={this.responseHandler}
+        delete={this.deleteSecondaryForm}
+      />
+    )
+
+    return this.setState({
+      secondaryArticles: array,
     })
   }
 
@@ -102,6 +111,7 @@ class CreateBorrowing extends Component {
     if (response == 'success') {
       sessionStorage.removeItem('borrowings')
       sessionStorage.removeItem('filtered_borrowings')
+      sessionStorage.removeItem('borrowing_warehouse_fk')
       this.buildAlert('success', 'Solicitud creada con éxito.')
 
       return this.clearInputs()
@@ -114,11 +124,16 @@ class CreateBorrowing extends Component {
       )
     }
 
+    if (body == 'No warehouse') {
+      return this.buildAlert('attention', 'Primero debe elegir una bodega.')
+    }
+
     return this.buildAlert('error', ERROR_MESSAGE)
   }
 
   componentWillUnmount() {
     localStorage.clear()
+    clearTimeout(this.state.timeout)
   }
 
   close = () => {
@@ -147,10 +162,41 @@ class CreateBorrowing extends Component {
       return
     }
 
+    let pick_up_date = this.state.pick_up_date + '-05:00'
+    let return_date = this.state.return_date + '-05:00'
+    let today = new Date()
+
+    if (
+      compareDates(today.toISOString(), pick_up_date) ||
+      compareDates(today.toISOString(), return_date)
+    ) {
+      setTimeout(
+        () =>
+          this.buildAlert(
+            'attention',
+            'Verifique que las fechas ingresadas son mayores a la fecha actual.'
+          ),
+        10
+      )
+      return
+    }
+
+    if (compareDates(pick_up_date, return_date)) {
+      setTimeout(
+        () =>
+          this.buildAlert(
+            'attention',
+            'Verifique que la fecha de retorno sea mayor que la fecha de recogida.'
+          ),
+        10
+      )
+      return
+    }
+
     let body = {
       user_id: this.state.user_id,
-      pick_up_date: this.state.pick_up_date + '-05:00',
-      return_date: this.state.return_date + '-05:00',
+      pick_up_date: pick_up_date,
+      return_date: return_date,
       article_list: [],
     }
 
@@ -163,7 +209,7 @@ class CreateBorrowing extends Component {
           () =>
             this.buildAlert(
               'attention',
-              'Asegúrese de diligenciar correctamente todos los campos de sus formulario para artículos'
+              'Asegúrese de diligenciar correctamente todos los campos de los formularios de artículos.'
             ),
           10
         )
@@ -290,7 +336,7 @@ class CreateBorrowing extends Component {
               value={this.state.name}
               onChange={this.handleChange}
               className='global-form-input'
-              disabled='disabled'
+              disabled={true}
             />
           </div>
 
@@ -305,7 +351,7 @@ class CreateBorrowing extends Component {
               onChange={this.handleChange}
               className='global-form-input'
               type='email'
-              disabled='disabled'
+              disabled={true}
             />
           </div>
 
@@ -320,7 +366,7 @@ class CreateBorrowing extends Component {
               value={this.state.warehouse_fk}
               onChange={this.handleChange}
             >
-              <option value={0} selected={true} disabled='disabled'>
+              <option value={0} disabled={true}>
                 Seleccione una bodega...
               </option>
               {setSelectOptions(this.state.warehouses)}

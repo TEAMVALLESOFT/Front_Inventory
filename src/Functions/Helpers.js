@@ -29,16 +29,6 @@ export function setSelectOptions(options) {
   return select_options
 }
 
-export function formatDateToLocal(date_string) {
-  let date = new Date(date_string)
-
-  return (
-    date.toLocaleDateString('es-CO', DATE_OPTIONS) +
-    ' ' +
-    date.toLocaleTimeString()
-  )
-}
-
 export function setSelectArticleOptions(options) {
   if (options.length < 1) {
     return
@@ -61,4 +51,22 @@ export function setSelectArticleOptions(options) {
   }
 
   return select_options
+}
+
+export function formatDateToLocal(date_string) {
+  let date = new Date(date_string)
+
+  return (
+    date.toLocaleDateString('es-CO', DATE_OPTIONS) +
+    ' ' +
+    date.toLocaleTimeString()
+  )
+}
+
+// Returns true if the first date is greater than the second
+export function compareDates(date_1, date_2) {
+  let first = new Date(date_1)
+  let second = new Date(date_2)
+
+  return first > second
 }

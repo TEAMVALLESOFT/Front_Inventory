@@ -24,6 +24,10 @@ class CreateWarehouse extends Component {
     }
   }
 
+  componentWillUnmount() {
+    clearTimeout(this.state.timeout)
+  }
+
   handleChange = (event) => {
     let attribute = event.target.id
     let value = event.target.value

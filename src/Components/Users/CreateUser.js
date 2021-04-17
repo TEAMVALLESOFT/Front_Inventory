@@ -28,6 +28,10 @@ class CreateUser extends Component {
     }
   }
 
+  componentWillUnmount() {
+    clearTimeout(this.state.timeout)
+  }
+
   // Functions to handle states
   handleChange = (event) => {
     let attribute = event.target.id
@@ -252,8 +256,7 @@ class CreateUser extends Component {
               <option
                 className='global-form-input-select-option'
                 value=''
-                selected={true}
-                disabled='disabled'
+                disabled={true}
               >
                 Seleccione una rama...
               </option>
