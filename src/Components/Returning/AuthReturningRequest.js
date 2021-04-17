@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 
+import Alert from '../Alerts/Alert'
 import AuthReturningModal from './AuthReturningModal'
 import { formatDateToLocal } from '../../Functions/Helpers'
 import { getReturnings } from '../../Functions/Get'
@@ -20,6 +21,10 @@ class AuthReturningRequest extends Component {
     getReturnings(this.setReturnings)
   }
 
+  componentWillUnmount() {
+    clearTimeout(this.state.timeout)
+  }
+
   // Functions related to requests
   responseHandler = (response, body) => {
     if (response == 'success') {
@@ -27,10 +32,10 @@ class AuthReturningRequest extends Component {
 
       getReturnings(this.setReturnings)
 
-      return alert('La solicitud ha sido procesada exitosamente.')
+      return this.buildAlert('success', 'La solicitud ha sido procesada exitosamente.')
     }
 
-    return alert(ERROR_MESSAGE)
+    return this.buildAlert('attention' ,ERROR_MESSAGE)
   }
 
   setReturnings = (response, body) => {
@@ -46,7 +51,19 @@ class AuthReturningRequest extends Component {
       return this.setState({ borrowing_requests: [] })
     }
 
-    return alert(ERROR_MESSAGE)
+    return this.buildAlert('attention',ERROR_MESSAGE)
+  }
+
+  buildAlert = (type, text) => {
+    clearTimeout(this.state.timeout)
+
+    this.setState({
+      timeout: setTimeout(() => this.setState({ alert: '' }), ALERT_TIMEOUT),
+    })
+
+    return this.setState({
+      alert: <Alert type={type} text={text} close={this.close} />,
+    })
   }
 
   // Functions to handle alerts
@@ -59,7 +76,7 @@ class AuthReturningRequest extends Component {
     let id = event.target.id
 
     if (parseInt(id) < 1) {
-      setTimeout(() => alert(ERROR_MESSAGE), 10)
+      setTimeout(() => this.buildAlert('attention', ERROR_MESSAGE), 10)
       return
     }
 
@@ -122,14 +139,16 @@ class AuthReturningRequest extends Component {
 
     let table = (
       <table>
-        <tr>
-          <th>R. Constancia</th>
-          <th>Responsable temporal</th>
-          <th>Fecha de creación</th>
-          <th>Estado de constancia</th>
-          <th>Acciones</th>
-        </tr>
-        {table_rows}
+        <tbody>
+          <tr>
+            <th>R. Constancia</th>
+            <th>Responsable temporal</th>
+            <th>Fecha de creación</th>
+            <th>Estado de constancia</th>
+            <th>Acciones</th>
+          </tr>
+          {table_rows}
+        </tbody>
       </table>
     )
 

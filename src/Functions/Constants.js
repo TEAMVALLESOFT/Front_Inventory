@@ -50,6 +50,8 @@ export const BORROWING_REJECTED = 'borrowing/rejected'
 export const CREATE_RETURNING = 'returning/create'
 export const RETURNING_BY_ID = 'returning/id'
 export const LIST_RETURNINGS = 'returning/list'
+export const RETURNING_APPROVED = 'returning/approved'
+export const RETURNING_REJECTED = 'returning/rejected'
 
 // ALERTS
 export const MANDATORY_MESSAGE =
