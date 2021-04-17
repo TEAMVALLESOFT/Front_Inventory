@@ -1,8 +1,11 @@
 import React, { Component } from 'react'
 
 import { getElementById } from '../../Functions/Get'
+import { putRequest } from '../../Functions/Post'
 import {
     RETURNING_BY_ID,
+    RETURNING_APPROVED,
+    RETURNING_REJECTED,
   } from '../../Functions/Constants'
 
 class Modal extends Component {
@@ -29,7 +32,6 @@ class Modal extends Component {
   setReturningInformation = (response, body) => {
     let temp_obs = 'No tiene ninguna observación.'
     if (response == 'success') {
-      console.log(body)
       // This line renders the modal only if the request was successful
       document.getElementById('modal').style.display = 'block'
 
@@ -68,6 +70,11 @@ class Modal extends Component {
     return this.setState({ [attribute]: value })
   }
 
+  responseHandler = (response, body) => {
+    this.props.handleAlerts(response, body)
+    return this.props.closeModal()
+  }
+
   // Functions to handle modal
   closeModal = () => {
     return this.props.closeModal()
@@ -86,6 +93,17 @@ class Modal extends Component {
     }
 
     return list
+  }
+
+  authorize = (event) => {
+    let body = {
+      returning_id: this.props.returning_id,
+    }
+    if (event.target.id == 'approve') {
+      return putRequest(RETURNING_APPROVED, body, this.responseHandler)
+    }
+
+    return putRequest(RETURNING_REJECTED, body, this.responseHandler)
   }
 
   render() {
@@ -140,6 +158,7 @@ class Modal extends Component {
                 id='reject'
                 className='global-form-outline-button'
                 style={{ height: '30px' }}
+                onClick={this.authorize}
               >
                 Denegar
               </button>
@@ -147,6 +166,7 @@ class Modal extends Component {
                 id='approve'
                 className='global-form-solid-button'
                 style={{ height: '30px' }}
+                onClick={this.authorize}
               >
                 Aprobar
               </button>
