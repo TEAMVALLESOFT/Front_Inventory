@@ -46,6 +46,10 @@ class CreateArticle extends Component {
     getWarehouses(this.setWarehouses)
   }
 
+  componentWillUnmount() {
+    clearTimeout(this.state.timeout)
+  }
+
   // Functions to handle states
   handleChange = (event) => {
     let attribute = event.target.id
@@ -401,7 +405,7 @@ class CreateArticle extends Component {
               value={this.state.warehouse_fk}
               onChange={this.handleChange}
             >
-              <option value={0} selected={true} disabled='disabled'>
+              <option value={0} disabled={true}>
                 Seleccione una bodega...
               </option>
               {setSelectOptions(this.state.warehouses)}
@@ -422,8 +426,7 @@ class CreateArticle extends Component {
               <option
                 value=''
                 className='global-form-input-select-option'
-                selected={true}
-                disabled='disabled'
+                disabled={true}
               >
                 Seleccione una clasificación...
               </option>
@@ -446,7 +449,6 @@ class CreateArticle extends Component {
               <option
                 value={0}
                 className='global-form-input-select-option'
-                selected={true}
                 disabled={true}
               >
                 Seleccione un tipo de artículo...
@@ -469,7 +471,6 @@ class CreateArticle extends Component {
               <option
                 value=''
                 className='global-form-input-select-option'
-                selected={true}
                 disabled={true}
               >
                 Seleccione una disponibilidad...
@@ -492,7 +493,6 @@ class CreateArticle extends Component {
               <option
                 value=''
                 className='global-form-input-select-option'
-                selected={true}
                 disabled={true}
               >
                 Seleccione un estado...
@@ -515,7 +515,6 @@ class CreateArticle extends Component {
               <option
                 value=''
                 className='global-form-input-select-option'
-                selected={true}
                 disabled={true}
               >
                 Seleccione una rama...

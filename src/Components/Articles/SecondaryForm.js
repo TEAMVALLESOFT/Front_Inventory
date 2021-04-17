@@ -159,8 +159,7 @@ class SecondaryForm extends Component {
               <option
                 value=''
                 className='global-form-input-select-option'
-                selected={true}
-                disabled='disabled'
+                disabled={true}
               >
                 Seleccione una clasificación...
               </option>
@@ -182,8 +181,7 @@ class SecondaryForm extends Component {
               <option
                 value={0}
                 className='global-form-input-select-option'
-                selected={true}
-                disabled='disabled'
+                disabled={true}
               >
                 Seleccione un tipo de artículo...
               </option>
@@ -205,8 +203,7 @@ class SecondaryForm extends Component {
               <option
                 value=''
                 className='global-form-input-select-option'
-                selected={true}
-                disabled='disabled'
+                disabled={true}
               >
                 Seleccione una disponibilidad...
               </option>
@@ -228,8 +225,7 @@ class SecondaryForm extends Component {
               <option
                 value=''
                 className='global-form-input-select-option'
-                selected={true}
-                disabled='disabled'
+                disabled={true}
               >
                 Seleccione un estado...
               </option>

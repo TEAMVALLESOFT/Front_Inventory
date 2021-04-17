@@ -9,6 +9,7 @@ import CreateBorrowing from '../Borrowing/CreateBorrowing'
 import AuthBorrowingRequest from '../Borrowing/AuthBorrowingRequest'
 import CreateReturning from '../Returning/CreateReturning'
 import ListArticle from '../Articles/ListArticle'
+import AuthReturningRequest from '../Returning/AuthReturningRequest'
 
 class MenuView extends Component {
   constructor() {
@@ -55,6 +56,13 @@ class MenuView extends Component {
 
   getSubComponent() {
     switch (this.state.selected) {
+      case 1:
+        return (
+          <ListArticle
+            showModal={this.showModal}
+            closeModal={this.closeModal}
+          />
+        )
       case 2:
         return <CreateUser />
       case 3:
@@ -79,13 +87,15 @@ class MenuView extends Component {
             closeModal={this.closeModal}
           />
         )
-      default:
+      case 9:
         return (
-          <ListArticle
+          <AuthReturningRequest
             showModal={this.showModal}
             closeModal={this.closeModal}
           />
         )
+      default:
+        return <div></div>
     }
   }
 

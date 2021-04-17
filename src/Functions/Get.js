@@ -4,6 +4,7 @@ import {
   ARTICLE_TYPE_LIST,
   LIST_ARTICLES,
   LIST_BORROWINGS,
+  LIST_RETURNINGS,
   DAY_IN_MS,
 } from './Constants'
 
@@ -87,7 +88,6 @@ export function getArticleTypes(classif, responseHandler) {
     return
   }
 
-  // CAN BE IMPROVED
   let url = HOST + ARTICLE_TYPE_LIST + '?classif=' + classif
   fetch(url, {
     method: 'GET',
@@ -255,6 +255,7 @@ export function getFilteredBorrowings(responseHandler) {
 export function getElementById(path, responseHandler) {
   // Path should have id as param
   let url = HOST + path
+  console.log(url)
 
   fetch(url, {
     method: 'GET',
@@ -294,6 +295,39 @@ export function getAllArticleTypes(responseHandler) {
       }
 
       responseHandler('success', articles)
+    })
+    .catch((error) => responseHandler('error', error))
+}
+
+export function getReturnings(responseHandler) {
+  // Get information from session storage
+  let session_object = sessionStorage.getItem('returnings')
+  let json_object = JSON.parse(session_object)
+
+  if (json_object && json_object.length > 0) {
+    responseHandler('success', json_object)
+    return
+  }
+
+  // Make the request if there is nothing stored
+  let url = HOST + LIST_RETURNINGS
+
+  fetch(url, {
+    method: 'GET',
+  })
+    .then(handleErrors)
+    .then((res) => res.json())
+    .then((response) => {
+      let rows = response
+
+      if (rows.length < 1) {
+        responseHandler('error', 'No items')
+        return
+      }
+
+      let json = JSON.stringify(rows)
+      sessionStorage.setItem('returnings', json)
+      responseHandler('success', rows)
     })
     .catch((error) => responseHandler('error', error))
 }

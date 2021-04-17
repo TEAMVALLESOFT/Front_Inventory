@@ -1,50 +1,41 @@
 import React, { Component } from 'react'
-import './Styles.css'
 
-import Alert from '../Alerts/Alert'
-import AuthModal from './AuthModal'
+import AuthReturningModal from './AuthReturningModal'
 import { formatDateToLocal } from '../../Functions/Helpers'
-import { getBorrowings } from '../../Functions/Get'
+import { getReturnings } from '../../Functions/Get'
 import { ERROR_MESSAGE, ALERT_TIMEOUT } from '../../Functions/Constants'
 
-class AuthBorrowingRequest extends Component {
+class AuthReturningRequest extends Component {
   constructor() {
     super()
     this.state = {
       alert: '',
       timeout: '',
-      borrowing_requests: [],
+      returning_requests: [],
     }
   }
 
   componentDidMount() {
-    getBorrowings(this.setBorrowings)
-  }
-
-  componentWillUnmount() {
-    clearTimeout(this.state.timeout)
+    sessionStorage.removeItem('returnings')
+    getReturnings(this.setReturnings)
   }
 
   // Functions related to requests
   responseHandler = (response, body) => {
     if (response == 'success') {
-      sessionStorage.removeItem('borrowings')
-      sessionStorage.removeItem('filtered_borrowings')
+      sessionStorage.removeItem('returnings')
 
-      getBorrowings(this.setBorrowings)
+      getReturnings(this.setReturnings)
 
-      return this.buildAlert(
-        'success',
-        'La solicitud ha sido procesada exitosamente.'
-      )
+      return alert('La solicitud ha sido procesada exitosamente.')
     }
 
-    return this.buildAlert('error', ERROR_MESSAGE)
+    return alert(ERROR_MESSAGE)
   }
 
-  setBorrowings = (response, body) => {
+  setReturnings = (response, body) => {
     if (response == 'success') {
-      return this.setState({ borrowing_requests: body })
+      return this.setState({ returning_requests: body })
     }
 
     if (
@@ -55,7 +46,7 @@ class AuthBorrowingRequest extends Component {
       return this.setState({ borrowing_requests: [] })
     }
 
-    return this.buildAlert('error', ERROR_MESSAGE)
+    return alert(ERROR_MESSAGE)
   }
 
   // Functions to handle alerts
@@ -63,30 +54,18 @@ class AuthBorrowingRequest extends Component {
     return this.setState({ alert: '' })
   }
 
-  buildAlert = (type, text) => {
-    clearTimeout(this.state.timeout)
-
-    this.setState({
-      timeout: setTimeout(() => this.setState({ alert: '' }), ALERT_TIMEOUT),
-    })
-
-    return this.setState({
-      alert: <Alert type={type} text={text} close={this.close} />,
-    })
-  }
-
   // Functions to handle modal
   showModal = (event) => {
     let id = event.target.id
 
     if (parseInt(id) < 1) {
-      setTimeout(() => this.buildAlert('attention', ERROR_MESSAGE), 10)
+      setTimeout(() => alert(ERROR_MESSAGE), 10)
       return
     }
 
     return this.props.showModal(
-      <AuthModal
-        borrowing_id={id}
+      <AuthReturningModal
+        returning_id={id}
         closeModal={this.closeModal}
         handleAlerts={this.responseHandler}
       />
@@ -99,10 +78,10 @@ class AuthBorrowingRequest extends Component {
 
   // Auxiliary functions
   setTable() {
-    let rows = this.state.borrowing_requests
+    let rows = this.state.returning_requests
     let no_items = (
       <span className='global-body-text' style={{ marginBottom: '0px' }}>
-        Actualmente no hay solicitudes de préstamos para autorizar.
+        Actualmente no hay solicitudes de devolución para autorizar.
       </span>
     )
 
@@ -121,9 +100,8 @@ class AuthBorrowingRequest extends Component {
       table_rows.push(
         <tr key={'tr-' + obj.id}>
           <td>{obj.id}</td>
-          <td>{obj.Asociado.user_name}</td>
-          <td>{formatDateToLocal(obj.pick_up_date)}</td>
-          <td>{formatDateToLocal(obj.return_date)}</td>
+          <td>{obj.evaluador.user_name}</td>
+          <td>{formatDateToLocal(obj.createdAt)}</td>
           <td>{obj.auth_state}</td>
           <td>
             <span
@@ -144,17 +122,14 @@ class AuthBorrowingRequest extends Component {
 
     let table = (
       <table>
-        <tbody>
-          <tr>
-            <th>Referencia</th>
-            <th>Solicitante</th>
-            <th>Fecha de recogida</th>
-            <th>Fecha de retorno</th>
-            <th>Estado</th>
-            <th>Acciones</th>
-          </tr>
-          {table_rows}
-        </tbody>
+        <tr>
+          <th>R. Constancia</th>
+          <th>Responsable temporal</th>
+          <th>Fecha de creación</th>
+          <th>Estado de constancia</th>
+          <th>Acciones</th>
+        </tr>
+        {table_rows}
       </table>
     )
 
@@ -168,10 +143,10 @@ class AuthBorrowingRequest extends Component {
       <div className='cu-container'>
         {this.state.alert}
         <span className='global-comp-title'>
-          Autorizar solicitudes de préstamos
+          Autorizar solicitudes de devoluciones
         </span>
         <span className='global-comp-description'>
-          Seleccione una solicitud de préstamos para autorizarla.
+          Seleccione una constancia de devolución para autorizarla.
         </span>
         <div className='global-comp-form-container'>{table}</div>
       </div>
@@ -179,4 +154,4 @@ class AuthBorrowingRequest extends Component {
   }
 }
 
-export default AuthBorrowingRequest
+export default AuthReturningRequest
