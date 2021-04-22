@@ -3,10 +3,10 @@ import React, { Component } from 'react'
 import { getElementById } from '../../Functions/Get'
 import { putRequest } from '../../Functions/Post'
 import {
-    RETURNING_BY_ID,
-    RETURNING_APPROVED,
-    RETURNING_REJECTED,
-  } from '../../Functions/Constants'
+  RETURNING_BY_ID,
+  RETURNING_APPROVED,
+  RETURNING_REJECTED,
+} from '../../Functions/Constants'
 
 class Modal extends Component {
   constructor() {
@@ -142,16 +142,8 @@ class Modal extends Component {
               <ul>{article_list}</ul>
             </div>
             <div className='global-modal-group-container'>
-              <span className='global-form-label'>Estado de artículos</span>
-              <span className='global-modal-text'>
-                {this.state.auth_state}
-              </span>
-            </div>
-            <div className='global-modal-group-container'>
               <span className='global-form-label'>Observaciones</span>
-              <span className='global-modal-text'>
-                {this.state.obs}
-              </span>
+              <span className='global-modal-text'>{this.state.obs}</span>
             </div>
             <div className='global-modal-button-container'>
               <button
