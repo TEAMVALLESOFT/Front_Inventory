@@ -82,7 +82,9 @@ class CreateUser extends Component {
   // Functions related to requests
   responseHandler = (response, body) => {
     if (response == 'success') {
+      sessionStorage.removeItem('users')
       this.buildAlert('success', 'Usuario creado con éxito.')
+
       return this.clearInputs()
     }
 

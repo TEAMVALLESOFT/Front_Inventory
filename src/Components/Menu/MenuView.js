@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import './Styles.css'
 
+import ListUsers from '../Users/ListUsers'
 import CreateUser from '../Users/CreateUser'
 import CreateArticleType from '../ArticleType/CreateArticleType'
 import CreateWarehouse from '../Warehouses/CreateWarehouse'
@@ -63,18 +64,14 @@ class MenuView extends Component {
   // Functions to handle states
   changeSelected = (event) => {
     let newID = parseInt(event.target.id)
-
-    document.getElementById(this.state.selected).className = 'm-menu-label'
-    document.getElementById(newID).className = 'm-menu-label selected'
-
-    let id = parseOptionToStatic(this.state.selected)
-    document.getElementById(id).className = 'm-menu-static-label'
-
-    id = parseOptionToStatic(newID)
-    document.getElementById(id).className =
-      'm-menu-static-label static-selected'
+    this.changeSelectedStyle(newID)
 
     return this.setState({ selected: newID })
+  }
+
+  changeSelectedFromComponent = (selected) => {
+    this.changeSelectedStyle(selected)
+    return this.setState({ selected: selected })
   }
 
   logout = () => {
@@ -107,8 +104,7 @@ class MenuView extends Component {
   getSubComponent() {
     switch (this.state.selected) {
       case 1:
-        // LIST USERS
-        return <div></div>
+        return <ListUsers changeSelected={this.changeSelectedFromComponent} />
       case 2:
         return <CreateUser />
       case 3:
@@ -168,6 +164,20 @@ class MenuView extends Component {
       default:
         return <div></div>
     }
+  }
+
+  changeSelectedStyle(newID) {
+    document.getElementById(this.state.selected).className = 'm-menu-label'
+    document.getElementById(newID).className = 'm-menu-label selected'
+
+    let id = parseOptionToStatic(this.state.selected)
+    document.getElementById(id).className = 'm-menu-static-label'
+
+    id = parseOptionToStatic(newID)
+    document.getElementById(id).className =
+      'm-menu-static-label static-selected'
+
+    return
   }
 
   collapse = (event) => {

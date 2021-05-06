@@ -32,8 +32,8 @@ export const STATES = [
 
 export const ROL_TYPES = [
   { name: 'Administrador', value: 'administrador' },
-  { name: 'Jefe de Bodega', value: 'jefe de bodega' },
-  { name: 'Jefe de Rama', value: 'jefe de rama' },
+  { name: 'Jefe De Bodega', value: 'jefe de bodega' },
+  { name: 'Jefe De Rama', value: 'jefe de rama' },
 ]
 
 // SERVICES
@@ -41,6 +41,8 @@ export const HOST = REACT_APP_HOST
   ? REACT_APP_HOST
   : 'http://localhost:3001/api/'
 export const LOGIN = 'user/login'
+export const LIST_USERS = 'user/list'
+export const USERS_BY_ID = 'user/detail'
 export const CREATE_USER = 'user/create'
 export const CREATE_WAREHOUSE = 'warehouse/create'
 export const LIST_WAREHOUSES = 'warehouse/list'
