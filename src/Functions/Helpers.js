@@ -45,7 +45,7 @@ export function setSelectArticleOptions(options) {
         className='global-form-input-select-option'
         value={op.id}
       >
-        {op.name} - {op.label}
+        {op.name} - {op.label.toUpperCase()}
       </option>
     )
   }

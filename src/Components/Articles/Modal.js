@@ -4,8 +4,7 @@ import './Styles.css'
 class Modal extends Component {
   constructor() {
     super()
-    this.state = {
-    }
+    this.state = {}
   }
 
   closeModal = () => {
@@ -28,10 +27,12 @@ class Modal extends Component {
           <div className='global-modal-body'>
             <div className='global-modal-group-container'>
               <span className='global-form-label'>Nombre del artículo</span>
-              <span className='global-modal-text'>{ this.props.name }:{ this.props.label }</span>
+              <span className='global-modal-text'>
+                {this.props.name}:{this.props.label.toUpperCase()}
+              </span>
             </div>
             <div className='global-modal-group-container'>
-              <p className='global-modal-text'>{ this.props.obs }</p>
+              <p className='global-modal-text'>{this.props.obs}</p>
             </div>
           </div>
         </div>
