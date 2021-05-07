@@ -113,3 +113,219 @@ hr {
   text-align: center;
   color: var(--link-blue);
 }
+
+
+/* Header del formulario for Recover Password */
+
+
+
+*, *:before, *:after {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --color-header-step: orange;
+  --color-border-input: #ddd;
+}
+
+
+/* Header del formulario */
+
+/* Progressbar */
+.progressbar {
+  min-width: 60%;
+  width: 60%;
+  display: flex;
+  list-style: none;
+  margin-bottom: 15px;
+  counter-reset: step;
+}
+
+.progressbar__option {
+  width: 100%;
+  text-align: center;
+  font-size: .7rem;
+  text-transform: uppercase;
+  position: relative;
+}
+
+.progressbar__option:before {
+  display: flex;
+  content: counter(step);
+  color: var(--white);
+  counter-increment: step;
+  width: 20px;
+  height: 20px;
+  background-color: var(--white);
+  margin: 0 auto 5px;
+  border-radius: 15px;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+
+.progressbar__option:after {
+  display: block;
+  content: '';
+  width: 100%;
+  height: 2px;
+  background-color: var(--white);
+  position: absolute;
+  top: 10px;
+  left: -50%;
+  z-index: 1;
+}
+
+.progressbar__option:first-child:after {
+  content: none;
+}
+
+.progressbar__option.active:before, .progressbar__option.active:after {
+  background-color: #b31d1d;
+}
+
+/* header del formulario */
+.recp-header {
+  width: 100%;
+  height: 60px;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-left: #b31d1d solid 5px;
+}
+
+.form-register__header {
+  display: flex;
+  justify-content: center;
+  min-height: 50px;
+}
+
+/* body del formulario */
+.form-register__body {
+  display: flex;
+  align-items: flex-start;
+  min-height: 180px;
+}
+
+.global-text-mandatory {
+  font-size: 12px;
+  color: #b31d1d;
+}
+
+.recp-form-img-container {
+  height: 30px;
+  width: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f2f4f7;
+}
+
+/* step */
+.step {
+  background-color: white;
+  min-width: 100%;
+  opacity: 0;
+  transition: all .2s linear;
+}
+
+.step.active {
+  opacity: 1;
+}
+
+.step.to-left {
+  margin-left: -100%;
+}
+
+.step.inactive {
+  animation-name: scale;
+  animation-duration: .2s;
+  animation-direction: alternate;
+  animation-iteration-count: 2;
+}
+
+@keyframes scale {
+  from {
+      transform: scale(1);
+  }
+  to {
+      transform: scale(1.1);
+  }
+}
+
+/* header de step */
+.step__header {
+  padding: 20px 15px;
+  border-radius: 3px 3px 0 0;
+}
+
+.step__title {
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+/* body de step */
+.step__body {
+  padding: 5px 15px 0;
+}
+
+/* step inputs */
+.step__input {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 3px;
+  border: 1px solid var(--color-border-input);
+}
+
+/* step footer */
+.step__footer {
+  margin-top: 20px;
+  padding: 0px 15px;
+  text-align: center;
+}
+
+/* step botones */
+.step__button {
+  display: inline-block;
+  padding: 10px;
+  width: 100px;
+  border-radius: 5px;
+  color: #ffffff;
+  font-size: 14px;
+  outline: none;
+  background-color: #b31d1d;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.step__button:hover {
+  background-color: #db2424;
+}
+
+.step__button_back {
+  display: inline-block;
+  padding: 10px;
+  margin-right: 20px;
+  width: 100px;
+  border-radius: 5px;
+  color: var(--scout-red);
+  font-size: 14px;
+  outline: none;
+  background-color: white;
+  border: 1px solid #db2424;
+  cursor: pointer;
+  margin-left: 15px;
+  transition: all 0.3s;
+}
+
+.step__button_back:hover {
+  box-shadow: 3px 6px 6px #00000029;
+}

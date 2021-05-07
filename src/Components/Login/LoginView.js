@@ -107,6 +107,10 @@ class LoginView extends Component {
     return postRequest(LOGIN, body, this.responseHandler)
   }
 
+  recover = () => {
+    return this.props.changeView('Recover')
+  }
+
   // Auxiliary functions
   showPasswd() {
     let container = document.getElementById('eye-icon-container')
@@ -202,7 +206,11 @@ class LoginView extends Component {
                 Iniciar sesión
               </button>
             </div>
-            <span className='lg-link'>¿Olvidaste tu contraseña?</span>
+            <span className='lg-link'
+            onClick={this.recover}
+            style={{ cursor: 'pointer' }}>
+              ¿Olvidaste tu contraseña?
+            </span>
             {/* LEGEND */}
             <div className='lg-legend-group'>
               <hr></hr>
