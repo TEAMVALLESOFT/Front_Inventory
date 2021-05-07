@@ -3,7 +3,7 @@ import './Styles.css'
 
 import Alert from '../Alerts/Alert'
 import SecondaryForm from './SecondaryForm'
-import { setSelectOptions } from '../../Functions/Helpers'
+import { setSelectOptions, validateString } from '../../Functions/Helpers'
 import { simpleRequest } from '../../Functions/Post'
 import { getWarehouses, getArticleTypes } from '../../Functions/Get'
 import {
@@ -16,6 +16,7 @@ import {
   STATES,
   BRANCHES,
   NO_ITEMS_ERROR,
+  INVALID_STRING_MESSAGE,
 } from '../../Functions/Constants'
 
 class CreateArticle extends Component {
@@ -193,6 +194,12 @@ class CreateArticle extends Component {
       return
     }
 
+    // Verify that obs are valid
+    if (!validateString(this.state.obs)) {
+      setTimeout(() => this.buildAlert('attention', INVALID_STRING_MESSAGE), 10)
+      return
+    }
+
     let body = {
       available_state: this.state.available_state,
       physical_state: this.state.physical_state,
@@ -205,6 +212,12 @@ class CreateArticle extends Component {
     if (this.state.secondary_articles.length > 0) {
       if (!this.checkSecondaryMandatoryInputs()) {
         setTimeout(() => this.buildAlert('attention', MANDATORY_MESSAGE), 10)
+        return
+      } else if (!this.checkSecondaryObservations()) {
+        setTimeout(
+          () => this.buildAlert('attention', INVALID_STRING_MESSAGE),
+          10
+        )
         return
       } else {
         body.secondary_article_list = this.state.secondary_article_list
@@ -266,6 +279,24 @@ class CreateArticle extends Component {
       }
 
       if (!obj.branch) {
+        return false
+      }
+    }
+
+    return true
+  }
+
+  checkSecondaryObservations() {
+    let array = this.state.secondary_article_list
+
+    if (array.length < 1) {
+      return false
+    }
+
+    for (let i = 0; i < array.length; i++) {
+      let obj = array[i]
+
+      if (!validateString(obj.obs)) {
         return false
       }
     }

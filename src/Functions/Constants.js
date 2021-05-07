@@ -70,6 +70,8 @@ export const EMAIL_MESSAGE =
   'El formato del correo electrónico no es válido. Por favor verifique.'
 export const NO_ITEM_MESSAGE =
   'No hay registros disponibles para esta selección.'
+export const INVALID_STRING_MESSAGE =
+  'Alguno de los campos ingresados supera la extensión permitida o se detectó un patrón inválido. Por favor revise los campos.'
 export const ALERT_TIMEOUT = 6000
 
 // ERRORS
