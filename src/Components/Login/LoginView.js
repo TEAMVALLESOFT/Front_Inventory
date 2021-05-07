@@ -8,6 +8,7 @@ import {
   LOGIN,
   ERROR_MESSAGE,
   EMAIL_MESSAGE,
+  INVALID_LOGIN_ERROR,
   ALERT_TIMEOUT,
 } from '../../Functions/Constants'
 
@@ -67,7 +68,7 @@ class LoginView extends Component {
       return this.props.changeView('Menu')
     }
 
-    if (body == 'Error: Unauthorized') {
+    if (body == INVALID_LOGIN_ERROR) {
       return this.buildAlert(
         'attention',
         'El correo electrónico o la contraseña es incorrecta. Por favor intente de nuevo.'

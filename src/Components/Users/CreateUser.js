@@ -9,6 +9,7 @@ import {
   MANDATORY_MESSAGE,
   EMAIL_MESSAGE,
   ERROR_MESSAGE,
+  USED_EMAIL_ERROR,
   ALERT_TIMEOUT,
   BRANCHES,
   ROL_TYPES,
@@ -88,7 +89,7 @@ class CreateUser extends Component {
       return this.clearInputs()
     }
 
-    if (body.message == 'Conflict') {
+    if (body == USED_EMAIL_ERROR) {
       return this.buildAlert(
         'attention',
         'Este usuario ya ha sido creado. Pruebe con un nuevo correo.'

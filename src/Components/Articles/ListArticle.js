@@ -12,7 +12,7 @@ import { setSelectOptions } from '../../Functions/Helpers'
 import {
   AVAILABILITIES,
   ALERT_TIMEOUT,
-  NON_ITEM_MESSAGE,
+  NO_ITEM_MESSAGE,
 } from '../../Functions/Constants'
 
 class ListArticle extends Component {
@@ -116,7 +116,7 @@ class ListArticle extends Component {
 
       if (!temp.length) {
         this.setState({ articles: temp })
-        return this.buildAlert('attention', NON_ITEM_MESSAGE)
+        return this.buildAlert('attention', NO_ITEM_MESSAGE)
       }
 
       return this.setState({ articles: temp })
@@ -124,11 +124,11 @@ class ListArticle extends Component {
 
     if (body == 'No items' || body.message == 'No items') {
       this.setState({ articles: [] })
-      return this.buildAlert('attention', NON_ITEM_MESSAGE)
+      return this.buildAlert('attention', NO_ITEM_MESSAGE)
     }
 
     this.setState({ articles: [] })
-    return this.buildAlert('attention', NON_ITEM_MESSAGE)
+    return this.buildAlert('attention', NO_ITEM_MESSAGE)
   }
 
   setWarehouses = (response, body) => {
