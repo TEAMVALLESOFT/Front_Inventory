@@ -68,8 +68,15 @@ export const ERROR_MESSAGE =
   'Ha ocurrido un error. Por favor intente más tarde.'
 export const EMAIL_MESSAGE =
   'El formato del correo electrónico no es válido. Por favor verifique.'
-export const NON_ITEM_MESSAGE = 'No hay ningun artículo para esta selección.'
+export const NO_ITEM_MESSAGE =
+  'No hay registros disponibles para esta selección.'
 export const ALERT_TIMEOUT = 6000
+
+// ERRORS
+export const NO_ITEMS_ERROR = 'No hay registros en el sistema.'
+export const INVALID_CLASSIF_ERROR = 'INVALID CLASIFICATION'
+export const INVALID_LOGIN_ERROR = 'Error en el usuario o contraseña.'
+export const USED_EMAIL_ERROR = 'El correo electrónico ya se encuentra en uso.'
 
 // OTHERS
 export const DAY_IN_MS = 1000 * 60 * 60 * 24

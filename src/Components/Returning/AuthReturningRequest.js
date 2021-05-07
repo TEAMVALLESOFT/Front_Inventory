@@ -3,8 +3,13 @@ import React, { Component } from 'react'
 import Alert from '../Alerts/Alert'
 import AuthReturningModal from './AuthReturningModal'
 import { formatDateToLocal } from '../../Functions/Helpers'
-import { getReturnings } from '../../Functions/Get'
-import { ERROR_MESSAGE, ALERT_TIMEOUT } from '../../Functions/Constants'
+import { getElements } from '../../Functions/Get'
+import {
+  LIST_RETURNINGS,
+  ERROR_MESSAGE,
+  ALERT_TIMEOUT,
+  NO_ITEMS_ERROR,
+} from '../../Functions/Constants'
 
 class AuthReturningRequest extends Component {
   constructor() {
@@ -18,7 +23,7 @@ class AuthReturningRequest extends Component {
 
   componentDidMount() {
     sessionStorage.removeItem('returnings')
-    getReturnings(this.setReturnings)
+    getElements('returnings', LIST_RETURNINGS, this.setReturnings)
   }
 
   componentWillUnmount() {
@@ -30,12 +35,15 @@ class AuthReturningRequest extends Component {
     if (response == 'success') {
       sessionStorage.removeItem('returnings')
 
-      getReturnings(this.setReturnings)
+      getElements('returnings', LIST_RETURNINGS, this.setReturnings)
 
-      return this.buildAlert('success', 'La solicitud ha sido procesada exitosamente.')
+      return this.buildAlert(
+        'success',
+        'La solicitud ha sido procesada exitosamente.'
+      )
     }
 
-    return this.buildAlert('attention' ,ERROR_MESSAGE)
+    return this.buildAlert('error', ERROR_MESSAGE)
   }
 
   setReturnings = (response, body) => {
@@ -43,15 +51,11 @@ class AuthReturningRequest extends Component {
       return this.setState({ returning_requests: body })
     }
 
-    if (
-      body == 'No items' ||
-      body.message == 'No items' ||
-      body.message == 'Not Found'
-    ) {
+    if (body == NO_ITEMS_ERROR) {
       return this.setState({ borrowing_requests: [] })
     }
 
-    return this.buildAlert('attention',ERROR_MESSAGE)
+    return this.buildAlert('error', ERROR_MESSAGE)
   }
 
   buildAlert = (type, text) => {
@@ -76,7 +80,7 @@ class AuthReturningRequest extends Component {
     let id = event.target.id
 
     if (parseInt(id) < 1) {
-      setTimeout(() => this.buildAlert('attention', ERROR_MESSAGE), 10)
+      setTimeout(() => this.buildAlert('error', ERROR_MESSAGE), 10)
       return
     }
 

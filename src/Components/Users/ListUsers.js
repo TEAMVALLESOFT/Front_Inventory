@@ -2,11 +2,13 @@ import React, { Component } from 'react'
 import './Styles.css'
 
 import Alert from '../Alerts/Alert'
-import { getAllUsers } from '../../Functions/Get'
+import { getElements } from '../../Functions/Get'
 import { setSelectOptions } from '../../Functions/Helpers'
 import {
+  LIST_USERS,
   ALERT_TIMEOUT,
-  NON_ITEM_MESSAGE,
+  NO_ITEMS_ERROR,
+  NO_ITEM_MESSAGE,
   ERROR_MESSAGE,
   BRANCHES,
   ROL_TYPES,
@@ -28,7 +30,7 @@ class ListUsers extends Component {
   }
 
   componentDidMount() {
-    getAllUsers(this.setUsers)
+    getElements('users', LIST_USERS, this.setUsers)
   }
 
   componentWillUnmount() {
@@ -61,8 +63,8 @@ class ListUsers extends Component {
 
     this.setState({ users: [] })
 
-    if (body == 'No items' || body.message == 'No items') {
-      return this.buildAlert('attention', NON_ITEM_MESSAGE)
+    if (body == NO_ITEMS_ERROR) {
+      return this.buildAlert('attention', NO_ITEM_MESSAGE)
     }
 
     return this.buildAlert('error', ERROR_MESSAGE)

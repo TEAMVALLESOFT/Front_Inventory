@@ -6,7 +6,7 @@ import {
   setSelectArticleOptions,
 } from '../../Functions/Helpers'
 import { getArticles, getArticleTypes } from '../../Functions/Get'
-import { CLASSIFICATIONS, BRANCHES } from '../../Functions/Constants'
+import { CLASSIFICATIONS, BRANCHES, NO_ITEMS_ERROR } from '../../Functions/Constants'
 
 class AuxiliaryForm extends Component {
   constructor(props) {
@@ -114,9 +114,9 @@ class AuxiliaryForm extends Component {
       return this.setState({ article_types: body })
     }
 
-    if (body == 'No items' || body.message == 'No items') {
+    if (body == NO_ITEMS_ERROR) {
       this.props.scroll()
-      return this.props.responseHandler('error', 'No items')
+      return this.props.responseHandler('error', NO_ITEMS_ERROR)
     }
 
     this.props.scroll()
@@ -129,9 +129,9 @@ class AuxiliaryForm extends Component {
       return this.setState({ articles: body })
     }
 
-    if (body == 'No items' || body.message == 'Not Found') {
+    if (body == NO_ITEMS_ERROR) {
       this.props.scroll()
-      return this.props.responseHandler('error', 'No items')
+      return this.props.responseHandler('error', NO_ITEMS_ERROR)
     }
 
     this.props.scroll()

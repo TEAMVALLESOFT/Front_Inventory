@@ -12,7 +12,9 @@ import { setSelectOptions } from '../../Functions/Helpers'
 import {
   AVAILABILITIES,
   ALERT_TIMEOUT,
-  NON_ITEM_MESSAGE,
+  NO_ITEM_MESSAGE,
+  NO_ITEMS_ERROR,
+  ERROR_MESSAGE,
 } from '../../Functions/Constants'
 
 class ListArticle extends Component {
@@ -37,7 +39,6 @@ class ListArticle extends Component {
   handleChange = (event) => {
     let attribute = event.target.id
     let value = event.target.value
-    let temp = []
 
     if (attribute == 'warehouse_fk') {
       let warehouse = value
@@ -116,19 +117,18 @@ class ListArticle extends Component {
 
       if (!temp.length) {
         this.setState({ articles: temp })
-        return this.buildAlert('attention', NON_ITEM_MESSAGE)
+        return this.buildAlert('attention', NO_ITEM_MESSAGE)
       }
 
       return this.setState({ articles: temp })
     }
 
-    if (body == 'No items' || body.message == 'No items') {
-      this.setState({ articles: [] })
-      return this.buildAlert('attention', NON_ITEM_MESSAGE)
+    this.setState({ articles: [] })
+    if (body == NO_ITEMS_ERROR) {
+      return this.buildAlert('attention', NO_ITEM_MESSAGE)
     }
 
-    this.setState({ articles: [] })
-    return this.buildAlert('attention', NON_ITEM_MESSAGE)
+    return this.buildAlert('attention', ERROR_MESSAGE)
   }
 
   setWarehouses = (response, body) => {
@@ -136,14 +136,14 @@ class ListArticle extends Component {
       return this.setState({ warehouses: body })
     }
 
-    if (body == 'No items' || body.message == 'Not Found') {
+    if (body == NO_ITEMS_ERROR) {
       return this.buildAlert(
         'attention',
         'No hay bodegas registradas en el sistema.'
       )
     }
 
-    return alert(ERROR_MESSAGE)
+    return this.buildAlert('error', ERROR_MESSAGE)
   }
 
   setArticleTypes = (response, body) => {
@@ -151,15 +151,17 @@ class ListArticle extends Component {
       return this.setState({ article_types: body })
     }
 
-    if (body == 'No items') {
+    this.setState({ article_types: [] })
+    if (body == NO_ITEMS_ERROR) {
       document.getElementById('article_type_fk').disabled = true
-      this.setState({ article_types: [] })
-
+      
       return this.buildAlert(
         'attention',
         'No hay tipos de artículo para esta selección.'
       )
     }
+
+    return this.buildAlert('error', ERROR_MESSAGE)
   }
 
   close = () => {

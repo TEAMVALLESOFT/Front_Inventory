@@ -5,12 +5,13 @@ import Alert from '../Alerts/Alert'
 import AuxiliaryForm from './AuxiliaryForm'
 import { setSelectOptions, compareDates } from '../../Functions/Helpers'
 import { getWarehouses } from '../../Functions/Get'
-import { postRequest } from '../../Functions/Post'
+import { simpleRequest } from '../../Functions/Post'
 import {
   CREATE_BORROWING,
   MANDATORY_MESSAGE,
   ALERT_TIMEOUT,
   ERROR_MESSAGE,
+  NO_ITEMS_ERROR,
 } from '../../Functions/Constants'
 
 class CreateBorrowing extends Component {
@@ -95,7 +96,7 @@ class CreateBorrowing extends Component {
       return this.setState({ warehouses: body })
     }
 
-    if (body == 'No items' || body.message == 'Not Found') {
+    if (body == NO_ITEMS_ERROR) {
       return this.buildAlert('attention', 'No hay bodegas creadas.')
     }
 
@@ -117,7 +118,7 @@ class CreateBorrowing extends Component {
       return this.clearInputs()
     }
 
-    if (body == 'No items' || body.message == 'Not Found') {
+    if (body == NO_ITEMS_ERROR) {
       return this.buildAlert(
         'attention',
         'No hay elementos que mostrar con las selecciones que ha realizado.'
@@ -219,7 +220,7 @@ class CreateBorrowing extends Component {
       }
     }
 
-    return postRequest(CREATE_BORROWING, body, this.responseHandler)
+    return simpleRequest(CREATE_BORROWING, 'POST', body, this.responseHandler)
   }
 
   // Auxiliary functions

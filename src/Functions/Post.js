@@ -1,18 +1,18 @@
 import { HOST } from './Constants'
 
 function handleErrors(response) {
-  if (!response.ok) {
+  if (response.status >= 500) {
     throw Error(response.statusText)
   }
   return response
 }
 
-// SIMPLE POST REQUEST
-export function postRequest(path, data, responseHandler) {
+// PERFORM POST/PUT REQUESTS
+export function simpleRequest(path, type, data, responseHandler) {
   let url = HOST + path
 
   fetch(url, {
-    method: 'POST',
+    method: type,
     body: JSON.stringify(data),
     headers: {
       'Content-Type': 'application/json',
@@ -21,24 +21,12 @@ export function postRequest(path, data, responseHandler) {
   })
     .then(handleErrors)
     .then((res) => res.json())
-    .then((response) => responseHandler('success', response))
-    .catch((error) => responseHandler('error', error))
-}
+    .then((response) => {
+      if (response.hasOwnProperty('error')) {
+        return responseHandler('error', response.error)
+      }
 
-// SIMPLE PUT REQUEST
-export function putRequest(path, data, responseHandler) {
-  let url = HOST + path
-
-  fetch(url, {
-    method: 'PUT',
-    body: JSON.stringify(data),
-    headers: {
-      'Content-Type': 'application/json',
-      token: sessionStorage.getItem('token'),
-    },
-  })
-    .then(handleErrors)
-    .then((res) => res.json())
-    .then((response) => responseHandler('success', response))
+      return responseHandler('success', response)
+    })
     .catch((error) => responseHandler('error', error))
 }

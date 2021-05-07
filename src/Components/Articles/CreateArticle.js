@@ -4,7 +4,7 @@ import './Styles.css'
 import Alert from '../Alerts/Alert'
 import SecondaryForm from './SecondaryForm'
 import { setSelectOptions } from '../../Functions/Helpers'
-import { postRequest } from '../../Functions/Post'
+import { simpleRequest } from '../../Functions/Post'
 import { getWarehouses, getArticleTypes } from '../../Functions/Get'
 import {
   CREATE_ARTICLE,
@@ -15,6 +15,7 @@ import {
   AVAILABILITIES,
   STATES,
   BRANCHES,
+  NO_ITEMS_ERROR,
 } from '../../Functions/Constants'
 
 class CreateArticle extends Component {
@@ -114,7 +115,7 @@ class CreateArticle extends Component {
       return this.setState({ warehouses: body })
     }
 
-    if (body == 'No items' || body.message == 'Not Found') {
+    if (body == NO_ITEMS_ERROR) {
       return this.buildAlert('attention', 'No hay bodegas creadas.')
     }
 
@@ -128,7 +129,7 @@ class CreateArticle extends Component {
       return this.setState({ article_types: body })
     }
 
-    if (body == 'No items') {
+    if (body == NO_ITEMS_ERROR) {
       document.getElementById('article_type_fk').disabled = true
       this.setState({ article_types: [] })
 
@@ -172,7 +173,7 @@ class CreateArticle extends Component {
       return this.clearInputs()
     }
 
-    if (body == 'No items') {
+    if (body == NO_ITEMS_ERROR) {
       return this.buildAlert(
         'attention',
         'No hay tipos de artículo asociados a la clasificación seleccionada.'
@@ -210,7 +211,7 @@ class CreateArticle extends Component {
       }
     }
 
-    return postRequest(CREATE_ARTICLE, body, this.responseHandler)
+    return simpleRequest(CREATE_ARTICLE, 'POST', body, this.responseHandler)
   }
 
   // Auxiliary functions

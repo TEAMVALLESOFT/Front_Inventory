@@ -3,12 +3,13 @@ import './Styles.css'
 
 import Alert from '../Alerts/Alert'
 import { validateEmail, setSelectOptions } from '../../Functions/Helpers'
-import { postRequest } from '../../Functions/Post'
+import { simpleRequest } from '../../Functions/Post'
 import {
   CREATE_USER,
   MANDATORY_MESSAGE,
   EMAIL_MESSAGE,
   ERROR_MESSAGE,
+  USED_EMAIL_ERROR,
   ALERT_TIMEOUT,
   BRANCHES,
   ROL_TYPES,
@@ -88,7 +89,7 @@ class CreateUser extends Component {
       return this.clearInputs()
     }
 
-    if (body.message == 'Conflict') {
+    if (body == USED_EMAIL_ERROR) {
       return this.buildAlert(
         'attention',
         'Este usuario ya ha sido creado. Pruebe con un nuevo correo.'
@@ -135,7 +136,7 @@ class CreateUser extends Component {
       password: this.state.password,
     }
 
-    return postRequest(CREATE_USER, body, this.responseHandler)
+    return simpleRequest(CREATE_USER, 'POST', body, this.responseHandler)
   }
 
   // Auxiliary functions

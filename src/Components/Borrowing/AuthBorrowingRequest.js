@@ -4,8 +4,13 @@ import './Styles.css'
 import Alert from '../Alerts/Alert'
 import AuthModal from './AuthModal'
 import { formatDateToLocal } from '../../Functions/Helpers'
-import { getBorrowings } from '../../Functions/Get'
-import { ERROR_MESSAGE, ALERT_TIMEOUT } from '../../Functions/Constants'
+import { getElements } from '../../Functions/Get'
+import {
+  LIST_BORROWINGS,
+  ERROR_MESSAGE,
+  ALERT_TIMEOUT,
+  NO_ITEMS_ERROR,
+} from '../../Functions/Constants'
 
 class AuthBorrowingRequest extends Component {
   constructor() {
@@ -18,7 +23,7 @@ class AuthBorrowingRequest extends Component {
   }
 
   componentDidMount() {
-    getBorrowings(this.setBorrowings)
+    getElements('borrowings', LIST_BORROWINGS, this.setBorrowings)
   }
 
   componentWillUnmount() {
@@ -31,7 +36,7 @@ class AuthBorrowingRequest extends Component {
       sessionStorage.removeItem('borrowings')
       sessionStorage.removeItem('filtered_borrowings')
 
-      getBorrowings(this.setBorrowings)
+      getElements('borrowings', LIST_BORROWINGS, this.setBorrowings)
 
       return this.buildAlert(
         'success',
@@ -47,11 +52,7 @@ class AuthBorrowingRequest extends Component {
       return this.setState({ borrowing_requests: body })
     }
 
-    if (
-      body == 'No items' ||
-      body.message == 'No items' ||
-      body.message == 'Not Found'
-    ) {
+    if (body == NO_ITEMS_ERROR) {
       return this.setState({ borrowing_requests: [] })
     }
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
 import { getElementById } from '../../Functions/Get'
-import { putRequest } from '../../Functions/Post'
+import { simpleRequest } from '../../Functions/Post'
 import {
   RETURNING_BY_ID,
   RETURNING_APPROVED,
@@ -100,10 +100,15 @@ class Modal extends Component {
       returning_id: this.props.returning_id,
     }
     if (event.target.id == 'approve') {
-      return putRequest(RETURNING_APPROVED, body, this.responseHandler)
+      return simpleRequest(
+        RETURNING_APPROVED,
+        'PUT',
+        body,
+        this.responseHandler
+      )
     }
 
-    return putRequest(RETURNING_REJECTED, body, this.responseHandler)
+    return simpleRequest(RETURNING_REJECTED, 'PUT', body, this.responseHandler)
   }
 
   render() {

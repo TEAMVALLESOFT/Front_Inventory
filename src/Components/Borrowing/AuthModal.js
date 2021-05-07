@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import './Styles.css'
 
 import { getElementById } from '../../Functions/Get'
-import { putRequest } from '../../Functions/Post'
+import { simpleRequest } from '../../Functions/Post'
 import {
   BORROWING_BY_ID,
   BORROWING_REJECTED,
@@ -81,10 +81,15 @@ class Modal extends Component {
     }
 
     if (event.target.id == 'approve') {
-      return putRequest(BORROWING_APPROVED, body, this.responseHandler)
+      return simpleRequest(
+        BORROWING_APPROVED,
+        'PUT',
+        body,
+        this.responseHandler
+      )
     }
 
-    return putRequest(BORROWING_REJECTED, body, this.responseHandler)
+    return simpleRequest(BORROWING_REJECTED, 'PUT', body, this.responseHandler)
   }
 
   // Auxiliary functions

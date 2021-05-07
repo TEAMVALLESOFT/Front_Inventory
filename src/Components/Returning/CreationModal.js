@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 
 import { setSelectOptions } from '../../Functions/Helpers'
 import { getElementById } from '../../Functions/Get'
-import { postRequest } from '../../Functions/Post'
+import { simpleRequest } from '../../Functions/Post'
 import {
   BORROWING_BY_ID,
   CREATE_RETURNING,
@@ -82,7 +82,7 @@ class CreationModal extends Component {
       auth_user_fk: sessionStorage.getItem('user_id'),
     }
 
-    postRequest(CREATE_RETURNING, body, this.responseHandler)
+    simpleRequest(CREATE_RETURNING, 'POST', body, this.responseHandler)
   }
 
   // Auxiliary functions
