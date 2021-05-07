@@ -16,6 +16,7 @@ export function postRequest(path, data, responseHandler) {
     body: JSON.stringify(data),
     headers: {
       'Content-Type': 'application/json',
+      token: sessionStorage.getItem('token'),
     },
   })
     .then(handleErrors)
@@ -33,6 +34,7 @@ export function putRequest(path, data, responseHandler) {
     body: JSON.stringify(data),
     headers: {
       'Content-Type': 'application/json',
+      token: sessionStorage.getItem('token'),
     },
   })
     .then(handleErrors)

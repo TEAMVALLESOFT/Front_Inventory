@@ -60,6 +60,7 @@ class LoginView extends Component {
     if (response == 'success' && body.hasOwnProperty('token')) {
       sessionStorage.setItem('token', body.token)
       sessionStorage.setItem('user_id', body.user.id)
+      sessionStorage.setItem('user_rol', body.user.rol)
       sessionStorage.setItem('user_name', body.user.name)
       sessionStorage.setItem('user_email', body.user.email)
 

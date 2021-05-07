@@ -45,7 +45,7 @@ export function setSelectArticleOptions(options) {
         className='global-form-input-select-option'
         value={op.id}
       >
-        {op.name} - {op.label}
+        {op.name} - {op.label.toUpperCase()}
       </option>
     )
   }
@@ -69,4 +69,35 @@ export function compareDates(date_1, date_2) {
   let second = new Date(date_2)
 
   return first > second
+}
+
+export function parseOptionToStatic(num) {
+  let id = 's'
+
+  switch (num) {
+    case 1:
+    case 2:
+    case 3:
+      return id + 1
+    case 4:
+      return id + 2
+    case 5:
+      return id + 3
+    case 6:
+    case 7:
+    case 8:
+      return id + 4
+    case 9:
+    case 10:
+    case 11:
+    case 12:
+      return id + 5
+    case 13:
+    case 14:
+    case 15:
+    case 16:
+      return id + 6
+    default:
+      return id + 5
+  }
 }

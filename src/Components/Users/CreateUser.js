@@ -11,6 +11,7 @@ import {
   ERROR_MESSAGE,
   ALERT_TIMEOUT,
   BRANCHES,
+  ROL_TYPES,
 } from '../../Functions/Constants'
 
 class CreateUser extends Component {
@@ -20,6 +21,7 @@ class CreateUser extends Component {
       email: '',
       user_name: '',
       branch: '',
+      rol: '',
       phone: '',
       password: '',
       password_check: '',
@@ -53,6 +55,7 @@ class CreateUser extends Component {
       email: '',
       user_name: '',
       branch: '',
+      rol: '',
       phone: '',
       password: '',
       password_check: '',
@@ -79,7 +82,9 @@ class CreateUser extends Component {
   // Functions related to requests
   responseHandler = (response, body) => {
     if (response == 'success') {
+      sessionStorage.removeItem('users')
       this.buildAlert('success', 'Usuario creado con éxito.')
+
       return this.clearInputs()
     }
 
@@ -125,6 +130,7 @@ class CreateUser extends Component {
       email: this.state.email,
       user_name: this.state.user_name,
       branch: this.state.branch,
+      rol: this.state.rol,
       phone: this.state.phone,
       password: this.state.password,
     }
@@ -143,6 +149,10 @@ class CreateUser extends Component {
     }
 
     if (!this.state.branch) {
+      return false
+    }
+
+    if (!this.state.rol) {
       return false
     }
 
@@ -261,6 +271,28 @@ class CreateUser extends Component {
                 Seleccione una rama...
               </option>
               {setSelectOptions(BRANCHES)}
+            </select>
+          </div>
+
+          <div className='global-form-group'>
+            <span className='global-form-label'>
+              Rol
+              <strong className='global-form-mandatory'> *</strong>
+            </span>
+            <select
+              id='rol'
+              className='global-form-input-select'
+              value={this.state.rol}
+              onChange={this.handleChange}
+            >
+              <option
+                className='global-form-input-select-option'
+                value=''
+                disabled={true}
+              >
+                Seleccione un rol...
+              </option>
+              {setSelectOptions(ROL_TYPES)}
             </select>
           </div>
 

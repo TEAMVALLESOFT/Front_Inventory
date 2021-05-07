@@ -196,7 +196,7 @@ class ListArticle extends Component {
 
       table_rows.push(
         <tr key={obj.id}>
-          <td>{obj.label}</td>
+          <td>{obj.label.toUpperCase()}</td>
           <td>{obj.classif}</td>
           <td>{obj.name}</td>
           <td>{obj.branch}</td>

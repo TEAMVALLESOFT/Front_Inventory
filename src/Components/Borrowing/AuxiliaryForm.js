@@ -145,7 +145,9 @@ class AuxiliaryForm extends Component {
       let obj = array[i]
 
       if (obj.id == value) {
-        return this.setState({ form_name: obj.name + ':' + obj.label })
+        return this.setState({
+          form_name: obj.name + ':' + obj.label.toUpperCase(),
+        })
       }
     }
 

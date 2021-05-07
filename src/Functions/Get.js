@@ -5,6 +5,7 @@ import {
   LIST_ARTICLES,
   LIST_BORROWINGS,
   LIST_RETURNINGS,
+  LIST_USERS,
   DAY_IN_MS,
 } from './Constants'
 
@@ -35,6 +36,9 @@ export function getWarehouses(responseHandler) {
 
   fetch(url, {
     method: 'GET',
+    headers: {
+      token: sessionStorage.getItem('token'),
+    },
   })
     .then(handleErrors)
     .then((res) => res.json())
@@ -91,6 +95,9 @@ export function getArticleTypes(classif, responseHandler) {
   let url = HOST + ARTICLE_TYPE_LIST + '?classif=' + classif
   fetch(url, {
     method: 'GET',
+    headers: {
+      token: sessionStorage.getItem('token'),
+    },
   })
     .then(handleErrors)
     .then((res) => res.json())
@@ -132,6 +139,9 @@ export function getArticles(warehouse, article_type, branch, responseHandler) {
 
   fetch(url, {
     method: 'GET',
+    headers: {
+      token: sessionStorage.getItem('token'),
+    },
   })
     .then(handleErrors)
     .then((res) => res.json())
@@ -180,6 +190,9 @@ export function getBorrowings(responseHandler) {
 
   fetch(url, {
     method: 'GET',
+    headers: {
+      token: sessionStorage.getItem('token'),
+    },
   })
     .then(handleErrors)
     .then((res) => res.json())
@@ -213,6 +226,9 @@ export function getFilteredBorrowings(responseHandler) {
 
   fetch(url, {
     method: 'GET',
+    headers: {
+      token: sessionStorage.getItem('token'),
+    },
   })
     .then(handleErrors)
     .then((res) => res.json())
@@ -259,6 +275,9 @@ export function getElementById(path, responseHandler) {
 
   fetch(url, {
     method: 'GET',
+    headers: {
+      token: sessionStorage.getItem('token'),
+    },
   })
     .then(handleErrors)
     .then((res) => res.json())
@@ -268,11 +287,50 @@ export function getElementById(path, responseHandler) {
     .catch((error) => responseHandler('error', error))
 }
 
+export function getAllUsers(responseHandler) {
+  // Get information from session storage
+  let session_object = sessionStorage.getItem('users')
+  let json_object = JSON.parse(session_object)
+
+  if (json_object && json_object.length > 0) {
+    responseHandler('success', json_object)
+    return
+  }
+
+  // Make the request if there is nothing stored
+  let url = HOST + LIST_USERS
+
+  fetch(url, {
+    method: 'GET',
+    headers: {
+      token: sessionStorage.getItem('token'),
+    },
+  })
+    .then(handleErrors)
+    .then((res) => res.json())
+    .then((response) => {
+      let rows = response.rows
+
+      if (rows.length < 1) {
+        responseHandler('error', 'No items')
+        return
+      }
+
+      let json = JSON.stringify(rows)
+      sessionStorage.setItem('users', json)
+      responseHandler('success', rows)
+    })
+    .catch((error) => responseHandler('error', error))
+}
+
 export function getAllArticleTypes(responseHandler) {
   let url = HOST + ARTICLE_TYPE_LIST
 
   fetch(url, {
     method: 'GET',
+    headers: {
+      token: sessionStorage.getItem('token'),
+    },
   })
     .then(handleErrors)
     .then((res) => res.json())
@@ -314,6 +372,9 @@ export function getReturnings(responseHandler) {
 
   fetch(url, {
     method: 'GET',
+    headers: {
+      token: sessionStorage.getItem('token'),
+    },
   })
     .then(handleErrors)
     .then((res) => res.json())
