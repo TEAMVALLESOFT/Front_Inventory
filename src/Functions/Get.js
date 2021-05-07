@@ -4,8 +4,6 @@ import {
   ARTICLE_TYPE_LIST,
   LIST_ARTICLES,
   LIST_BORROWINGS,
-  LIST_RETURNINGS,
-  LIST_USERS,
   DAY_IN_MS,
   NO_ITEMS_ERROR,
   INVALID_CLASSIF_ERROR,
@@ -32,6 +30,14 @@ function getFromStorage(key) {
 function validateResponse(response) {
   if (response.hasOwnProperty('error')) {
     return response.error
+  }
+
+  if (!response.hasOwnProperty('rows')) {
+    if (response.length < 1) {
+      return NO_ITEMS_ERROR
+    }
+
+    return null
   }
 
   let rows = response.rows
@@ -316,7 +322,7 @@ export function getElements(key, path, responseHandler) {
         return responseHandler('error', validation)
       }
 
-      let rows = response.rows
+      let rows = response.rows ? response.rows : response
       let json = JSON.stringify(rows)
       sessionStorage.setItem(key, json)
 

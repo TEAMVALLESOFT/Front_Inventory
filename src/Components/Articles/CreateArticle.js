@@ -173,6 +173,13 @@ class CreateArticle extends Component {
       return this.clearInputs()
     }
 
+    if (body == NO_ITEMS_ERROR) {
+      return this.buildAlert(
+        'attention',
+        'No hay tipos de artículo asociados a la clasificación seleccionada.'
+      )
+    }
+
     return this.buildAlert('error', ERROR_MESSAGE)
   }
 

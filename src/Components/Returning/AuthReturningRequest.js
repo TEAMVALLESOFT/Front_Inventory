@@ -43,7 +43,7 @@ class AuthReturningRequest extends Component {
       )
     }
 
-    return this.buildAlert('attention', ERROR_MESSAGE)
+    return this.buildAlert('error', ERROR_MESSAGE)
   }
 
   setReturnings = (response, body) => {
@@ -55,7 +55,7 @@ class AuthReturningRequest extends Component {
       return this.setState({ borrowing_requests: [] })
     }
 
-    return this.buildAlert('attention', ERROR_MESSAGE)
+    return this.buildAlert('error', ERROR_MESSAGE)
   }
 
   buildAlert = (type, text) => {
@@ -80,7 +80,7 @@ class AuthReturningRequest extends Component {
     let id = event.target.id
 
     if (parseInt(id) < 1) {
-      setTimeout(() => this.buildAlert('attention', ERROR_MESSAGE), 10)
+      setTimeout(() => this.buildAlert('error', ERROR_MESSAGE), 10)
       return
     }
 
