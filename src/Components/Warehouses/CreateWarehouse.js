@@ -3,7 +3,7 @@ import './Styles.css'
 
 import Alert from '../Alerts/Alert'
 import { validateEmail } from '../../Functions/Helpers'
-import { postRequest } from '../../Functions/Post'
+import { simpleRequest } from '../../Functions/Post'
 import {
   CREATE_WAREHOUSE,
   MANDATORY_MESSAGE,
@@ -106,7 +106,7 @@ class CreateWarehouse extends Component {
       email: this.state.email,
     }
 
-    return postRequest(CREATE_WAREHOUSE, body, this.responseHandler)
+    return simpleRequest(CREATE_WAREHOUSE, 'POST', body, this.responseHandler)
   }
 
   checkMandatoryInputs() {

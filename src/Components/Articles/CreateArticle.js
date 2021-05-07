@@ -4,7 +4,7 @@ import './Styles.css'
 import Alert from '../Alerts/Alert'
 import SecondaryForm from './SecondaryForm'
 import { setSelectOptions } from '../../Functions/Helpers'
-import { postRequest } from '../../Functions/Post'
+import { simpleRequest } from '../../Functions/Post'
 import { getWarehouses, getArticleTypes } from '../../Functions/Get'
 import {
   CREATE_ARTICLE,
@@ -210,7 +210,7 @@ class CreateArticle extends Component {
       }
     }
 
-    return postRequest(CREATE_ARTICLE, body, this.responseHandler)
+    return simpleRequest(CREATE_ARTICLE, 'POST', body, this.responseHandler)
   }
 
   // Auxiliary functions

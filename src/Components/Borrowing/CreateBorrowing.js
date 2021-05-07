@@ -5,7 +5,7 @@ import Alert from '../Alerts/Alert'
 import AuxiliaryForm from './AuxiliaryForm'
 import { setSelectOptions, compareDates } from '../../Functions/Helpers'
 import { getWarehouses } from '../../Functions/Get'
-import { postRequest } from '../../Functions/Post'
+import { simpleRequest } from '../../Functions/Post'
 import {
   CREATE_BORROWING,
   MANDATORY_MESSAGE,
@@ -219,7 +219,7 @@ class CreateBorrowing extends Component {
       }
     }
 
-    return postRequest(CREATE_BORROWING, body, this.responseHandler)
+    return simpleRequest(CREATE_BORROWING, 'POST', body, this.responseHandler)
   }
 
   // Auxiliary functions

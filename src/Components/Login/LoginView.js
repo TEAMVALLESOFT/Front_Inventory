@@ -3,7 +3,7 @@ import './Styles.css'
 
 import Alert from '../Alerts/Alert'
 import { validateEmail } from '../../Functions/Helpers'
-import { postRequest } from '../../Functions/Post'
+import { simpleRequest } from '../../Functions/Post'
 import {
   LOGIN,
   ERROR_MESSAGE,
@@ -104,7 +104,7 @@ class LoginView extends Component {
       password: this.state.password,
     }
 
-    return postRequest(LOGIN, body, this.responseHandler)
+    return simpleRequest(LOGIN, 'POST', body, this.responseHandler)
   }
 
   // Auxiliary functions

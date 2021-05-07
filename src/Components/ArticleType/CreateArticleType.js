@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import './Styles.css'
 
 import Alert from '../Alerts/Alert'
-import { postRequest } from '../../Functions/Post'
+import { simpleRequest } from '../../Functions/Post'
 import { setSelectOptions } from '../../Functions/Helpers'
 import {
   CREATE_ARTICLE_TYPE,
@@ -102,7 +102,12 @@ class CreateArticleType extends Component {
       is_parent: this.state.is_parent,
     }
 
-    return postRequest(CREATE_ARTICLE_TYPE, body, this.responseHandler)
+    return simpleRequest(
+      CREATE_ARTICLE_TYPE,
+      'POST',
+      body,
+      this.responseHandler
+    )
   }
 
   checkMandatoryInputs() {

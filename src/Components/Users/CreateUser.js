@@ -3,7 +3,7 @@ import './Styles.css'
 
 import Alert from '../Alerts/Alert'
 import { validateEmail, setSelectOptions } from '../../Functions/Helpers'
-import { postRequest } from '../../Functions/Post'
+import { simpleRequest } from '../../Functions/Post'
 import {
   CREATE_USER,
   MANDATORY_MESSAGE,
@@ -135,7 +135,7 @@ class CreateUser extends Component {
       password: this.state.password,
     }
 
-    return postRequest(CREATE_USER, body, this.responseHandler)
+    return simpleRequest(CREATE_USER, 'POST', body, this.responseHandler)
   }
 
   // Auxiliary functions
