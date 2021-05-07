@@ -3,13 +3,14 @@ import './Styles.css'
 
 import Alert from '../Alerts/Alert'
 import { simpleRequest } from '../../Functions/Post'
-import { setSelectOptions } from '../../Functions/Helpers'
+import { setSelectOptions, validateString } from '../../Functions/Helpers'
 import {
   CREATE_ARTICLE_TYPE,
   MANDATORY_MESSAGE,
   ERROR_MESSAGE,
   ALERT_TIMEOUT,
   CLASSIFICATIONS,
+  INVALID_STRING_MESSAGE,
 } from '../../Functions/Constants'
 
 class CreateArticleType extends Component {
@@ -92,6 +93,12 @@ class CreateArticleType extends Component {
     // Verify that the required fields are filled
     if (!this.checkMandatoryInputs()) {
       setTimeout(() => this.buildAlert('attention', MANDATORY_MESSAGE), 10)
+      return
+    }
+
+    // Verify that desc are valid
+    if (!validateString(this.state.desc)) {
+      setTimeout(() => this.buildAlert('attention', INVALID_STRING_MESSAGE), 10)
       return
     }
 
