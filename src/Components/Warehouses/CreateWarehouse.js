@@ -102,7 +102,7 @@ class CreateWarehouse extends Component {
     }
 
     // Verify that desc are valid
-    if (!validateString(this.state.desc)) {
+    if (!validateString(this.state.address) || !validateString(this.state.desc)) {
       setTimeout(() => this.buildAlert('attention', INVALID_STRING_MESSAGE), 10)
       return
     }

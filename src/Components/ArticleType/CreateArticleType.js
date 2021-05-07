@@ -11,6 +11,7 @@ import {
   ALERT_TIMEOUT,
   CLASSIFICATIONS,
   INVALID_STRING_MESSAGE,
+  ARTICLE_TYPE_EXIST_ERROR,
 } from '../../Functions/Constants'
 
 class CreateArticleType extends Component {
@@ -82,6 +83,13 @@ class CreateArticleType extends Component {
       sessionStorage.removeItem('article_types_camp')
 
       return this.clearInputs()
+    }
+
+    if (body == ARTICLE_TYPE_EXIST_ERROR) {
+      return this.buildAlert(
+        'attention',
+        'Ya existe un tipo de artículo con ese nombre. Por favor utilizar un nuevo nombre.'
+      )
     }
 
     return this.buildAlert('error', ERROR_MESSAGE)

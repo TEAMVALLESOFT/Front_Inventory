@@ -169,6 +169,7 @@ class CreationModal extends Component {
                 id='obs'
                 type='text'
                 className='global-form-input'
+                maxlength='255'
                 value={this.state.obs}
                 onChange={this.handleChange}
               />

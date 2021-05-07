@@ -79,6 +79,7 @@ export const NO_ITEMS_ERROR = 'No hay registros en el sistema.'
 export const INVALID_CLASSIF_ERROR = 'La clasificación es inválida.'
 export const INVALID_LOGIN_ERROR = 'Error en el usuario o contraseña.'
 export const USED_EMAIL_ERROR = 'El correo electrónico ya se encuentra en uso.'
+export const ARTICLE_TYPE_EXIST_ERROR = 'El tipo de artículo deseado ya existe.'
 export const NO_EMAIL_ERROR =
   'El correo electrónico no se encuentra registrado.'
 

@@ -205,7 +205,8 @@ ul li::before {
   margin-left: 145px;
 }
 
-.global-form-checkbox:hover {
+.global-form-checkbox{
+  margin-right: 10px;
   cursor: pointer;
 }
 

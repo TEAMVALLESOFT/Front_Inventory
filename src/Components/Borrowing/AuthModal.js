@@ -150,6 +150,7 @@ class Modal extends Component {
                 type='text'
                 className='global-form-input'
                 value={this.state.obs}
+                maxlength='255'
                 onChange={this.handleChange}
               />
             </div>
