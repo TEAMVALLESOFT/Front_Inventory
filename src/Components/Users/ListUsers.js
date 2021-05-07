@@ -2,9 +2,10 @@ import React, { Component } from 'react'
 import './Styles.css'
 
 import Alert from '../Alerts/Alert'
-import { getAllUsers } from '../../Functions/Get'
+import { getElements } from '../../Functions/Get'
 import { setSelectOptions } from '../../Functions/Helpers'
 import {
+  LIST_USERS,
   ALERT_TIMEOUT,
   NON_ITEM_MESSAGE,
   ERROR_MESSAGE,
@@ -28,7 +29,7 @@ class ListUsers extends Component {
   }
 
   componentDidMount() {
-    getAllUsers(this.setUsers)
+    getElements('users', LIST_USERS, this.setUsers)
   }
 
   componentWillUnmount() {

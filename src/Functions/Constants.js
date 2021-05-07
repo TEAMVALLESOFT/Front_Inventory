@@ -71,6 +71,10 @@ export const EMAIL_MESSAGE =
 export const NON_ITEM_MESSAGE = 'No hay ningun artículo para esta selección.'
 export const ALERT_TIMEOUT = 6000
 
+// ERRORS
+export const NO_ITEMS_ERROR = 'NO ITEMS'
+export const INVALID_CLASSIF_ERROR = 'INVALID CLASIFICATION'
+
 // OTHERS
 export const DAY_IN_MS = 1000 * 60 * 60 * 24
 export const DATE_OPTIONS = {
