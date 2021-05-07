@@ -143,7 +143,7 @@ class ListArticle extends Component {
       )
     }
 
-    return alert(ERROR_MESSAGE)
+    return this.buildAlert('error', ERROR_MESSAGE)
   }
 
   setArticleTypes = (response, body) => {

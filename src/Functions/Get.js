@@ -271,7 +271,6 @@ export function getFilteredBorrowings(responseHandler) {
 export function getElementById(path, responseHandler) {
   // Path should have id as param
   let url = HOST + path
-  console.log(url)
 
   fetch(url, {
     method: 'GET',
