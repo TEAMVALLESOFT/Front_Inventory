@@ -60,6 +60,9 @@ export const RETURNING_BY_ID = 'returning/id'
 export const LIST_RETURNINGS = 'returning/list'
 export const RETURNING_APPROVED = 'returning/approved'
 export const RETURNING_REJECTED = 'returning/rejected'
+export const RECOVER_PASSWORD = 'user/recover_pass'
+export const TOKEN_VERIFICATION = 'user/token_verification'
+export const PASSWORD_CHANGE = 'user/password_change'
 
 // ALERTS
 export const MANDATORY_MESSAGE =

@@ -1,11 +1,20 @@
 import React, { Component } from 'react'
 import './Styles.css'
 
+import { validateEmail } from '../../Functions/Helpers'
+import { simpleRequest } from '../../Functions/Post'
+import {
+  RECOVER_PASSWORD,
+  TOKEN_VERIFICATION,
+  PASSWORD_CHANGE,
+} from '../../Functions/Constants'
+
 class RecoverPassword extends Component {
   constructor() {
     super()
     this.state = {
       email: '',
+      user_id: '',
       token: '',
       password: '',
       conf_password: '',
@@ -23,6 +32,14 @@ class RecoverPassword extends Component {
     return this.setState({ [attribute]: value })
   }
 
+  responseHandler = (response, body) => {
+    if (response == 'success') {
+      this.setState({ user_id : body.id })
+      return alert('Petición realizada con éxito')
+    }
+    return alert('Error en la petición')
+  }
+
   // Functions to handle alerts
   close = () => {
     return this.setState({ alert: '' })
@@ -36,6 +53,18 @@ class RecoverPassword extends Component {
     if (isButtonNext || isButtonBack) {
       let currentStep = document.getElementById('step-' + element.dataset.step)
       let jumpStep = document.getElementById('step-' + element.dataset.to_step)
+      let step_id = currentStep.getAttribute('id')
+      let next_step_id = jumpStep.getAttribute('id')
+      if (step_id == 'step-1' & next_step_id == 'step-2') {
+        if(!this.step_1()) {
+          return
+        }
+      }
+      if (step_id == 'step-2' & next_step_id == 'step-3') {
+        if(!this.step_2()) {
+          return
+        }
+      }
       currentStep.addEventListener('animationend', function callback() {
         currentStep.classList.remove('active')
         jumpStep.classList.add('active')
@@ -51,6 +80,58 @@ class RecoverPassword extends Component {
       currentStep.classList.add('inactive')
       jumpStep.classList.remove('inactive')
     }
+  }
+
+  // Step 1: send email to generate token
+  step_1() {
+    if (!validateEmail(this.state.email)) {
+      alert('No ha digitado el correo')
+      return false
+    }
+
+    let body = {
+      user_email: this.state.email,
+    }
+
+    simpleRequest(RECOVER_PASSWORD, 'PUT', body, this.responseHandler)
+    return true
+  }
+
+  // Step 2: Confirm token
+  step_2() {
+    if (!this.state.token) {
+      alert('No ha escrito el token')
+      return false
+    }
+
+    let body = {
+      token_user: this.state.token,
+    }
+
+    simpleRequest(TOKEN_VERIFICATION, 'POST', body, this.responseHandler)
+    return true
+  }
+
+  // Step 3: change user password
+  step_3 = () => {
+    if (!this.state.password || !this.state.conf_password) {
+      return alert('Digite las contraseñas')
+    }
+
+    if (this.state.password != this.state.conf_password) {
+      return alert('Las contraseñas no son iguales')
+    }
+
+    let body = {
+      user_id: this.state.user_id,
+      passwd_new: this.state.password,
+      passwd_compare: this.state.conf_password,
+    }
+
+    simpleRequest(PASSWORD_CHANGE, 'PUT', body, this.responseHandler)
+    setTimeout(() => {
+      return this.props.changeView('Login')
+    } , 2000)
   }
 
   // Auxiliary functions
@@ -86,7 +167,6 @@ class RecoverPassword extends Component {
       container.style.backgroundColor = '#f2f4f7'
       icon.attributes.src.value = './eye_gray.png'
     }
-
     return
   }
 
@@ -103,164 +183,169 @@ class RecoverPassword extends Component {
                 Para realizar el cambio de contraseña asegúrese de cumplir con los siguientes tres pasos.
               </span>
             </div>				
-			<div className="lg-form">
-			  <div className="form-register__header">
-			    <ul className="progressbar">
-				  <li className="progressbar__option active"><span className='global-form-label'>paso 1</span></li>
-			   	  <li className="progressbar__option"><span className='global-form-label'>paso 2</span></li>
-				  <li className="progressbar__option"><span className='global-form-label'>paso 3</span></li>
-		  		</ul>
-			  </div>
-			  <div className="form-register__body">
-				<div className="step active" id="step-1">
-				  <div className="step__body">
-					  <div className='global-explanation-text'>
-						<span className='lg-text'>
-						  Digite los siguientes campos para enviar a su correo electrónico un código de 
-						  restablecimiento de contrasaeña.
-						</span>
-					  </div>
-					  <span className='global-form-label'>Correo electrónico</span>
-					  <input
-						id='email'
-						className='global-form-input'
-						type='email'
-						value= {this.state.email}
-						onChange={this.handleChange}
-					  />
-					  </div>
-					  <div className="step__footer">
-						<button
-                        onClick={this.changeForm}
-                        type="button"
-                        className="step__button step__button--next"
-                        data-to_step="2"
-                        data-step="1">
-                          Siguiente
-                        </button>
-					  </div>
-					</div>
-					<div className="step" id="step-2">
-					  <div className="step__body">
-						<div className='global-explanation-text'>
-						  <span className='lg-text'>
-							Digite a continuación el código de restablecimiento que ha sido enviado al correo
-							<span className='global-text-mandatory'> {this.state.email}</span>, 
-							  tiene 10 minutos a partir de ahora para que el código que le fue enviado siga siendo valido.
-						  </span>
-						</div>
-						<span className='global-form-label'>Código de restablecimiento</span>
-						<input
-						  id='token'
-						  className='global-form-input'
-						  type='text'
-						  value={this.state.token}
-						  onChange={this.handleChange}
-						/>
-					  </div>
-					  <div className="step__footer">
-						<button
-                          onClick={this.changeForm}
-                          type="button" 
-                          className="step__button_back step__button--back" 
-                          data-to_step="1" 
-                          data-step="2">
-                            Regresar
-                        </button>
-						<button
-                          onClick={this.changeForm}
-                          type="button"
-                          className="step__button step__button--next"
-                          data-to_step="3"
-                          data-step="2">
-                            Siguiente
-                        </button>
-					  </div>
-					</div>
-					<div className="step" id="step-3">
-					  <div className="step__body">
-					    <div className='global-explanation-text'>
-						  <span className='lg-text'>
-							Digite la nueva contraseña y su confirmación para realizar el restablecimiento, luego
-							podrá ingresar con normalidad al inventario utilizando su nueva contraseña.
-						  </span>
-						</div>
-						<span className='global-form-label'>Nueva contraseña</span>								
-						<div className='global-form-input-group'>
-						  <div className='recp-form-img-container'>
-							<img
-							  className='global-form-img'
-							  src='./key_gray.png'
-							  alt='key'
-							/>
-						  </div>
-					      <input
-							id='password'
-                            value={this.state.password}
-							className='global-form-input'
-							type='password'
-                            onChange={this.handleChange}
-						  />
-						  <div
-							id='eye-icon-container'
-						    className='recp-form-img-container'
-                            style={{ cursor: 'pointer' }}
-                            onClick={this.showPasswd}
-						  >
-						    <img
-							  id='eye-icon'
-							  className='global-form-img'
-							  src='./eye_gray.png'
-							  alt='eye'
-						    />
-						  </div>
-					    </div>
-					    <span className='global-form-label'>Confirmar contraseña</span>								
-					    <div className='global-form-input-group'>
-						  <div className='recp-form-img-container'>
-						    <img
-							  className='global-form-img'
-							  src='./key_gray.png'
-							  alt='key'
-						    />
-						  </div>
-						  <input
-						    id='conf_password'
-                            value={this.state.conf_password}
-						    className='global-form-input'
-						    type='password'
-                            onChange={this.handleChange}
-						  />
-					      <div
-						    id='eye-icon-container_conf'
-						    className='recp-form-img-container'
-                            style={{ cursor: 'pointer' }}
-                            onClick={this.showPasswd_confirm}
-						  >
-					      <img
-						    id='eye-icon_conf'
-						    className='global-form-img'
-						    src='./eye_gray.png'
-						    alt='eye'
-						  />
-					    </div>
-					</div>
-							
-				  </div>
-				  <div className="step__footer">
-					<button
+              <div className="lg-form">
+                <div className="form-register__header">
+                  <ul className="progressbar">
+                  <li className="progressbar__option active"><span className='global-form-label'>paso 1</span></li>
+                    <li className="progressbar__option"><span className='global-form-label'>paso 2</span></li>
+                  <li className="progressbar__option"><span className='global-form-label'>paso 3</span></li>
+                  </ul>
+                </div>
+                <div className="form-register__body">
+                <div className="step active" id="step-1">
+                  <div className="step__body">
+                    <div className='global-explanation-text'>
+                      <span className='lg-text'>
+                        Digite los siguientes campos para enviar a su correo electrónico un código de 
+                        restablecimiento de contrasaeña.
+                      </span>
+                    </div>
+                    <span className='global-form-label'>Correo electrónico</span>
+                    <input
+                      id='email'
+                      className='global-form-input'
+                      type='email'
+                      value= {this.state.email}
+                      onChange={this.handleChange}
+                    />
+                  </div>
+                  <div className="step__footer">
+                    <button
+                      onClick={this.changeForm}
+                      type="button"
+                      className="step__button step__button--next"
+                      data-to_step="2"
+                      data-step="1">
+                        Siguiente
+                    </button>
+                  </div>
+                </div>
+                <div className="step" id="step-2">
+                  <div className="step__body">
+                  <div className='global-explanation-text'>
+                    <span className='lg-text'>
+                      Digite a continuación el código de restablecimiento que ha sido enviado al correo
+                      <span className='global-text-mandatory'> {this.state.email}</span>, 
+                      tiene 10 minutos a partir de ahora para que el código que le fue enviado siga siendo valido.
+                    </span>
+                  </div>
+                  <span className='global-form-label'>Código de restablecimiento</span>
+                  <input
+                    id='token'
+                    className='global-form-input'
+                    type='text'
+                    value={this.state.token}
+                    onChange={this.handleChange}
+                  />
+                  </div>
+                  <div className="step__footer">
+                  <button
+                      onClick={this.changeForm}
+                      type="button" 
+                      className="step__button_back step__button--back" 
+                      data-to_step="1" 
+                      data-step="2">
+                        Regresar
+                    </button>
+                    <button
+                      onClick={this.changeForm}
+                      type="button"
+                      className="step__button step__button--next"
+                      data-to_step="3"
+                      data-step="2">
+                        Siguiente
+                    </button>
+                  </div>
+                </div>
+                <div className="step" id="step-3">
+                  <div className="step__body">
+                    <div className='global-explanation-text'>
+                      <span className='lg-text'>
+                        Digite la nueva contraseña y su confirmación para realizar el restablecimiento, luego
+                        podrá ingresar con normalidad al inventario utilizando su nueva contraseña.
+                      </span>
+                    </div>
+                    <span className='global-form-label'>Nueva contraseña</span>								
+                    <div className='global-form-input-group'>
+                      <div className='recp-form-img-container'>
+                        <img
+                          className='global-form-img'
+                          src='./key_gray.png'
+                          alt='key'
+                        />
+                      </div>
+                      <input
+                        id='password'
+                        value={this.state.password}
+                        className='global-form-input'
+                        type='password'
+                        onChange={this.handleChange}
+                        />
+                      <div
+                        id='eye-icon-container'
+                        className='recp-form-img-container'
+                        style={{ cursor: 'pointer' }}
+                        onClick={this.showPasswd}
+                      >
+                        <img
+                          id='eye-icon'
+                          className='global-form-img'
+                          src='./eye_gray.png'
+                          alt='eye'
+                        />
+                      </div>
+                    </div>
+                    <span className='global-form-label'>Confirmar contraseña</span>								
+                    <div className='global-form-input-group'>
+                      <div className='recp-form-img-container'>
+                        <img
+                          className='global-form-img'
+                          src='./key_gray.png'
+                          alt='key'
+                        />
+                      </div>
+                        <input
+                          id='conf_password'
+                          value={this.state.conf_password}
+                          className='global-form-input'
+                          type='password'
+                          onChange={this.handleChange}
+                        />
+                      <div
+                        id='eye-icon-container_conf'
+                        className='recp-form-img-container'
+                        style={{ cursor: 'pointer' }}
+                        onClick={this.showPasswd_confirm}
+                      >
+                        <img
+                          id='eye-icon_conf'
+                          className='global-form-img'
+                          src='./eye_gray.png'
+                          alt='eye'
+                        />
+                      </div>
+                    </div>
+                    
+                  </div>
+                  <div className="step__footer">
+                    <button
                       onClick={this.changeForm}
                       type="button" 
                       className="step__button_back  step__button--back" 
                       data-to_step="2" 
                       data-step="3">
                         Regresar
+                    </button>
+                    <button
+                      onClick= {this.step_3}
+                      type="submit"
+                      className="step__button">
+                        Aceptar
                       </button>
-					<button type="submit" className="step__button">Aceptar</button>
-				  </div>
-			    </div>
-			  </div>
-			</div>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div className='lg-logo-container'>
               <img className='lg-logo' src='./logo_valle_gray.png' alt='logo' />
             </div>
