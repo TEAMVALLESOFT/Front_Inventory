@@ -75,7 +75,7 @@ export const ALERT_TIMEOUT = 6000
 // ERRORS
 export const NO_ITEMS_ERROR = 'No hay registros en el sistema.'
 export const INVALID_CLASSIF_ERROR = 'INVALID CLASIFICATION'
-export const INVALID_LOGIN_ERROR = 'Error en el ususario o contraseña'
+export const INVALID_LOGIN_ERROR = 'Error en el usuario o contraseña.'
 export const USED_EMAIL_ERROR = 'El correo electrónico ya se encuentra en uso.'
 
 // OTHERS

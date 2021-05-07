@@ -4,7 +4,11 @@ import Alert from '../Alerts/Alert'
 import CreationModal from './CreationModal'
 import { formatDateToLocal } from '../../Functions/Helpers'
 import { getFilteredBorrowings } from '../../Functions/Get'
-import { ERROR_MESSAGE, ALERT_TIMEOUT } from '../../Functions/Constants'
+import {
+  ERROR_MESSAGE,
+  ALERT_TIMEOUT,
+  NO_ITEMS_ERROR,
+} from '../../Functions/Constants'
 
 class CreateReturning extends Component {
   constructor() {
@@ -46,11 +50,7 @@ class CreateReturning extends Component {
       return this.setState({ borrowing_requests: body })
     }
 
-    if (
-      body == 'No items' ||
-      body.message == 'No items' ||
-      body.message == 'Not Found'
-    ) {
+    if (body == NO_ITEMS_ERROR) {
       return this.setState({ borrowing_requests: [] })
     }
 

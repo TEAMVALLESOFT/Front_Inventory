@@ -7,6 +7,7 @@ import {
   CLASSIFICATIONS,
   AVAILABILITIES,
   STATES,
+  NO_ITEMS_ERROR,
 } from '../../Functions/Constants'
 
 class SecondaryForm extends Component {
@@ -60,15 +61,15 @@ class SecondaryForm extends Component {
 
       if (filtered_array.length < 1) {
         this.props.scroll()
-        return this.props.responseHandler('error', 'No items')
+        return this.props.responseHandler('error', NO_ITEMS_ERROR)
       }
 
       return this.setState({ article_types: filtered_array })
     }
 
-    if (body == 'No items') {
+    if (body == NO_ITEMS_ERROR) {
       this.props.scroll()
-      return this.props.responseHandler('error', 'No items')
+      return this.props.responseHandler('error', NO_ITEMS_ERROR)
     }
 
     this.props.scroll()
