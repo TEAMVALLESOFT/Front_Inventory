@@ -154,7 +154,7 @@ class ListArticle extends Component {
     this.setState({ article_types: [] })
     if (body == NO_ITEMS_ERROR) {
       document.getElementById('article_type_fk').disabled = true
-      
+
       return this.buildAlert(
         'attention',
         'No hay tipos de artículo para esta selección.'
@@ -162,6 +162,13 @@ class ListArticle extends Component {
     }
 
     return this.buildAlert('error', ERROR_MESSAGE)
+  }
+
+  routeEdit = (event) => {
+    let id = event.target.id.split('-')
+    sessionStorage.setItem('edit_article_id', id[1])
+
+    return this.props.changeSelected(8)
   }
 
   close = () => {
@@ -183,6 +190,7 @@ class ListArticle extends Component {
   // Auxiliary functions
   setTable() {
     let rows = this.state.articles
+    let rol = sessionStorage.getItem('user_rol')
 
     if (rows.length < 1) {
       return (
@@ -220,6 +228,19 @@ class ListArticle extends Component {
               </span>
             </td>
           )}
+          {rol != 'jefe de rama' ? (
+            <td>
+              <span
+                id={'e-' + obj.id}
+                className='global-table-link'
+                onClick={this.routeEdit}
+              >
+                Editar
+              </span>
+            </td>
+          ) : (
+            ''
+          )}
         </tr>
       )
     }
@@ -235,6 +256,7 @@ class ListArticle extends Component {
             <th>Disponibilidad</th>
             <th>Estado</th>
             <th>Observaciones</th>
+            {rol != 'jefe de rama' ? <th>Acciones</th> : ''}
           </tr>
           {table_rows}
         </tbody>

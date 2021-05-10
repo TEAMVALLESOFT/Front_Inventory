@@ -303,6 +303,16 @@ export function setOptionsByRol(rol, collapse, changeSelected) {
       return array
 
     default:
+      let default_articles = (
+        <div
+          key='g4'
+          id='group-4'
+          className='m-menu-group'
+          style={{ display: 'none' }}
+        >
+          {LIST_ARTICLES_LABEL}
+        </div>
+      )
       let default_borrowings = (
         <div id='group-5' className='m-menu-group' style={{ display: 'none' }}>
           {LIST_BORROWINGS_LABEL}
@@ -316,6 +326,8 @@ export function setOptionsByRol(rol, collapse, changeSelected) {
         </div>
       )
 
+      array.push(ARTICLES)
+      array.push(default_articles)
       array.push(BORROWINGS)
       array.push(default_borrowings)
       array.push(RETURNINGS)

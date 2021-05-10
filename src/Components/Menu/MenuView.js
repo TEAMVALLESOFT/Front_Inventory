@@ -34,21 +34,20 @@ class MenuView extends Component {
     switch (rol) {
       case 'administrador':
         id = id + 1
-        this.setState({ selected: 1 })
         break
 
       case 'jefe de bodega':
         id = id + 3
         num = 5
-        this.setState({ selected: 5 })
         break
 
       default:
-        id = id + 5
-        num = 9
-        this.setState({ selected: 9 })
+        id = id + 4
+        num = 6
         break
     }
+
+    this.setState({ selected: num })
 
     let component = document.getElementById(id)
     component.style.display = 'block'
