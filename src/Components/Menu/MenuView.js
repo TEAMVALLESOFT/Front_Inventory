@@ -6,11 +6,12 @@ import CreateUser from '../Users/CreateUser'
 import ModifyUser from '../Users/ModifyUser'
 import CreateArticleType from '../ArticleType/CreateArticleType'
 import CreateWarehouse from '../Warehouses/CreateWarehouse'
+import ListArticle from '../Articles/ListArticle'
 import CreateArticle from '../Articles/CreateArticle'
+import ModifyArticle from '../Articles/ModifyArticle'
 import CreateBorrowing from '../Borrowing/CreateBorrowing'
 import AuthBorrowingRequest from '../Borrowing/AuthBorrowingRequest'
 import CreateReturning from '../Returning/CreateReturning'
-import ListArticle from '../Articles/ListArticle'
 import AuthReturningRequest from '../Returning/AuthReturningRequest'
 
 import { setOptionsByRol } from '../../Functions/MenuOptions'
@@ -123,8 +124,7 @@ class MenuView extends Component {
       case 7:
         return <CreateArticle />
       case 8:
-        // MODIFY ARTICLE
-        return <div></div>
+        return <ModifyArticle />
       case 9:
         // LIST BORROWINGS
         return <div></div>
