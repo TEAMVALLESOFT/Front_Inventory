@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
 
-import { setSelectOptions } from '../../Functions/Helpers'
+import { setSelectOptions, validateString } from '../../Functions/Helpers'
 import { getElementById } from '../../Functions/Get'
 import { simpleRequest } from '../../Functions/Post'
 import {
   BORROWING_BY_ID,
   CREATE_RETURNING,
   STATES,
+  INVALID_STRING_MESSAGE,
 } from '../../Functions/Constants'
 
 class CreationModal extends Component {
@@ -75,6 +76,12 @@ class CreationModal extends Component {
   }
 
   createReturning = () => {
+    // Verify that obs are valid
+    if (!validateString(this.state.obs)) {
+      this.responseHandler('attention', INVALID_STRING_MESSAGE)
+      return
+    }
+
     let body = {
       state: this.state.physical_state,
       obs: this.state.obs,
@@ -162,6 +169,7 @@ class CreationModal extends Component {
                 id='obs'
                 type='text'
                 className='global-form-input'
+                maxlength='255'
                 value={this.state.obs}
                 onChange={this.handleChange}
               />

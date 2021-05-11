@@ -5,6 +5,16 @@ export function validateEmail(email) {
   return re.test(String(email).toLowerCase())
 }
 
+// Return true if string is valid to store
+export function validateString(string) {
+  if (String(string).length > 255) {
+    return false
+  }
+
+  const re = /\b(ALTER|CREATE|DELETE|DROP|EXEC(UTE){0,1}|INSERT( +INTO){0,1}|MERGE|SELECT|UPDATE|UNION( +ALL){0,1})\b/gm
+  return !re.test(String(string).toUpperCase())
+}
+
 export function setSelectOptions(options) {
   if (options.length < 1) {
     return

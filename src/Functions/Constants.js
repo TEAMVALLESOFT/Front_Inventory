@@ -73,13 +73,18 @@ export const EMAIL_MESSAGE =
   'El formato del correo electrónico no es válido. Por favor verifique.'
 export const NO_ITEM_MESSAGE =
   'No hay registros disponibles para esta selección.'
+export const INVALID_STRING_MESSAGE =
+  'Alguno de los campos ingresados supera la extensión permitida o se detectó un patrón inválido. Por favor revise los campos.'
 export const ALERT_TIMEOUT = 6000
 
 // ERRORS
 export const NO_ITEMS_ERROR = 'No hay registros en el sistema.'
-export const INVALID_CLASSIF_ERROR = 'INVALID CLASIFICATION'
+export const INVALID_CLASSIF_ERROR = 'La clasificación es inválida.'
 export const INVALID_LOGIN_ERROR = 'Error en el usuario o contraseña.'
 export const USED_EMAIL_ERROR = 'El correo electrónico ya se encuentra en uso.'
+export const ARTICLE_TYPE_EXIST_ERROR = 'El tipo de artículo deseado ya existe.'
+export const NO_EMAIL_ERROR =
+  'El correo electrónico no se encuentra registrado.'
 
 // OTHERS
 export const DAY_IN_MS = 1000 * 60 * 60 * 24
