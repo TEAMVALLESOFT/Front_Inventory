@@ -3,6 +3,7 @@ import './Styles.css'
 
 import ListUsers from '../Users/ListUsers'
 import CreateUser from '../Users/CreateUser'
+import ModifyUser from '../Users/ModifyUser'
 import CreateArticleType from '../ArticleType/CreateArticleType'
 import CreateWarehouse from '../Warehouses/CreateWarehouse'
 import CreateArticle from '../Articles/CreateArticle'
@@ -107,8 +108,7 @@ class MenuView extends Component {
       case 2:
         return <CreateUser />
       case 3:
-        // MODIFY USER
-        return <div></div>
+        return <ModifyUser />
       case 4:
         return <CreateWarehouse />
       case 5:
