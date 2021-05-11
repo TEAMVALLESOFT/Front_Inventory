@@ -1,23 +1,31 @@
 import React, { Component } from 'react'
 import './Styles.css'
 
+import Alert from '../Alerts/Alert'
 import { validateEmail } from '../../Functions/Helpers'
-import { simpleRequest } from '../../Functions/Post'
+import { 
+  simpleRequest,
+  asyncRequest,
+} from '../../Functions/Post'
 import {
   RECOVER_PASSWORD,
   TOKEN_VERIFICATION,
   PASSWORD_CHANGE,
+  ERROR_MESSAGE,
+  ALERT_TIMEOUT,
 } from '../../Functions/Constants'
 
 class RecoverPassword extends Component {
   constructor() {
     super()
     this.state = {
+      aler: '',
       email: '',
       user_id: '',
       token: '',
       password: '',
       conf_password: '',
+      conf_step: false,
     }
   }
   // Functions to handle states
@@ -32,12 +40,11 @@ class RecoverPassword extends Component {
     return this.setState({ [attribute]: value })
   }
 
-  responseHandler = (response, body) => {
+  responseHandler = (response) => {
     if (response == 'success') {
-      this.setState({ user_id : body.id })
-      return alert('Petición realizada con éxito')
+      return this.buildAlert('success', 'Petición realizada con éxito')
     }
-    return alert('Error en la petición')
+    return this.buildAlert('error', ERROR_MESSAGE)
   }
 
   // Functions to handle alerts
@@ -45,81 +52,168 @@ class RecoverPassword extends Component {
     return this.setState({ alert: '' })
   }
 
-  changeForm = (e) => {
+  buildAlert = (type, text) => {
+    clearTimeout(this.state.timeout)
+
+    this.setState({
+      timeout: setTimeout(() => this.setState({ alert: '' }), ALERT_TIMEOUT),
+    })
+
+    return this.setState({
+      alert: <Alert type={type} text={text} close={this.close} />,
+    })
+  }
+
+  // Functions to change the Forms
+  changeForm = async (e) => {
     let progressOptions = document.querySelectorAll('.progressbar__option')
     let element = e.target
-    let isButtonNext = element.classList.contains('step__button--next')
-    let isButtonBack = element.classList.contains('step__button--back')
+    let isButtonNext = e.target.classList.contains('step__button--next')
+    let isButtonBack = e.target.classList.contains('step__button--back')
     if (isButtonNext || isButtonBack) {
       let currentStep = document.getElementById('step-' + element.dataset.step)
       let jumpStep = document.getElementById('step-' + element.dataset.to_step)
-      let step_id = currentStep.getAttribute('id')
-      let next_step_id = jumpStep.getAttribute('id')
-      if (step_id == 'step-1' & next_step_id == 'step-2') {
-        if(!this.step_1()) {
-          return
-        }
+      if(currentStep.id == 'step-1' & jumpStep.id == 'step-2'){
+        let resp = await this.step_1()
+        if(resp.conf_step)
+          this.setState({ conf_step: resp.conf_step })
+      } 
+      else if(currentStep.id == 'step-2' & jumpStep.id == 'step-3'){
+        let resp = await this.step_2()
+        if(resp.conf_step)
+          this.setState({ conf_step: resp.conf_step, user_id: resp.user_id })
       }
-      if (step_id == 'step-2' & next_step_id == 'step-3') {
-        if(!this.step_2()) {
-          return
-        }
+      else {
+        let resp = await this.anotherStep()
+        this.setState({ conf_step: resp.conf_step })
       }
-      currentStep.addEventListener('animationend', function callback() {
-        currentStep.classList.remove('active')
-        jumpStep.classList.add('active')
-        if (isButtonNext) {
-          currentStep.classList.add('to-left')
-          progressOptions[element.dataset.to_step - 1].classList.add('active')
-        } else {
-          jumpStep.classList.remove('to-left')
-          progressOptions[element.dataset.step - 1].classList.remove('active')
-        }
-        currentStep.removeEventListener('animationend', callback)
-      })
-      currentStep.classList.add('inactive')
-      jumpStep.classList.remove('inactive')
+
+      if(this.state.conf_step){
+        this.setState({ conf_step: false })
+        currentStep.addEventListener('animationend', function callback() {
+          currentStep.classList.remove('active')
+          jumpStep.classList.add('active')
+          if (isButtonNext) {
+            currentStep.classList.add('to-left')
+            progressOptions[element.dataset.to_step - 1].classList.add('active')
+          } else {
+            jumpStep.classList.remove('to-left')
+            progressOptions[element.dataset.step - 1].classList.remove('active')
+          }
+          currentStep.removeEventListener('animationend', callback)
+        })
+      
+        currentStep.classList.add('inactive')
+        jumpStep.classList.remove('inactive')
+      }
     }
   }
 
   // Step 1: send email to generate token
-  step_1() {
-    if (!validateEmail(this.state.email)) {
-      alert('No ha digitado el correo')
-      return false
+  async step_1() {
+    if (!this.state.email) {    
+      this.setState({
+        alert: <Alert
+          type={'error'}
+          text={'Digite un correo electronico.'}
+          close={this.close} />,
+      })
+      return { conf_step: false }
+    }
+    if (!validateEmail(this.state.email)) {  
+      this.setState({
+        alert: <Alert
+          type={'error'}
+          text={'El correo digitado no es valido.'}
+          close={this.close} />,
+      })
+      return { conf_step: false }
     }
 
     let body = {
       user_email: this.state.email,
     }
 
-    simpleRequest(RECOVER_PASSWORD, 'PUT', body, this.responseHandler)
-    return true
+    let response = asyncRequest(RECOVER_PASSWORD, 'PUT', body).then(x=>{
+      if(x.message == "Envio exitoso"){
+        let step = { conf_step: true }
+        this.setState({
+          alert: <Alert
+            type={'success'}
+            text={x.message}
+            close={this.close} />,
+        })
+        return step  
+      }else{
+        this.setState({
+          alert: <Alert
+            type={'error'}
+            text={x.error}
+            close={this.close} />,
+        })
+        return { conf_step: false }
+      }
+    })
+    return await response
   }
 
   // Step 2: Confirm token
-  step_2() {
+  async step_2() {
     if (!this.state.token) {
-      alert('No ha escrito el token')
-      return false
+      this.setState({
+        alert: <Alert
+          type={'error'}
+          text={'No ha escrito el token'}
+          close={this.close} />,
+      })
+      return { conf_step: false }
     }
 
     let body = {
       token_user: this.state.token,
     }
-
-    simpleRequest(TOKEN_VERIFICATION, 'POST', body, this.responseHandler)
-    return true
+    
+    let response = asyncRequest(TOKEN_VERIFICATION, 'POST', body).then(x=>{
+      if(x.id && x.name){
+        let step = { conf_step: true, user_id : x.id }
+        this.setState({
+          alert: <Alert
+            type={'success'}
+            text={'Bienvenido(a) ' + x.name + ', ya puede restablecer sus contraseñas a continuación.'}
+            close={this.close} />,
+        })
+        return step  
+      }else{
+        this.setState({
+          alert: <Alert
+            type={'error'}
+            text={'Error con la validación del Token.'}
+            close={this.close} />,
+        })
+        return { conf_step: false }
+      }
+    })
+    return await response
   }
 
   // Step 3: change user password
   step_3 = () => {
     if (!this.state.password || !this.state.conf_password) {
-      return alert('Digite las contraseñas')
+      return this.setState({
+          alert: <Alert
+          type={'error'}
+          text={'Digite las contraseñas'}
+          close={this.close} />,
+        })
     }
 
     if (this.state.password != this.state.conf_password) {
-      return alert('Las contraseñas no son iguales')
+      return this.setState({
+        alert: <Alert
+        type={'error'}
+        text={'Las contraseñas no son iguales'}
+        close={this.close} />,
+      })
     }
 
     let body = {
@@ -132,6 +226,11 @@ class RecoverPassword extends Component {
     setTimeout(() => {
       return this.props.changeView('Login')
     } , 2000)
+  }
+
+  async anotherStep() {
+    let response = { conf_step: true }
+    return response
   }
 
   // Auxiliary functions
@@ -173,6 +272,7 @@ class RecoverPassword extends Component {
   render() {
     return (
       <div className='lg-container'>
+        {this.state.alert}
         <div className='lg-card'>
           <div className='lg-content'>
             <div className='recp-header'>
