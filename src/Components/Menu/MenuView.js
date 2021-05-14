@@ -118,6 +118,7 @@ class MenuView extends Component {
       case 6:
         return (
           <ListArticle
+            changeSelected={this.changeSelectedFromComponent}
             showModal={this.showModal}
             closeModal={this.closeModal}
           />

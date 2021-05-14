@@ -3,10 +3,13 @@ import './Styles.css'
 
 import Alert from '../Alerts/Alert'
 import { validateString, setSelectOptions } from '../../Functions/Helpers'
-import { getElementById, getWarehouses } from '../../Functions/Get'
+import { getElements, getWarehouses } from '../../Functions/Get'
 import { simpleRequest } from '../../Functions/Post'
 import {
+  LIST_ARTICLES,
+  MODIFY_ARTICLE,
   NO_ITEMS_ERROR,
+  NO_ITEM_MESSAGE,
   MANDATORY_MESSAGE,
   ERROR_MESSAGE,
   ALERT_TIMEOUT,
@@ -19,11 +22,11 @@ import {
 class ModifyArticle extends Component {
   constructor() {
     super()
+    this.myRef = React.createRef()
     this.state = {
       // Request states
       id: 0,
       warehouse_fk: 0,
-      article_type_fk: 0,
       available_state: '',
       physical_state: '',
       branch: '',
@@ -41,12 +44,24 @@ class ModifyArticle extends Component {
   componentDidMount() {
     getWarehouses(this.setWarehouses)
 
-    let session_id = sessionStorage.getItem('edit_article_id')
-    if (session_id && session_id > 0) {
-      this.setState({ id: parseInt(session_id) })
-      sessionStorage.removeItem('edit_article_id')
+    let session_obj = sessionStorage.getItem('edit_article')
+    let json_obj = JSON.parse(session_obj)
 
-      // return getElementById('PATH' + session_id, this.setArticleInfo)
+    if (json_obj) {
+      this.setState({
+        id: json_obj.id,
+        classif: json_obj.classif,
+        warehouse_fk: json_obj.warehouse_fk,
+        article_type_name: json_obj.name,
+        available_state: json_obj.available_state,
+        physical_state: json_obj.physical_state,
+        branch: json_obj.branch,
+        obs: json_obj.obs,
+      })
+
+      sessionStorage.removeItem('edit_article')
+
+      return this.buildAlert('success', 'Información de artículo recuperada.')
     }
 
     return
@@ -62,7 +77,8 @@ class ModifyArticle extends Component {
     let value = event.target.value
 
     if (attribute == 'id' && value > 0) {
-      // return getElementById('PATH' + session_id, this.setArticleInfo)
+      sessionStorage.setItem('temp_article_id', value)
+      getElements('', LIST_ARTICLES, this.setArticle)
     }
 
     return this.setState({ [attribute]: value })
@@ -73,7 +89,6 @@ class ModifyArticle extends Component {
       // Request states
       id: 0,
       warehouse_fk: 0,
-      article_type_fk: 0,
       available_state: '',
       physical_state: '',
       branch: '',
@@ -101,6 +116,10 @@ class ModifyArticle extends Component {
     })
   }
 
+  scroll = () => {
+    this.myRef.current.scrollIntoView({ behavior: 'smooth' })
+  }
+
   // Functions related to requests
   setWarehouses = (response, body) => {
     if (response == 'success') {
@@ -114,26 +133,39 @@ class ModifyArticle extends Component {
     return this.buildAlert('error', ERROR_MESSAGE)
   }
 
-  setArticleInfo = (response, body) => {
-    if (response == 'success') {
-      this.setState({
-        available_state: body,
-        physical_state: body,
-        branch: body,
-        obs: body,
-        warehouse_fk: body,
-        article_type_fk: body,
-      })
-
-      return this.buildAlert('success', 'Información de artículo recuperada.')
-    }
-
-    this.clearInputs()
-
-    if (body == NO_ITEMS_ERROR) {
+  setArticle = (response, body) => {
+    if (body == NO_ITEMS_ERROR || body.length == 0) {
       return this.buildAlert(
         'attention',
-        'No se ha encontrado un artículo con ese ID. Por favor intente con otro.'
+        NO_ITEM_MESSAGE +
+          'No se encontraron artículos con ese ID. Por favor intente de nuevo.'
+      )
+    }
+
+    if (response == 'success') {
+      let temp_id = sessionStorage.getItem('temp_article_id')
+      sessionStorage.removeItem('temp_article_id')
+
+      for (let i = 0; i < body.length; i++) {
+        let obj = body[i]
+
+        if (obj.id == temp_id) {
+          return this.setState({
+            id: obj.id,
+            classif: obj.Tipo.classif,
+            warehouse_fk: obj.warehouse_fk,
+            article_type_name: obj.Tipo.article_type_name,
+            available_state: obj.available_state,
+            physical_state: obj.physical_state,
+            branch: obj.branch,
+            obs: obj.obs,
+          })
+        }
+      }
+
+      return this.buildAlert(
+        'attention',
+        'No se encontraron artículos con ese ID. Por favor intente de nuevo.'
       )
     }
 
@@ -153,6 +185,7 @@ class ModifyArticle extends Component {
 
   modifyArticle = () => {
     this.close()
+    this.scroll()
 
     // Verify that the required fields are filled
     if (!this.checkMandatoryInputs()) {
@@ -173,19 +206,18 @@ class ModifyArticle extends Component {
       branch: this.state.branch,
       obs: this.state.obs,
       warehouse_fk: this.state.warehouse_fk,
-      article_type_fk: this.state.article_type_fk,
     }
 
-    // return simpleRequest('', 'PUT', body, this.responseHandler)
+    return simpleRequest(MODIFY_ARTICLE, 'PUT', body, this.responseHandler)
   }
 
   // Auxiliary functions
   checkMandatoryInputs() {
-    if (this.state.warehouse_fk < 0) {
+    if (this.state.id < 0) {
       return false
     }
 
-    if (this.state.article_type_fk < 0) {
+    if (this.state.warehouse_fk < 0) {
       return false
     }
 
@@ -208,7 +240,7 @@ class ModifyArticle extends Component {
     return (
       <div className='cu-container'>
         {this.state.alert}
-        <span className='global-comp-title'>Modificar artículo</span>
+        <span className='global-comp-title' ref={this.myRef}>Modificar artículo</span>
         <span className='global-comp-description'>
           Diligencie el formulario para editar un artículo. Puede especificar el
           ID o seleccionar la acción de editar en la opción de listar artículos
