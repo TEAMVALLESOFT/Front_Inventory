@@ -16,6 +16,7 @@ import AuthReturningRequest from '../Returning/AuthReturningRequest'
 
 import { setOptionsByRol } from '../../Functions/MenuOptions'
 import { parseOptionToStatic } from '../../Functions/Helpers'
+import ModifyBorrowing from '../Borrowing/ModifyBorrowing'
 
 class MenuView extends Component {
   constructor() {
@@ -132,7 +133,7 @@ class MenuView extends Component {
         return <CreateBorrowing />
       case 11:
         // MODIFY BORROWING
-        return <div></div>
+        return <ModifyBorrowing />
       case 12:
         return (
           <AuthBorrowingRequest
