@@ -3,12 +3,14 @@ import './Styles.css'
 
 import Alert from '../Alerts/Alert'
 import { validateString, setSelectOptions } from '../../Functions/Helpers'
+import { simpleRequest } from '../../Functions/Post'
 import {
   MANDATORY_MESSAGE,
   ERROR_MESSAGE,
   ALERT_TIMEOUT,
   AVAILABILITIES,
   INVALID_STRING_MESSAGE,
+  MODIFY_BORROWING,
 } from '../../Functions/Constants'
 
 class ModifyBorrowing extends Component {
@@ -102,24 +104,26 @@ class ModifyBorrowing extends Component {
       obs: this.state.obs,
     }
 
-    // return simpleRequest('', 'PUT', body, this.responseHandler)
+    console.log(body)
+
+    return simpleRequest(MODIFY_BORROWING, 'PUT', body, this.responseHandler)
   }
 
   // Auxiliary functions
   checkMandatoryInputs() {
-    if (this.state.pick_up_date) {
+    if (!this.state.id) {
       return false
     }
 
-    if (this.state.return_date) {
+    if (!this.state.pick_up_date) {
+      return false
+    }
+
+    if (!this.state.return_date) {
       return false
     }
 
     if (!this.state.availability) {
-      return false
-    }
-
-    if (!this.state.obs) {
       return false
     }
 
@@ -215,7 +219,7 @@ class ModifyBorrowing extends Component {
           <div className='global-form-buttons-container'>
             <button
               className='global-form-solid-button'
-              onClick={this.ModifyBorrowing}
+              onClick={this.modifyBorrowing}
             >
               Enviar
             </button>
