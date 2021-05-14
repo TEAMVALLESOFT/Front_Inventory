@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import './Styles.css'
 
 import Alert from '../Alerts/Alert'
-import { validateEmail } from '../../Functions/Helpers'
+import { validateEmail, validateString } from '../../Functions/Helpers'
 import { simpleRequest } from '../../Functions/Post'
 import {
   CREATE_WAREHOUSE,
@@ -10,6 +10,8 @@ import {
   ERROR_MESSAGE,
   EMAIL_MESSAGE,
   ALERT_TIMEOUT,
+  NO_EMAIL_ERROR,
+  INVALID_STRING_MESSAGE,
 } from '../../Functions/Constants'
 
 class CreateWarehouse extends Component {
@@ -74,7 +76,7 @@ class CreateWarehouse extends Component {
       return this.clearInputs()
     }
 
-    if (body.message == 'Not Found') {
+    if (body == NO_EMAIL_ERROR) {
       return this.buildAlert(
         'attention',
         'El correo ingresado no pertenece a un usuario registrado.'
@@ -96,6 +98,12 @@ class CreateWarehouse extends Component {
     // Verify that the email format is valid
     if (!validateEmail(this.state.email)) {
       setTimeout(() => this.buildAlert('attention', EMAIL_MESSAGE), 10)
+      return
+    }
+
+    // Verify that desc are valid
+    if (!validateString(this.state.address) || !validateString(this.state.desc)) {
+      setTimeout(() => this.buildAlert('attention', INVALID_STRING_MESSAGE), 10)
       return
     }
 

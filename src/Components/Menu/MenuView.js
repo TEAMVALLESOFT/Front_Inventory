@@ -3,17 +3,20 @@ import './Styles.css'
 
 import ListUsers from '../Users/ListUsers'
 import CreateUser from '../Users/CreateUser'
+import ModifyUser from '../Users/ModifyUser'
 import CreateArticleType from '../ArticleType/CreateArticleType'
 import CreateWarehouse from '../Warehouses/CreateWarehouse'
+import ListArticle from '../Articles/ListArticle'
 import CreateArticle from '../Articles/CreateArticle'
+import ModifyArticle from '../Articles/ModifyArticle'
 import CreateBorrowing from '../Borrowing/CreateBorrowing'
 import AuthBorrowingRequest from '../Borrowing/AuthBorrowingRequest'
 import CreateReturning from '../Returning/CreateReturning'
-import ListArticle from '../Articles/ListArticle'
 import AuthReturningRequest from '../Returning/AuthReturningRequest'
 
 import { setOptionsByRol } from '../../Functions/MenuOptions'
 import { parseOptionToStatic } from '../../Functions/Helpers'
+import ModifyBorrowing from '../Borrowing/ModifyBorrowing'
 
 class MenuView extends Component {
   constructor() {
@@ -34,21 +37,20 @@ class MenuView extends Component {
     switch (rol) {
       case 'administrador':
         id = id + 1
-        this.setState({ selected: 1 })
         break
 
       case 'jefe de bodega':
         id = id + 3
         num = 5
-        this.setState({ selected: 5 })
         break
 
       default:
-        id = id + 5
-        num = 9
-        this.setState({ selected: 9 })
+        id = id + 4
+        num = 6
         break
     }
+
+    this.setState({ selected: num })
 
     let component = document.getElementById(id)
     component.style.display = 'block'
@@ -108,8 +110,7 @@ class MenuView extends Component {
       case 2:
         return <CreateUser />
       case 3:
-        // MODIFY USER
-        return <div></div>
+        return <ModifyUser />
       case 4:
         return <CreateWarehouse />
       case 5:
@@ -124,8 +125,7 @@ class MenuView extends Component {
       case 7:
         return <CreateArticle />
       case 8:
-        // MODIFY ARTICLE
-        return <div></div>
+        return <ModifyArticle />
       case 9:
         // LIST BORROWINGS
         return <div></div>
@@ -133,7 +133,7 @@ class MenuView extends Component {
         return <CreateBorrowing />
       case 11:
         // MODIFY BORROWING
-        return <div></div>
+        return <ModifyBorrowing />
       case 12:
         return (
           <AuthBorrowingRequest

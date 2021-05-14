@@ -44,6 +44,7 @@ export const LOGIN = 'user/login'
 export const LIST_USERS = 'user/list'
 export const USERS_BY_ID = 'user/detail'
 export const CREATE_USER = 'user/create'
+export const MODIFY_USER = 'user/update'
 export const CREATE_WAREHOUSE = 'warehouse/create'
 export const LIST_WAREHOUSES = 'warehouse/list'
 export const CREATE_ARTICLE_TYPE = 'article_type/create'
@@ -60,6 +61,9 @@ export const RETURNING_BY_ID = 'returning/id'
 export const LIST_RETURNINGS = 'returning/list'
 export const RETURNING_APPROVED = 'returning/approved'
 export const RETURNING_REJECTED = 'returning/rejected'
+export const RECOVER_PASSWORD = 'user/recover_pass'
+export const TOKEN_VERIFICATION = 'user/token_verification'
+export const PASSWORD_CHANGE = 'user/password_change'
 
 // ALERTS
 export const MANDATORY_MESSAGE =
@@ -70,13 +74,18 @@ export const EMAIL_MESSAGE =
   'El formato del correo electrónico no es válido. Por favor verifique.'
 export const NO_ITEM_MESSAGE =
   'No hay registros disponibles para esta selección.'
+export const INVALID_STRING_MESSAGE =
+  'Alguno de los campos ingresados supera la extensión permitida o se detectó un patrón inválido. Por favor revise los campos.'
 export const ALERT_TIMEOUT = 6000
 
 // ERRORS
 export const NO_ITEMS_ERROR = 'No hay registros en el sistema.'
-export const INVALID_CLASSIF_ERROR = 'INVALID CLASIFICATION'
+export const INVALID_CLASSIF_ERROR = 'La clasificación es inválida.'
 export const INVALID_LOGIN_ERROR = 'Error en el usuario o contraseña.'
 export const USED_EMAIL_ERROR = 'El correo electrónico ya se encuentra en uso.'
+export const ARTICLE_TYPE_EXIST_ERROR = 'El tipo de artículo deseado ya existe.'
+export const NO_EMAIL_ERROR =
+  'El correo electrónico no se encuentra registrado.'
 
 // OTHERS
 export const DAY_IN_MS = 1000 * 60 * 60 * 24

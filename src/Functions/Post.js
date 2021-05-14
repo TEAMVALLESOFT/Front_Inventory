@@ -30,3 +30,20 @@ export function simpleRequest(path, type, data, responseHandler) {
     })
     .catch((error) => responseHandler('error', error))
 }
+
+export async function asyncRequest(path, type, data, responseHandlerStep) {
+  let url = HOST + path
+  return fetch(url, {
+    method: type,
+    body: JSON.stringify(data),
+    headers: {
+      'Content-Type': 'application/json',
+      token: sessionStorage.getItem('token'),
+    },
+  }).then((x)=> {
+    return x.clone().json()
+  }).then((response) => {
+    return response}
+  )
+  .catch((error) => console.log("errorrrrr ", error))
+}
