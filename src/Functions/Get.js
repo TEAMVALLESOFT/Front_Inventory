@@ -295,6 +295,10 @@ export function getElementById(path, responseHandler) {
         return responseHandler('error', response.error)
       }
 
+      if (response.hasOwnProperty('rows')) {
+        return responseHandler('success', response.rows[0])
+      }
+
       return responseHandler('success', response[0])
     })
     .catch((error) => responseHandler('error', error))
