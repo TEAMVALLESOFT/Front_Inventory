@@ -166,7 +166,19 @@ class ListArticle extends Component {
 
   routeEdit = (event) => {
     let id = event.target.id.split('-')
-    sessionStorage.setItem('edit_article_id', id[1])
+    let articles = this.state.articles
+    let article = {}
+
+    for (let i = 0; i < articles.length; i++) {
+      let obj = articles[i]
+      if (parseInt(id[1]) == obj.id) {
+        article = obj
+        continue
+      }
+    }
+
+    let json = JSON.stringify(article)
+    sessionStorage.setItem('edit_article', json)
 
     return this.props.changeSelected(8)
   }
