@@ -30,6 +30,13 @@ export const STATES = [
   { name: 'No funcional', value: 'No funcional' },
 ]
 
+export const AUTH_STATES = [
+  { name: 'Pendiente', value: 'Pendiente' },
+  { name: 'Denegado', value: 'Denegado' },
+  { name: 'Aprobado', value: 'Aprobado' },
+]
+
+
 export const ROL_TYPES = [
   { name: 'Administrador', value: 'administrador' },
   { name: 'Jefe De Bodega', value: 'jefe de bodega' },

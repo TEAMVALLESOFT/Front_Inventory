@@ -7,7 +7,7 @@ import {
   MANDATORY_MESSAGE,
   ERROR_MESSAGE,
   ALERT_TIMEOUT,
-  AVAILABILITIES,
+  AUTH_STATES,
   INVALID_STRING_MESSAGE,
   STATES,
   MODIFY_RETURNING,
@@ -20,7 +20,7 @@ class ModifyReturning extends Component {
       // Request states
       id: 0,
       state: '',
-      availability: '',
+      auth_state: '',
       obs: '',
 
       // Auxiliary form states
@@ -46,7 +46,7 @@ class ModifyReturning extends Component {
       // Request states
       id: 0,
       state: '',
-      availability: '',
+      auth_state: '',
       obs: '',
     })
   }
@@ -95,8 +95,8 @@ class ModifyReturning extends Component {
     }
 
     let body = {
-      id: this.state.id,
-      article_state: this.state.availability,
+      returning_id: this.state.id,
+      auth_state: this.state.auth_state,
       state: this.state.state,
       obs: this.state.obs,
     }
@@ -114,7 +114,7 @@ class ModifyReturning extends Component {
         return false
     }
 
-    if (!this.state.availability) {
+    if (!this.state.auth_state) {
       return false
     }
 
@@ -177,9 +177,9 @@ class ModifyReturning extends Component {
               <strong className='global-form-mandatory'> *</strong>
             </span>
             <select
-              id='availability'
+              id='auth_state'
               className='global-form-input-select'
-              value={this.state.availability}
+              value={this.state.auth_state}
               onChange={this.handleChange}
             >
               <option
@@ -189,7 +189,7 @@ class ModifyReturning extends Component {
               >
                 Seleccione un estado...
               </option>
-              {setSelectOptions(AVAILABILITIES)}
+              {setSelectOptions(AUTH_STATES)}
             </select>
           </div>
           <div className='global-form-group'>
