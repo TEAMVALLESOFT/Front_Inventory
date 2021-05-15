@@ -11,12 +11,13 @@ import CreateArticle from '../Articles/CreateArticle'
 import ModifyArticle from '../Articles/ModifyArticle'
 import CreateBorrowing from '../Borrowing/CreateBorrowing'
 import AuthBorrowingRequest from '../Borrowing/AuthBorrowingRequest'
+import ModifyBorrowing from '../Borrowing/ModifyBorrowing'
 import CreateReturning from '../Returning/CreateReturning'
 import AuthReturningRequest from '../Returning/AuthReturningRequest'
+import ModifyReturning from '../Returning/ModifyReturning'
 
 import { setOptionsByRol } from '../../Functions/MenuOptions'
 import { parseOptionToStatic } from '../../Functions/Helpers'
-import ModifyBorrowing from '../Borrowing/ModifyBorrowing'
 
 class MenuView extends Component {
   constructor() {
@@ -154,7 +155,7 @@ class MenuView extends Component {
         )
       case 15:
         // MODIFY RETURNING
-        return <div></div>
+        return <ModifyReturning />
       case 16:
         return (
           <AuthReturningRequest
