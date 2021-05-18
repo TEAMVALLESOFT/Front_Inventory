@@ -2,12 +2,8 @@ import React, { Component } from 'react'
 import './Styles.css'
 
 import { getElementById } from '../../Functions/Get'
-import { simpleRequest } from '../../Functions/Post'
-import {
-  BORROWING_BY_ID,
-  BORROWING_REJECTED,
-  BORROWING_APPROVED,
-} from '../../Functions/Constants'
+import { formatDateToLocal } from '../../Functions/Helpers'
+import { BORROWING_BY_ID } from '../../Functions/Constants'
 
 class AuthModal extends Component {
   constructor() {
@@ -16,24 +12,18 @@ class AuthModal extends Component {
       // Information states
       user_name: '',
       warehouse_name: '',
+      pick_up_date: '',
+      return_date: '',
+      auth_state: '',
+      auth_user: '',
       article_list: [],
-
-      // Form states
       obs: '',
     }
   }
 
   componentDidMount() {
     let path = BORROWING_BY_ID + '?borrowing_id=' + this.props.borrowing_id
-    return getElementById(path, this.setBorrowingInformation)
-  }
-
-  // Functions to handle states
-  handleChange = (event) => {
-    let attribute = event.target.id
-    let value = event.target.value
-
-    return this.setState({ [attribute]: value })
+    return getElementById(path, this.setBorrowingInfo)
   }
 
   // Functions to handle modal
@@ -42,7 +32,8 @@ class AuthModal extends Component {
   }
 
   // Functions related to requests
-  setBorrowingInformation = (response, body) => {
+  setBorrowingInfo = (response, body) => {
+    console.log(body)
     if (response == 'success') {
       // This line renders the modal only if the request was successful
       document.getElementById('modal').style.display = 'block'
@@ -60,6 +51,11 @@ class AuthModal extends Component {
         user_name: body.Asociado.user_name,
         warehouse_name: body.article_list[0].Articulo.Bodega.warehouse_name,
         article_list: list,
+        pick_up_date: formatDateToLocal(body.pick_up_date),
+        return_date: formatDateToLocal(body.return_date),
+        auth_state: body.auth_state,
+        auth_user: body.Autoriza.user_name,
+        obs: body.obs,
       })
     }
 
@@ -71,25 +67,6 @@ class AuthModal extends Component {
   responseHandler = (response, body) => {
     this.props.handleAlerts(response, body)
     return this.props.closeModal()
-  }
-
-  authorize = (event) => {
-    let body = {
-      borrowing_id: this.props.borrowing_id,
-      auth_user_fk: sessionStorage.getItem('user_id'),
-      obs: this.state.obs,
-    }
-
-    if (event.target.id == 'approve') {
-      return simpleRequest(
-        BORROWING_APPROVED,
-        'PUT',
-        body,
-        this.responseHandler
-      )
-    }
-
-    return simpleRequest(BORROWING_REJECTED, 'PUT', body, this.responseHandler)
   }
 
   // Auxiliary functions
@@ -116,7 +93,7 @@ class AuthModal extends Component {
         <div className='global-modal-container'>
           <div className='global-modal-header'>
             <span className='global-modal-title'>
-              Autorizar solicitud # {this.props.borrowing_id}
+              Solicitud # {this.props.borrowing_id}
             </span>
             <img
               className='global-modal-icon'
@@ -131,9 +108,33 @@ class AuthModal extends Component {
               <span className='global-modal-text'>{this.state.user_name}</span>
             </div>
             <div className='global-modal-group-container'>
+              <span className='global-form-label'>Fecha recogida</span>
+              <span className='global-modal-text'>
+                {this.state.pick_up_date}
+              </span>
+            </div>
+            <div className='global-modal-group-container'>
+              <span className='global-form-label'>Nombre devolución</span>
+              <span className='global-modal-text'>
+                {this.state.return_date}
+              </span>
+            </div>
+            <div className='global-modal-group-container'>
               <span className='global-form-label'>Bodega</span>
               <span className='global-modal-text'>
                 {this.state.warehouse_name}
+              </span>
+            </div>
+            <div className='global-modal-group-container'>
+              <span className='global-form-label'>Estado</span>
+              <span className='global-modal-text'>{this.state.auth_state}</span>
+            </div>
+            <div className='global-modal-group-container'>
+              <span className='global-form-label'>Autorizador</span>
+              <span className='global-modal-text'>
+                {this.state.auth_user
+                  ? this.state.auth_userthis.state.auth_user
+                  : 'N/A'}
               </span>
             </div>
             <div
@@ -144,33 +145,10 @@ class AuthModal extends Component {
               <ul>{article_list}</ul>
             </div>
             <div className='global-modal-group-container'>
-              <span className='global-form-label'>Agregar observaciones</span>
-              <input
-                id='obs'
-                type='text'
-                className='global-form-input'
-                value={this.state.obs}
-                maxlength='255'
-                onChange={this.handleChange}
-              />
-            </div>
-            <div className='global-modal-button-container'>
-              <button
-                id='reject'
-                className='global-form-outline-button'
-                style={{ height: '30px' }}
-                onClick={this.authorize}
-              >
-                Denegar
-              </button>
-              <button
-                id='approve'
-                className='global-form-solid-button'
-                style={{ height: '30px' }}
-                onClick={this.authorize}
-              >
-                Aprobar
-              </button>
+              <span className='global-form-label'>Observaciones</span>
+              <span className='global-modal-text'>
+                {this.state.obs ? this.state.obs : 'N/A'}
+              </span>
             </div>
           </div>
         </div>

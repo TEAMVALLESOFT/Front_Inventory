@@ -9,6 +9,7 @@ import CreateWarehouse from '../Warehouses/CreateWarehouse'
 import ListArticle from '../Articles/ListArticle'
 import CreateArticle from '../Articles/CreateArticle'
 import ModifyArticle from '../Articles/ModifyArticle'
+import ListBorrowings from '../Borrowing/ListBorrowings'
 import CreateBorrowing from '../Borrowing/CreateBorrowing'
 import AuthBorrowingRequest from '../Borrowing/AuthBorrowingRequest'
 import ModifyBorrowing from '../Borrowing/ModifyBorrowing'
@@ -129,12 +130,16 @@ class MenuView extends Component {
       case 8:
         return <ModifyArticle />
       case 9:
-        // LIST BORROWINGS
-        return <div></div>
+        return (
+          <ListBorrowings
+            changeSelected={this.changeSelectedFromComponent}
+            showModal={this.showModal}
+            closeModal={this.closeModal}
+          />
+        )
       case 10:
         return <CreateBorrowing />
       case 11:
-        // MODIFY BORROWING
         return <ModifyBorrowing />
       case 12:
         return (

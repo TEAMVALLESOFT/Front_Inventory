@@ -33,9 +33,8 @@ export const STATES = [
 export const AUTH_STATES = [
   { name: 'Pendiente', value: 'Pendiente' },
   { name: 'Denegado', value: 'Denegado' },
-  { name: 'Aprobado', value: 'Aprobado' },
+  { name: 'Aprobada', value: 'Aprobada' },
 ]
-
 
 export const ROL_TYPES = [
   { name: 'Administrador', value: 'administrador' },
