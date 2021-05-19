@@ -61,7 +61,6 @@ class ListBorrowings extends Component {
   }
 
   setBorrowings = async (response, body) => {
-    console.log(body)
     if (response == 'success') {
       this.setState({ filtered_borrowings: body })
       return this.setState({ borrowings: body })
@@ -74,6 +73,10 @@ class ListBorrowings extends Component {
     }
 
     return this.buildAlert('error', ERROR_MESSAGE)
+  }
+
+  export = () => {
+    return alert('Aún no implementado.')
   }
 
   // Functions to handle alerts
@@ -98,7 +101,7 @@ class ListBorrowings extends Component {
     let id = event.target.id.split('-')
 
     if (parseInt(id[1]) < 1) {
-      setTimeout(() => this.buildAlert('attention', ERROR_MESSAGE), 10)
+      setTimeout(() => this.buildAlert('error', ERROR_MESSAGE), 10)
       return
     }
 
@@ -139,7 +142,10 @@ class ListBorrowings extends Component {
 
     if (rows.length < 1) {
       return (
-        <span className='global-body-text' style={{ marginBottom: '0px' }}>
+        <span
+          className='global-body-text'
+          style={{ marginBottom: '0px', marginTop: '20px' }}
+        >
           Actualmente no hay préstamos con los filtros seleccionados.
         </span>
       )
@@ -178,7 +184,7 @@ class ListBorrowings extends Component {
     }
 
     let table = (
-      <table style={{marginTop: '20px'}}>
+      <table style={{ marginTop: '20px' }}>
         <tbody>
           <tr>
             <th>Referencia</th>

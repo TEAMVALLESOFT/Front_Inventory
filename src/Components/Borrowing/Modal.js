@@ -33,7 +33,6 @@ class AuthModal extends Component {
 
   // Functions related to requests
   setBorrowingInfo = (response, body) => {
-    console.log(body)
     if (response == 'success') {
       // This line renders the modal only if the request was successful
       document.getElementById('modal').style.display = 'block'
@@ -54,7 +53,7 @@ class AuthModal extends Component {
         pick_up_date: formatDateToLocal(body.pick_up_date),
         return_date: formatDateToLocal(body.return_date),
         auth_state: body.auth_state,
-        auth_user: body.Autoriza.user_name,
+        auth_user: body.Autoriza ? body.Autoriza.user_name : '',
         obs: body.obs,
       })
     }
@@ -87,6 +86,7 @@ class AuthModal extends Component {
 
   render() {
     let article_list = this.setArticleList()
+    let state = this.state
 
     return (
       <div id='modal' className='global-modal-background'>
@@ -105,36 +105,28 @@ class AuthModal extends Component {
           <div className='global-modal-body'>
             <div className='global-modal-group-container'>
               <span className='global-form-label'>Nombre solicitante</span>
-              <span className='global-modal-text'>{this.state.user_name}</span>
+              <span className='global-modal-text'>{state.user_name}</span>
             </div>
             <div className='global-modal-group-container'>
               <span className='global-form-label'>Fecha recogida</span>
-              <span className='global-modal-text'>
-                {this.state.pick_up_date}
-              </span>
+              <span className='global-modal-text'>{state.pick_up_date}</span>
             </div>
             <div className='global-modal-group-container'>
               <span className='global-form-label'>Nombre devolución</span>
-              <span className='global-modal-text'>
-                {this.state.return_date}
-              </span>
+              <span className='global-modal-text'>{state.return_date}</span>
             </div>
             <div className='global-modal-group-container'>
               <span className='global-form-label'>Bodega</span>
-              <span className='global-modal-text'>
-                {this.state.warehouse_name}
-              </span>
+              <span className='global-modal-text'>{state.warehouse_name}</span>
             </div>
             <div className='global-modal-group-container'>
               <span className='global-form-label'>Estado</span>
-              <span className='global-modal-text'>{this.state.auth_state}</span>
+              <span className='global-modal-text'>{state.auth_state}</span>
             </div>
             <div className='global-modal-group-container'>
               <span className='global-form-label'>Autorizador</span>
               <span className='global-modal-text'>
-                {this.state.auth_user
-                  ? this.state.auth_userthis.state.auth_user
-                  : 'N/A'}
+                {state.auth_user ? state.auth_user : 'N/A'}
               </span>
             </div>
             <div
@@ -147,7 +139,7 @@ class AuthModal extends Component {
             <div className='global-modal-group-container'>
               <span className='global-form-label'>Observaciones</span>
               <span className='global-modal-text'>
-                {this.state.obs ? this.state.obs : 'N/A'}
+                {state.obs ? state.obs : 'N/A'}
               </span>
             </div>
           </div>

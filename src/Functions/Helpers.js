@@ -1,7 +1,8 @@
 import { DATE_OPTIONS } from './Constants'
 
 export function validateEmail(email) {
-  const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+  const re =
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
   return re.test(String(email).toLowerCase())
 }
 
@@ -11,7 +12,8 @@ export function validateString(string) {
     return false
   }
 
-  const re = /\b(ALTER|CREATE|DELETE|DROP|EXEC(UTE){0,1}|INSERT( +INTO){0,1}|MERGE|SELECT|UPDATE|UNION( +ALL){0,1})\b/gm
+  const re =
+    /\b(ALTER|CREATE|DELETE|DROP|EXEC(UTE){0,1}|INSERT( +INTO){0,1}|MERGE|SELECT|UPDATE|UNION( +ALL){0,1})\b/gm
   return !re.test(String(string).toUpperCase())
 }
 
@@ -71,6 +73,21 @@ export function formatDateToLocal(date_string) {
     ' ' +
     date.toLocaleTimeString()
   )
+}
+
+export function formatDate(date_string) {
+  let date = new Date(date_string)
+
+  let year = date.getFullYear()
+  let day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate()
+  let hours = date.getHours() < 10 ? '0' + date.getHours() : date.getHours()
+  let mins =
+    date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()
+
+  let month = date.getMonth() + 1
+  month = month < 10 ? '0' + month : month
+
+  return year + '-' + month + '-' + day + 'T' + hours + ':' + mins
 }
 
 // Returns true if the first date is greater than the second
