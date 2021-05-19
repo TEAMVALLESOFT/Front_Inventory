@@ -5,7 +5,7 @@ import { getElementById } from '../../Functions/Get'
 import { formatDateToLocal } from '../../Functions/Helpers'
 import { BORROWING_BY_ID } from '../../Functions/Constants'
 
-class AuthModal extends Component {
+class Modal extends Component {
   constructor() {
     super()
     this.state = {
@@ -149,4 +149,4 @@ class AuthModal extends Component {
   }
 }
 
-export default AuthModal
+export default Modal
