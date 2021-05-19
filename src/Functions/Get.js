@@ -334,3 +334,30 @@ export function getElements(key, path, responseHandler) {
     })
     .catch((error) => responseHandler('error', error))
 }
+
+export function getFile(path, responseHandler) {
+  // Path should have id as param
+  let url = HOST + path
+
+  fetch(url, {
+    method: 'GET',
+    headers: {
+      token: sessionStorage.getItem('token'),
+    },
+  })
+    .then(handleErrors)
+    .then((response) => {
+      if (response.hasOwnProperty('error')) {
+        return responseHandler('error', response.error)
+      }
+
+      return response
+    })
+    .then((response) => {
+      return response.blob()
+    })
+    .then((blob) => {
+      return responseHandler('success', blob)
+    })
+    .catch((error) => responseHandler('error', error))
+}

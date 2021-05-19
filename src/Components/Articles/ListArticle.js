@@ -1,15 +1,18 @@
 import React, { Component } from 'react'
+import { saveAs } from 'file-saver'
 import './Styles.css'
 
 import Alert from '../Alerts/Alert'
 import Modal from './Modal'
 import {
+  getFile,
   getArticles,
   getWarehouses,
   getAllArticleTypes,
 } from '../../Functions/Get'
 import { setSelectOptions } from '../../Functions/Helpers'
 import {
+  GET_FILE_ARTICLE,
   AVAILABILITIES,
   ALERT_TIMEOUT,
   NO_ITEM_MESSAGE,
@@ -183,6 +186,27 @@ class ListArticle extends Component {
     return this.props.changeSelected(8)
   }
 
+  responseHandler = (response, blob) => {
+    if (response == 'success') {
+      let date = new Date()
+      let year = date.getFullYear()
+      let month = date.getMonth() + 1
+      let day = date.getDate()
+
+      return saveAs(
+        blob,
+        year + '_' + month + '_' + day + '_' + 'Articles.xlsx'
+      )
+    }
+
+    return this.buildAlert('error', ERROR_MESSAGE)
+  }
+
+  export = () => {
+    return getFile(GET_FILE_ARTICLE, this.responseHandler)
+  }
+
+  // Functions to handle alerts
   close = () => {
     return this.setState({ alert: '' })
   }
@@ -300,6 +324,18 @@ class ListArticle extends Component {
           listas desplegables para filtrar los elementos.
         </span>
         <div className='global-comp-form-container'>
+          <span className='global-comp-sub-title'>EXPORTAR INVENTARIO</span>
+          <span className='global-body-text'>
+            Para exportar toda la información de los artículos del inventario,
+            por favor de{' '}
+            <span className='global-table-link' onClick={this.export}>
+              clic aquí
+            </span>
+            .
+          </span>
+          <span className='global-comp-sub-title'>
+            LISTADO DE ARTÍCULOS FILTRADO
+          </span>
           <div className='global-special-form-group'>
             <select
               id='warehouse_fk'
