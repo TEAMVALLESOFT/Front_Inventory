@@ -42,7 +42,10 @@ class RecoverPassword extends Component {
 
   responseHandler = (response) => {
     if (response == 'success') {
-      return this.buildAlert('success', 'Petición realizada con éxito')
+      this.buildAlert('success', 'Petición realizada con éxito')
+      setTimeout(() => {
+        return this.props.changeView('Login')
+      } , 2000)
     }
     return this.buildAlert('error', ERROR_MESSAGE)
   }
@@ -223,9 +226,6 @@ class RecoverPassword extends Component {
     }
 
     simpleRequest(PASSWORD_CHANGE, 'PUT', body, this.responseHandler)
-    setTimeout(() => {
-      return this.props.changeView('Login')
-    } , 2000)
   }
 
   async anotherStep() {
