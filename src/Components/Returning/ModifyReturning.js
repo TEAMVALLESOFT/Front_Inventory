@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import './Styles.css'
 
 import Alert from '../Alerts/Alert'
 import { validateString, setSelectOptions } from '../../Functions/Helpers'
@@ -8,20 +7,20 @@ import {
   MANDATORY_MESSAGE,
   ERROR_MESSAGE,
   ALERT_TIMEOUT,
-  AVAILABILITIES,
+  AUTH_STATES,
   INVALID_STRING_MESSAGE,
-  MODIFY_BORROWING,
+  STATES,
+  MODIFY_RETURNING,
 } from '../../Functions/Constants'
 
-class ModifyBorrowing extends Component {
+class ModifyReturning extends Component {
   constructor() {
     super()
     this.state = {
       // Request states
       id: 0,
-      pick_up_date: '',
-      return_date: '',
-      availability: '',
+      state: '',
+      auth_state: '',
       obs: '',
 
       // Auxiliary form states
@@ -46,9 +45,8 @@ class ModifyBorrowing extends Component {
     return this.setState({
       // Request states
       id: 0,
-      pick_up_date: '',
-      return_date: '',
-      availability: '',
+      state: '',
+      auth_state: '',
       obs: '',
     })
   }
@@ -73,7 +71,7 @@ class ModifyBorrowing extends Component {
   responseHandler = (response, body) => {
     if (response == 'success') {
       sessionStorage.removeItem('users')
-      this.buildAlert('success', 'Préstamo modificado con éxito.')
+      this.buildAlert('success', 'Constancia modificado con éxito.')
 
       return this.clearInputs()
     }
@@ -81,7 +79,7 @@ class ModifyBorrowing extends Component {
     return this.buildAlert('error', ERROR_MESSAGE)
   }
 
-  modifyBorrowing = () => {
+  modifyReturning = () => {
     this.close()
 
     // Verify that the required fields are filled
@@ -97,14 +95,13 @@ class ModifyBorrowing extends Component {
     }
 
     let body = {
-      id: this.state.id,
-      pick_up_date: this.state.pick_up_date,
-      return_date: this.state.return_date,
-      availability: this.state.availability,
+      returning_id: this.state.id,
+      auth_state: this.state.auth_state,
+      state: this.state.state,
       obs: this.state.obs,
     }
 
-    return simpleRequest(MODIFY_BORROWING, 'PUT', body, this.responseHandler)
+    return simpleRequest(MODIFY_RETURNING, 'PUT', body, this.responseHandler)
   }
 
   // Auxiliary functions
@@ -113,15 +110,11 @@ class ModifyBorrowing extends Component {
       return false
     }
 
-    if (!this.state.pick_up_date) {
-      return false
+    if (!this.state.state) {
+        return false
     }
 
-    if (!this.state.return_date) {
-      return false
-    }
-
-    if (!this.state.availability) {
+    if (!this.state.auth_state) {
       return false
     }
 
@@ -132,15 +125,15 @@ class ModifyBorrowing extends Component {
     return (
       <div className='cu-container'>
         {this.state.alert}
-        <span className='global-comp-title'>Modificar préstamo</span>
+        <span className='global-comp-title'>Modificar constancia</span>
         <span className='global-comp-description'>
-          Diligencie el formulario para editar un préstamo. Puede especificar la
-          referencia o seleccionar la acción de editar en la opción de listar préstamos.
+          Diligencie el formulario para editar una constancia. Puede especificar la
+          referencia o seleccionar la acción de editar en la opción de listar constancias.
         </span>
         <div className='global-comp-form-container'>
-          <span className='global-comp-sub-title'>ESPECIFIQUE EL PRÉSTAMO</span>
+          <span className='global-comp-sub-title'>ESPECIFIQUE LA CONSTANCIA</span>
           <span className='global-body-text'>
-            Si fue redirigido a través de la opción listar préstamos, los
+            Si fue redirigido a través de la opción listar constancias, los
             siguientes campos se diligencian de forma automática.
           </span>
           <div className='global-form-group'>
@@ -156,42 +149,16 @@ class ModifyBorrowing extends Component {
               onChange={this.handleChange}
             />
           </div>
-          <span className='global-comp-sub-title'>EDITE EL PRÉSTAMO</span>
+          <span className='global-comp-sub-title'>EDITE LA CONSTANCIA</span>
           <div className='global-form-group'>
             <span className='global-form-label'>
-              Fecha de recogida
-              <strong className='global-form-mandatory'> *</strong>
-            </span>
-            <input
-              id='pick_up_date'
-              value={this.state.pick_up_date}
-              onChange={this.handleChange}
-              className='global-form-input'
-              type='datetime-local'
-            />
-          </div>
-          <div className='global-form-group'>
-            <span className='global-form-label'>
-              Fecha de devolución
-              <strong className='global-form-mandatory'> *</strong>
-            </span>
-            <input
-              id='return_date'
-              value={this.state.return_date}
-              onChange={this.handleChange}
-              className='global-form-input'
-              type='datetime-local'
-            />
-          </div>
-          <div className='global-form-group'>
-            <span className='global-form-label'>
-              Estado
+              Estado artículos
               <strong className='global-form-mandatory'> *</strong>
             </span>
             <select
-              id='availability'
+              id='state'
               className='global-form-input-select'
-              value={this.state.availability}
+              value={this.state.state}
               onChange={this.handleChange}
             >
               <option
@@ -201,7 +168,28 @@ class ModifyBorrowing extends Component {
               >
                 Seleccione un estado...
               </option>
-              {setSelectOptions(AVAILABILITIES)}
+              {setSelectOptions(STATES)}
+            </select>
+          </div>
+          <div className='global-form-group'>
+            <span className='global-form-label'>
+              Estado constancia
+              <strong className='global-form-mandatory'> *</strong>
+            </span>
+            <select
+              id='auth_state'
+              className='global-form-input-select'
+              value={this.state.auth_state}
+              onChange={this.handleChange}
+            >
+              <option
+                value=''
+                className='global-form-input-select-option'
+                disabled={true}
+              >
+                Seleccione un estado...
+              </option>
+              {setSelectOptions(AUTH_STATES)}
             </select>
           </div>
           <div className='global-form-group'>
@@ -217,7 +205,7 @@ class ModifyBorrowing extends Component {
           <div className='global-form-buttons-container'>
             <button
               className='global-form-solid-button'
-              onClick={this.modifyBorrowing}
+              onClick={this.modifyReturning}
             >
               Enviar
             </button>
@@ -234,4 +222,4 @@ class ModifyBorrowing extends Component {
   }
 }
 
-export default ModifyBorrowing
+export default ModifyReturning

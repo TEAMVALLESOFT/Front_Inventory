@@ -30,6 +30,13 @@ export const STATES = [
   { name: 'No funcional', value: 'No funcional' },
 ]
 
+export const AUTH_STATES = [
+  { name: 'Pendiente', value: 'Pendiente' },
+  { name: 'Denegado', value: 'Denegado' },
+  { name: 'Aprobado', value: 'Aprobado' },
+]
+
+
 export const ROL_TYPES = [
   { name: 'Administrador', value: 'administrador' },
   { name: 'Jefe De Bodega', value: 'jefe de bodega' },
@@ -63,6 +70,7 @@ export const RETURNING_BY_ID = 'returning/id'
 export const LIST_RETURNINGS = 'returning/list'
 export const RETURNING_APPROVED = 'returning/approved'
 export const RETURNING_REJECTED = 'returning/rejected'
+export const MODIFY_RETURNING = 'returning/update'
 export const RECOVER_PASSWORD = 'user/recover_pass'
 export const TOKEN_VERIFICATION = 'user/token_verification'
 export const PASSWORD_CHANGE = 'user/password_change'
