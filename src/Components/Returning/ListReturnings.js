@@ -3,9 +3,10 @@ import './Styles.css'
 
 import Alert from '../Alerts/Alert'
 import Modal from './AuthReturningModal'
-import { getElements } from '../../Functions/Get'
+import { getElements, getFile } from '../../Functions/Get'
 import { setSelectOptions, formatDateToLocal } from '../../Functions/Helpers'
 import {
+  GET_FILE_RETURNING,
   LIST_RETURNINGS,
   ALERT_TIMEOUT,
   NO_ITEMS_ERROR,
@@ -52,14 +53,6 @@ class ListReturnings extends Component {
   }
 
   // Functions related to requests
-  responseHandler = (response, body) => {
-    if (response == 'success') {
-      return
-    }
-
-    return this.buildAlert('error', ERROR_MESSAGE)
-  }
-
   setReturnings = async (response, body) => {
     if (response == 'success') {
       this.setState({ filtered_returnings: body })
@@ -75,8 +68,24 @@ class ListReturnings extends Component {
     return this.buildAlert('error', ERROR_MESSAGE)
   }
 
+  responseHandler = (response, blob) => {
+    if (response == 'success') {
+      let date = new Date()
+      let year = date.getFullYear()
+      let month = date.getMonth() + 1
+      let day = date.getDate()
+
+      return saveAs(
+        blob,
+        year + '_' + month + '_' + day + '_' + 'devoluciones.xlsx'
+      )
+    }
+
+    return this.buildAlert('error', ERROR_MESSAGE)
+  }
+
   export = () => {
-    return alert('Aún no implementado.')
+    return getFile(GET_FILE_RETURNING, this.responseHandler)
   }
 
   // Functions to handle alerts
@@ -208,8 +217,8 @@ class ListReturnings extends Component {
         {this.state.alert}
         <span className='global-comp-title'>Listar préstamos</span>
         <span className='global-comp-description'>
-          Aquí podrá listar todas las constancias de devolución. Utilice la lista
-          desplegable para filtrar los elementos.
+          Aquí podrá listar todas las constancias de devolución. Utilice la
+          lista desplegable para filtrar los elementos.
         </span>
         <div className='global-comp-form-container'>
           <span className='global-comp-sub-title'>EXPORTAR CONSTANCIA</span>

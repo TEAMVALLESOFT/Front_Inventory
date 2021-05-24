@@ -38,6 +38,19 @@ class ListArticle extends Component {
     }
   }
 
+  componentDidMount() {
+    let warehouse = ''
+    let article_type_fk = ''
+
+    getArticles(warehouse, article_type_fk, this.state.value, this.setArticles)
+    getWarehouses(this.setWarehouses)
+    getAllArticleTypes(this.setArticleTypes)
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.state.timeout)
+  }
+
   // Functions to handle states
   handleChange = (event) => {
     let attribute = event.target.id
@@ -76,20 +89,26 @@ class ListArticle extends Component {
     return this.setState({ [attribute]: value })
   }
 
-  componentDidMount() {
-    let warehouse = ''
-    let article_type_fk = ''
+  routeEdit = (event) => {
+    let id = event.target.id.split('-')
+    let articles = this.state.articles
+    let article = {}
 
-    getArticles(warehouse, article_type_fk, this.state.value, this.setArticles)
-    getWarehouses(this.setWarehouses)
-    getAllArticleTypes(this.setArticleTypes)
+    for (let i = 0; i < articles.length; i++) {
+      let obj = articles[i]
+      if (parseInt(id[1]) == obj.id) {
+        article = obj
+        continue
+      }
+    }
+
+    let json = JSON.stringify(article)
+    sessionStorage.setItem('edit_article', json)
+
+    return this.props.changeSelected(8)
   }
 
-  componentWillUnmount() {
-    clearTimeout(this.state.timeout)
-  }
-
-  // Functions to handle states
+  // Functions related to requests
   setArticles = async (response, body) => {
     if (response == 'success') {
       let temp = []
@@ -167,25 +186,6 @@ class ListArticle extends Component {
     return this.buildAlert('error', ERROR_MESSAGE)
   }
 
-  routeEdit = (event) => {
-    let id = event.target.id.split('-')
-    let articles = this.state.articles
-    let article = {}
-
-    for (let i = 0; i < articles.length; i++) {
-      let obj = articles[i]
-      if (parseInt(id[1]) == obj.id) {
-        article = obj
-        continue
-      }
-    }
-
-    let json = JSON.stringify(article)
-    sessionStorage.setItem('edit_article', json)
-
-    return this.props.changeSelected(8)
-  }
-
   responseHandler = (response, blob) => {
     if (response == 'success') {
       let date = new Date()
@@ -195,7 +195,7 @@ class ListArticle extends Component {
 
       return saveAs(
         blob,
-        year + '_' + month + '_' + day + '_' + 'Articles.xlsx'
+        year + '_' + month + '_' + day + '_' + 'articulos.xlsx'
       )
     }
 
@@ -221,6 +221,17 @@ class ListArticle extends Component {
     return this.setState({
       alert: <Alert type={type} text={text} close={this.close} />,
     })
+  }
+
+  // Functions to handle modal
+  showModal(name, label, obs) {
+    return this.props.showModal(
+      <Modal name={name} label={label} obs={obs} closeModal={this.closeModal} />
+    )
+  }
+
+  closeModal = () => {
+    return this.props.closeModal()
   }
 
   // Auxiliary functions
@@ -300,16 +311,6 @@ class ListArticle extends Component {
     )
 
     return table
-  }
-
-  showModal(name, label, obs) {
-    return this.props.showModal(
-      <Modal name={name} label={label} obs={obs} closeModal={this.closeModal} />
-    )
-  }
-
-  closeModal = () => {
-    return this.props.closeModal()
   }
 
   render() {
