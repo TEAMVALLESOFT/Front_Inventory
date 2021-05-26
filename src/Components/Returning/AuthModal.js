@@ -8,7 +8,7 @@ import {
   RETURNING_REJECTED,
 } from '../../Functions/Constants'
 
-class Modal extends Component {
+class AuthModal extends Component {
   constructor() {
     super()
     this.state = {
@@ -16,6 +16,7 @@ class Modal extends Component {
       user_name: '',
       warehouse_name: '',
       auth_state: '',
+      state: '',
       obs: '',
       article_list: [],
 
@@ -52,6 +53,7 @@ class Modal extends Component {
         user_name: body.evaluador.user_name,
         warehouse_name: body.article_list[0].Articulo.Bodega.warehouse_name,
         auth_state: body.auth_state,
+        state: body.state,
         obs: temp_obs,
         article_list: list,
       })
@@ -147,6 +149,10 @@ class Modal extends Component {
               <ul>{article_list}</ul>
             </div>
             <div className='global-modal-group-container'>
+              <span className='global-form-label'>Estado de los artículos</span>
+              <span className='global-modal-text'>{this.state.state}</span>
+            </div>
+            <div className='global-modal-group-container'>
               <span className='global-form-label'>Observaciones</span>
               <span className='global-modal-text'>{this.state.obs}</span>
             </div>
@@ -175,4 +181,4 @@ class Modal extends Component {
   }
 }
 
-export default Modal
+export default AuthModal

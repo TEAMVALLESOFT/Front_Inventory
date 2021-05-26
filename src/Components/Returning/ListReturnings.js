@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import './Styles.css'
 
 import Alert from '../Alerts/Alert'
-import Modal from './AuthReturningModal'
+import Modal from './Modal'
 import { getElements, getFile } from '../../Functions/Get'
 import { setSelectOptions, formatDateToLocal } from '../../Functions/Helpers'
 import {
@@ -215,7 +215,7 @@ class ListReturnings extends Component {
     return (
       <div className='cu-container'>
         {this.state.alert}
-        <span className='global-comp-title'>Listar préstamos</span>
+        <span className='global-comp-title'>Listar constancias</span>
         <span className='global-comp-description'>
           Aquí podrá listar todas las constancias de devolución. Utilice la
           lista desplegable para filtrar los elementos.
