@@ -240,7 +240,9 @@ class ModifyArticle extends Component {
     return (
       <div className='cu-container'>
         {this.state.alert}
-        <span className='global-comp-title' ref={this.myRef}>Modificar artículo</span>
+        <span className='global-comp-title' ref={this.myRef}>
+          Modificar artículo
+        </span>
         <span className='global-comp-description'>
           Diligencie el formulario para editar un artículo. Puede especificar el
           ID o seleccionar la acción de editar en la opción de listar artículos
@@ -293,7 +295,7 @@ class ModifyArticle extends Component {
           </div>
           <span className='global-comp-sub-title'>EDITE EL ARTÍCULO</span>
           <span className='global-body-text'>
-            El rótulo del artículo será recalculado en función de las
+            La etiqueta del artículo será recalculada en función de las
             modificaciones que realice. Recuerde que si modifica un artículo
             compuesto, la bodega y la rama de los artículos secundarios también
             se modificarán con los mismos valores.

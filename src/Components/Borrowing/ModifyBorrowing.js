@@ -189,9 +189,8 @@ class ModifyBorrowing extends Component {
         {this.state.alert}
         <span className='global-comp-title'>Modificar préstamo</span>
         <span className='global-comp-description'>
-          Diligencie el formulario para editar un préstamo. Puede especificar la
-          referencia o seleccionar la acción de editar en la opción de listar
-          préstamos.
+          Diligencie el formulario para editar un préstamo. Puede especificar el
+          ID o seleccionar la acción de editar en la opción de listar préstamos.
         </span>
         <div className='global-comp-form-container'>
           <span className='global-comp-sub-title'>ESPECIFIQUE EL PRÉSTAMO</span>
@@ -201,7 +200,7 @@ class ModifyBorrowing extends Component {
           </span>
           <div className='global-form-group'>
             <span className='global-form-label'>
-              Referencia
+              ID
               <strong className='global-form-mandatory'> *</strong>
             </span>
             <input

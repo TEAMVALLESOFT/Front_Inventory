@@ -123,7 +123,7 @@ class Modal extends Component {
               </span>
             </div>
             <div className='global-modal-group-container'>
-              <span className='global-form-label'>Referencia préstamo</span>
+              <span className='global-form-label'>ID préstamo</span>
               <span className='global-modal-text'>
                 {this.state.borrowing_fk}
               </span>

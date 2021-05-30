@@ -296,7 +296,7 @@ class ListArticle extends Component {
       <table>
         <tbody>
           <tr>
-            <th>Rótulo</th>
+            <th>Etiqueta</th>
             <th>Clasificación</th>
             <th>Tipo de artículo</th>
             <th>Rama</th>

@@ -75,7 +75,10 @@ class ModifyReturning extends Component {
         obs: body.obs,
       })
 
-      return this.buildAlert('success', 'Información de la constancia recuperada.')
+      return this.buildAlert(
+        'success',
+        'Información de la constancia recuperada.'
+      )
     }
 
     this.clearInputs()
@@ -160,7 +163,7 @@ class ModifyReturning extends Component {
     }
 
     if (!this.state.state) {
-        return false
+      return false
     }
 
     if (!this.state.auth_state) {
@@ -176,18 +179,21 @@ class ModifyReturning extends Component {
         {this.state.alert}
         <span className='global-comp-title'>Modificar constancia</span>
         <span className='global-comp-description'>
-          Diligencie el formulario para editar una constancia. Puede especificar la
-          referencia o seleccionar la acción de editar en la opción de listar constancias.
+          Diligencie el formulario para editar una constancia. Puede especificar
+          el ID o seleccionar la acción de editar en la opción de listar
+          constancias.
         </span>
         <div className='global-comp-form-container'>
-          <span className='global-comp-sub-title'>ESPECIFIQUE LA CONSTANCIA</span>
+          <span className='global-comp-sub-title'>
+            ESPECIFIQUE LA CONSTANCIA
+          </span>
           <span className='global-body-text'>
             Si fue redirigido a través de la opción listar constancias, los
             siguientes campos se diligencian de forma automática.
           </span>
           <div className='global-form-group'>
             <span className='global-form-label'>
-              Referencia
+              ID
               <strong className='global-form-mandatory'> *</strong>
             </span>
             <input

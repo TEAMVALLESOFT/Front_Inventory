@@ -196,7 +196,7 @@ class ListBorrowings extends Component {
       <table style={{ marginTop: '20px' }}>
         <tbody>
           <tr>
-            <th>Referencia</th>
+            <th>ID</th>
             <th>Solicitante</th>
             <th>Fecha de solicitud</th>
             <th>Fecha actualización</th>

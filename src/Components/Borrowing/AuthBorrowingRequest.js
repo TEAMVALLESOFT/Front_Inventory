@@ -147,7 +147,7 @@ class AuthBorrowingRequest extends Component {
       <table>
         <tbody>
           <tr>
-            <th>Referencia</th>
+            <th>ID</th>
             <th>Solicitante</th>
             <th>Fecha de recogida</th>
             <th>Fecha de retorno</th>
