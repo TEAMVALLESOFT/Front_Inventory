@@ -122,7 +122,7 @@ class ModifyReturning extends Component {
 
   responseHandler = (response, body) => {
     if (response == 'success') {
-      sessionStorage.removeItem('users')
+      sessionStorage.removeItem('returnings')
       this.buildAlert('success', 'Constancia modificado con éxito.')
 
       return this.clearInputs()

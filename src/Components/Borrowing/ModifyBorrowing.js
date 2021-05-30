@@ -127,8 +127,10 @@ class ModifyBorrowing extends Component {
 
   responseHandler = (response, body) => {
     if (response == 'success') {
-      this.buildAlert('success', 'Préstamo modificado con éxito.')
       sessionStorage.removeItem('borrowings')
+      sessionStorage.removeItem('filtered_borrowings')
+      sessionStorage.removeItem('borrowing_warehouse_fk')
+      this.buildAlert('success', 'Préstamo modificado con éxito.')
 
       return this.clearInputs()
     }

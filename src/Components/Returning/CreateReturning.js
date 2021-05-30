@@ -31,9 +31,7 @@ class CreateReturning extends Component {
   // Functions related to requests
   responseHandler = (response, body) => {
     if (response == 'success') {
-      sessionStorage.removeItem('borrowings')
-      sessionStorage.removeItem('filtered_borrowings')
-
+      sessionStorage.removeItem('returnings')
       getFilteredBorrowings(this.setBorrowings)
 
       return this.buildAlert(

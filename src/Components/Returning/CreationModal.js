@@ -71,6 +71,7 @@ class CreationModal extends Component {
   }
 
   responseHandler = (response, body) => {
+    sessionStorage.removeItem('returnings')
     this.props.handleAlerts(response, body)
     return this.props.closeModal()
   }

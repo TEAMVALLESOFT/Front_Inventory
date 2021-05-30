@@ -209,8 +209,34 @@ class ListReturnings extends Component {
     return table
   }
 
+  setExport() {
+    let rol = sessionStorage.getItem('user_rol')
+    let array = []
+
+    if (rol == 'jefe de rama') {
+      return array
+    }
+
+    array.push(
+      <span className='global-comp-sub-title'>EXPORTAR CONSTANCIA</span>
+    )
+    array.push(
+      <span className='global-body-text'>
+        Para exportar toda la información de las constancias de devolución, por
+        favor de{' '}
+        <span className='global-table-link' onClick={this.export}>
+          clic aquí
+        </span>
+        .
+      </span>
+    )
+
+    return array
+  }
+
   render() {
     let table = this.setTable()
+    let exportComp = this.setExport()
 
     return (
       <div className='cu-container'>
@@ -221,15 +247,7 @@ class ListReturnings extends Component {
           lista desplegable para filtrar los elementos.
         </span>
         <div className='global-comp-form-container'>
-          <span className='global-comp-sub-title'>EXPORTAR CONSTANCIA</span>
-          <span className='global-body-text'>
-            Para exportar toda la información de las constancias de devolución,
-            por favor de{' '}
-            <span className='global-table-link' onClick={this.export}>
-              clic aquí
-            </span>
-            .
-          </span>
+          {exportComp}
           <span className='global-comp-sub-title'>LISTADO DE CONSTANCIAS</span>
           <select
             id='auth_state'

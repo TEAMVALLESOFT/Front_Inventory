@@ -2,7 +2,11 @@ import React, { Component } from 'react'
 import './Styles.css'
 
 import Alert from '../Alerts/Alert'
-import { validateEmail, setSelectOptions } from '../../Functions/Helpers'
+import {
+  validateString,
+  validateEmail,
+  setSelectOptions,
+} from '../../Functions/Helpers'
 import { getElementById } from '../../Functions/Get'
 import { simpleRequest } from '../../Functions/Post'
 import {
@@ -15,6 +19,7 @@ import {
   ALERT_TIMEOUT,
   BRANCHES,
   ROL_TYPES,
+  INVALID_STRING_MESSAGE,
 } from '../../Functions/Constants'
 
 class ModifyUser extends Component {
@@ -159,6 +164,16 @@ class ModifyUser extends Component {
     // Verify that the email format is valid
     if (!validateEmail(this.state.email)) {
       setTimeout(() => this.buildAlert('attention', EMAIL_MESSAGE), 10)
+      return
+    }
+
+    // Verify strings
+    if (
+      !validateString(this.state.email) ||
+      !validateString(this.state.user_name) ||
+      !validateString(this.state.phone)
+    ) {
+      setTimeout(() => this.buildAlert('attention', INVALID_STRING_MESSAGE), 10)
       return
     }
 

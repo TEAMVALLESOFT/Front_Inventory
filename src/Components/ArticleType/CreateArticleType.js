@@ -104,8 +104,14 @@ class CreateArticleType extends Component {
       return
     }
 
-    // Verify that desc are valid
+    // Verify that desc is valid
     if (!validateString(this.state.desc)) {
+      setTimeout(() => this.buildAlert('attention', INVALID_STRING_MESSAGE), 10)
+      return
+    }
+
+    // Verify that name is valid
+    if (!validateString(this.state.name)) {
       setTimeout(() => this.buildAlert('attention', INVALID_STRING_MESSAGE), 10)
       return
     }
