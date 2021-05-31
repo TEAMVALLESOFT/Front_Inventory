@@ -145,7 +145,7 @@ class AuthReturningRequest extends Component {
       <table>
         <tbody>
           <tr>
-            <th>R. Constancia</th>
+            <th>ID Constancia</th>
             <th>Responsable temporal</th>
             <th>Fecha de creación</th>
             <th>Estado de constancia</th>

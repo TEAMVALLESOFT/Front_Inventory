@@ -14,7 +14,7 @@ export const BRANCHES = [
 
 export const CLASSIFICATIONS = [
   { name: 'Elementos de cocina', value: 'Elementos de cocina' },
-  { name: 'Elementos de limpieza', value: 'Elementos de limpieza' },
+  { name: 'Elementos de programa', value: 'Elementos de programa' },
   { name: 'Elementos para acampar', value: 'Elementos para acampar' },
 ]
 

@@ -93,8 +93,8 @@ export function getArticleTypes(classif, responseHandler) {
     case 'Elementos de cocina':
       session_classif = 'kitchen'
       break
-    case 'Elementos de limpieza':
-      session_classif = 'cleaning'
+    case 'Elementos de programa':
+      session_classif = 'prog'
       break
     case 'Elementos para acampar':
       session_classif = 'camp'
