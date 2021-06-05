@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 
 import Alert from '../Alerts/Alert'
 import { validateString, setSelectOptions } from '../../Functions/Helpers'
+import { getElementById } from '../../Functions/Get'
 import { simpleRequest } from '../../Functions/Post'
 import {
   MANDATORY_MESSAGE,
@@ -9,8 +10,10 @@ import {
   ALERT_TIMEOUT,
   AUTH_STATES,
   INVALID_STRING_MESSAGE,
+  NO_ITEMS_ERROR,
   STATES,
   MODIFY_RETURNING,
+  RETURNING_BY_ID,
 } from '../../Functions/Constants'
 
 class ModifyReturning extends Component {
@@ -30,7 +33,22 @@ class ModifyReturning extends Component {
   }
 
   componentDidMount() {
+    let session_id = sessionStorage.getItem('edit_returning_id')
+    if (session_id && session_id > 0) {
+      this.setState({ id: parseInt(session_id) })
+      sessionStorage.removeItem('edit_returning_id')
 
+      return getElementById(
+        RETURNING_BY_ID + '?returning_id=' + session_id,
+        this.setReturningInfo
+      )
+    }
+
+    return
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.state.timeout)
   }
 
   // Functions to handle states
@@ -38,7 +56,41 @@ class ModifyReturning extends Component {
     let attribute = event.target.id
     let value = event.target.value
 
+    if (attribute == 'id' && value > 0) {
+      getElementById(
+        RETURNING_BY_ID + '?returning_id=' + value,
+        this.setReturningInfo
+      )
+    }
+
     return this.setState({ [attribute]: value })
+  }
+
+  setReturningInfo = (response, body) => {
+    if (response == 'success') {
+      this.setState({
+        id: body.id,
+        state: body.state,
+        auth_state: body.auth_state,
+        obs: body.obs,
+      })
+
+      return this.buildAlert(
+        'success',
+        'Información de la constancia recuperada.'
+      )
+    }
+
+    this.clearInputs()
+
+    if (body == NO_ITEMS_ERROR) {
+      return this.buildAlert(
+        'attention',
+        'No se ha encontrado una constancia con ese ID. Por favor intente con otro.'
+      )
+    }
+
+    return this.buildAlert('error', ERROR_MESSAGE)
   }
 
   clearInputs = () => {
@@ -70,7 +122,7 @@ class ModifyReturning extends Component {
 
   responseHandler = (response, body) => {
     if (response == 'success') {
-      sessionStorage.removeItem('users')
+      sessionStorage.removeItem('returnings')
       this.buildAlert('success', 'Constancia modificado con éxito.')
 
       return this.clearInputs()
@@ -111,7 +163,7 @@ class ModifyReturning extends Component {
     }
 
     if (!this.state.state) {
-        return false
+      return false
     }
 
     if (!this.state.auth_state) {
@@ -127,18 +179,21 @@ class ModifyReturning extends Component {
         {this.state.alert}
         <span className='global-comp-title'>Modificar constancia</span>
         <span className='global-comp-description'>
-          Diligencie el formulario para editar una constancia. Puede especificar la
-          referencia o seleccionar la acción de editar en la opción de listar constancias.
+          Diligencie el formulario para editar una constancia. Puede especificar
+          el ID o seleccionar la acción de editar en la opción de listar
+          constancias.
         </span>
         <div className='global-comp-form-container'>
-          <span className='global-comp-sub-title'>ESPECIFIQUE LA CONSTANCIA</span>
+          <span className='global-comp-sub-title'>
+            ESPECIFIQUE LA CONSTANCIA
+          </span>
           <span className='global-body-text'>
             Si fue redirigido a través de la opción listar constancias, los
             siguientes campos se diligencian de forma automática.
           </span>
           <div className='global-form-group'>
             <span className='global-form-label'>
-              Referencia
+              ID
               <strong className='global-form-mandatory'> *</strong>
             </span>
             <input

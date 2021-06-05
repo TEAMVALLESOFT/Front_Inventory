@@ -2,14 +2,21 @@ import React, { Component } from 'react'
 import './Styles.css'
 
 import Alert from '../Alerts/Alert'
-import { validateString, setSelectOptions } from '../../Functions/Helpers'
+import {
+  validateString,
+  setSelectOptions,
+  formatDate,
+} from '../../Functions/Helpers'
 import { simpleRequest } from '../../Functions/Post'
+import { getElementById } from '../../Functions/Get'
 import {
   MANDATORY_MESSAGE,
   ERROR_MESSAGE,
+  NO_ITEMS_ERROR,
   ALERT_TIMEOUT,
-  AVAILABILITIES,
+  AUTH_STATES,
   INVALID_STRING_MESSAGE,
+  BORROWING_BY_ID,
   MODIFY_BORROWING,
 } from '../../Functions/Constants'
 
@@ -21,7 +28,7 @@ class ModifyBorrowing extends Component {
       id: 0,
       pick_up_date: '',
       return_date: '',
-      availability: '',
+      auth_state: '',
       obs: '',
 
       // Auxiliary form states
@@ -31,13 +38,35 @@ class ModifyBorrowing extends Component {
   }
 
   componentDidMount() {
+    let session_id = sessionStorage.getItem('edit_borrowing_id')
+    if (session_id && session_id > 0) {
+      this.setState({ id: parseInt(session_id) })
+      sessionStorage.removeItem('edit_borrowing_id')
 
+      return getElementById(
+        BORROWING_BY_ID + '?borrowing_id=' + session_id,
+        this.setBorrowingInfo
+      )
+    }
+
+    return
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.state.timeout)
   }
 
   // Functions to handle states
   handleChange = (event) => {
     let attribute = event.target.id
     let value = event.target.value
+
+    if (attribute == 'id' && value > 0) {
+      getElementById(
+        BORROWING_BY_ID + '?borrowing_id=' + value,
+        this.setBorrowingInfo
+      )
+    }
 
     return this.setState({ [attribute]: value })
   }
@@ -48,7 +77,7 @@ class ModifyBorrowing extends Component {
       id: 0,
       pick_up_date: '',
       return_date: '',
-      availability: '',
+      auth_state: '',
       obs: '',
     })
   }
@@ -70,9 +99,37 @@ class ModifyBorrowing extends Component {
     })
   }
 
+  // Functions related to requests
+  setBorrowingInfo = (response, body) => {
+    if (response == 'success') {
+      this.setState({
+        id: body.id,
+        pick_up_date: formatDate(body.pick_up_date),
+        return_date: formatDate(body.return_date),
+        auth_state: body.auth_state,
+        obs: body.obs,
+      })
+
+      return this.buildAlert('success', 'Información del préstamo recuperada.')
+    }
+
+    this.clearInputs()
+
+    if (body == NO_ITEMS_ERROR) {
+      return this.buildAlert(
+        'attention',
+        'No se ha encontrado un préstamo con ese ID. Por favor intente con otro.'
+      )
+    }
+
+    return this.buildAlert('error', ERROR_MESSAGE)
+  }
+
   responseHandler = (response, body) => {
     if (response == 'success') {
-      sessionStorage.removeItem('users')
+      sessionStorage.removeItem('borrowings')
+      sessionStorage.removeItem('filtered_borrowings')
+      sessionStorage.removeItem('borrowing_warehouse_fk')
       this.buildAlert('success', 'Préstamo modificado con éxito.')
 
       return this.clearInputs()
@@ -100,7 +157,7 @@ class ModifyBorrowing extends Component {
       id: this.state.id,
       pick_up_date: this.state.pick_up_date,
       return_date: this.state.return_date,
-      availability: this.state.availability,
+      auth_state: this.state.auth_state,
       obs: this.state.obs,
     }
 
@@ -121,7 +178,7 @@ class ModifyBorrowing extends Component {
       return false
     }
 
-    if (!this.state.availability) {
+    if (!this.state.auth_state) {
       return false
     }
 
@@ -134,8 +191,8 @@ class ModifyBorrowing extends Component {
         {this.state.alert}
         <span className='global-comp-title'>Modificar préstamo</span>
         <span className='global-comp-description'>
-          Diligencie el formulario para editar un préstamo. Puede especificar la
-          referencia o seleccionar la acción de editar en la opción de listar préstamos.
+          Diligencie el formulario para editar un préstamo. Puede especificar el
+          ID o seleccionar la acción de editar en la opción de listar préstamos.
         </span>
         <div className='global-comp-form-container'>
           <span className='global-comp-sub-title'>ESPECIFIQUE EL PRÉSTAMO</span>
@@ -145,7 +202,7 @@ class ModifyBorrowing extends Component {
           </span>
           <div className='global-form-group'>
             <span className='global-form-label'>
-              Referencia
+              ID
               <strong className='global-form-mandatory'> *</strong>
             </span>
             <input
@@ -189,9 +246,9 @@ class ModifyBorrowing extends Component {
               <strong className='global-form-mandatory'> *</strong>
             </span>
             <select
-              id='availability'
+              id='auth_state'
               className='global-form-input-select'
-              value={this.state.availability}
+              value={this.state.auth_state}
               onChange={this.handleChange}
             >
               <option
@@ -201,7 +258,7 @@ class ModifyBorrowing extends Component {
               >
                 Seleccione un estado...
               </option>
-              {setSelectOptions(AVAILABILITIES)}
+              {setSelectOptions(AUTH_STATES)}
             </select>
           </div>
           <div className='global-form-group'>

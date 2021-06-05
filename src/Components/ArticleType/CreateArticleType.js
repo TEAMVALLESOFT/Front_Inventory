@@ -79,7 +79,7 @@ class CreateArticleType extends Component {
     if (response == 'success') {
       this.buildAlert('success', 'Tipo de articulo creado con éxito.')
       sessionStorage.removeItem('article_types_kitchen')
-      sessionStorage.removeItem('article_types_cleaning')
+      sessionStorage.removeItem('article_types_prog')
       sessionStorage.removeItem('article_types_camp')
 
       return this.clearInputs()
@@ -104,8 +104,14 @@ class CreateArticleType extends Component {
       return
     }
 
-    // Verify that desc are valid
+    // Verify that desc is valid
     if (!validateString(this.state.desc)) {
+      setTimeout(() => this.buildAlert('attention', INVALID_STRING_MESSAGE), 10)
+      return
+    }
+
+    // Verify that name is valid
+    if (!validateString(this.state.name)) {
       setTimeout(() => this.buildAlert('attention', INVALID_STRING_MESSAGE), 10)
       return
     }

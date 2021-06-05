@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
 import Alert from '../Alerts/Alert'
-import AuthReturningModal from './AuthReturningModal'
+import AuthModal from './AuthModal'
 import { formatDateToLocal } from '../../Functions/Helpers'
 import { getElements } from '../../Functions/Get'
 import {
@@ -85,7 +85,7 @@ class AuthReturningRequest extends Component {
     }
 
     return this.props.showModal(
-      <AuthReturningModal
+      <AuthModal
         returning_id={id}
         closeModal={this.closeModal}
         handleAlerts={this.responseHandler}
@@ -145,7 +145,7 @@ class AuthReturningRequest extends Component {
       <table>
         <tbody>
           <tr>
-            <th>R. Constancia</th>
+            <th>ID Constancia</th>
             <th>Responsable temporal</th>
             <th>Fecha de creación</th>
             <th>Estado de constancia</th>

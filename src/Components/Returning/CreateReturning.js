@@ -33,7 +33,6 @@ class CreateReturning extends Component {
     if (response == 'success') {
       sessionStorage.removeItem('borrowings')
       sessionStorage.removeItem('filtered_borrowings')
-
       getFilteredBorrowings(this.setBorrowings)
 
       return this.buildAlert(
@@ -138,7 +137,7 @@ class CreateReturning extends Component {
       <table>
         <tbody>
           <tr>
-            <th>R. Préstamo</th>
+            <th>ID Préstamo</th>
             <th>Solicitante</th>
             <th>Fecha acordada de retorno</th>
             <th>Retraso en la entrega</th>

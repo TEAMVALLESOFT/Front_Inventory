@@ -14,7 +14,7 @@ export const BRANCHES = [
 
 export const CLASSIFICATIONS = [
   { name: 'Elementos de cocina', value: 'Elementos de cocina' },
-  { name: 'Elementos de limpieza', value: 'Elementos de limpieza' },
+  { name: 'Elementos de programa', value: 'Elementos de programa' },
   { name: 'Elementos para acampar', value: 'Elementos para acampar' },
 ]
 
@@ -33,9 +33,8 @@ export const STATES = [
 export const AUTH_STATES = [
   { name: 'Pendiente', value: 'Pendiente' },
   { name: 'Denegado', value: 'Denegado' },
-  { name: 'Aprobado', value: 'Aprobado' },
+  { name: 'Aprobada', value: 'Aprobada' },
 ]
-
 
 export const ROL_TYPES = [
   { name: 'Administrador', value: 'administrador' },
@@ -52,25 +51,34 @@ export const LIST_USERS = 'user/list'
 export const USERS_BY_ID = 'user/detail'
 export const CREATE_USER = 'user/create'
 export const MODIFY_USER = 'user/update'
+
 export const CREATE_WAREHOUSE = 'warehouse/create'
 export const LIST_WAREHOUSES = 'warehouse/list'
+
 export const CREATE_ARTICLE_TYPE = 'article_type/create'
 export const ARTICLE_TYPE_LIST = 'article_type/list'
-export const CREATE_ARTICLE = 'article/create'
+
 export const LIST_ARTICLES = 'article/list'
+export const CREATE_ARTICLE = 'article/create'
 export const MODIFY_ARTICLE = 'article/update'
+export const GET_FILE_ARTICLE = 'article/makefile'
+
 export const CREATE_BORROWING = 'borrowing/create'
 export const LIST_BORROWINGS = 'borrowing/list'
 export const BORROWING_BY_ID = 'borrowing/id'
 export const BORROWING_APPROVED = 'borrowing/approved'
 export const BORROWING_REJECTED = 'borrowing/rejected'
 export const MODIFY_BORROWING = 'borrowing/update'
-export const CREATE_RETURNING = 'returning/create'
-export const RETURNING_BY_ID = 'returning/id'
+export const GET_FILE_BORROWING = 'borrowing/makefile'
+
 export const LIST_RETURNINGS = 'returning/list'
+export const RETURNING_BY_ID = 'returning/id'
+export const CREATE_RETURNING = 'returning/create'
+export const MODIFY_RETURNING = 'returning/update'
 export const RETURNING_APPROVED = 'returning/approved'
 export const RETURNING_REJECTED = 'returning/rejected'
-export const MODIFY_RETURNING = 'returning/update'
+export const GET_FILE_RETURNING = 'returning/makefile'
+
 export const RECOVER_PASSWORD = 'user/recover_pass'
 export const TOKEN_VERIFICATION = 'user/token_verification'
 export const PASSWORD_CHANGE = 'user/password_change'

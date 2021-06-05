@@ -1,12 +1,7 @@
 import React, { Component } from 'react'
 
 import { getElementById } from '../../Functions/Get'
-import { simpleRequest } from '../../Functions/Post'
-import {
-  RETURNING_BY_ID,
-  RETURNING_APPROVED,
-  RETURNING_REJECTED,
-} from '../../Functions/Constants'
+import { RETURNING_BY_ID } from '../../Functions/Constants'
 
 class Modal extends Component {
   constructor() {
@@ -16,6 +11,8 @@ class Modal extends Component {
       user_name: '',
       warehouse_name: '',
       auth_state: '',
+      state: '',
+      borrowing_fk: 0,
       obs: '',
       article_list: [],
 
@@ -30,7 +27,7 @@ class Modal extends Component {
   }
 
   setReturningInformation = (response, body) => {
-    let temp_obs = 'No tiene ninguna observación.'
+    let temp_obs = 'N/A'
     if (response == 'success') {
       // This line renders the modal only if the request was successful
       document.getElementById('modal').style.display = 'block'
@@ -52,6 +49,8 @@ class Modal extends Component {
         user_name: body.evaluador.user_name,
         warehouse_name: body.article_list[0].Articulo.Bodega.warehouse_name,
         auth_state: body.auth_state,
+        state: body.state,
+        borrowing_fk: body.borrowing_fk,
         obs: temp_obs,
         article_list: list,
       })
@@ -95,22 +94,6 @@ class Modal extends Component {
     return list
   }
 
-  authorize = (event) => {
-    let body = {
-      returning_id: this.props.returning_id,
-    }
-    if (event.target.id == 'approve') {
-      return simpleRequest(
-        RETURNING_APPROVED,
-        'PUT',
-        body,
-        this.responseHandler
-      )
-    }
-
-    return simpleRequest(RETURNING_REJECTED, 'PUT', body, this.responseHandler)
-  }
-
   render() {
     let article_list = this.setArticleList()
 
@@ -119,7 +102,7 @@ class Modal extends Component {
         <div className='global-modal-container'>
           <div className='global-modal-header'>
             <span className='global-modal-title'>
-              Autorizar devolución de solicitud # {this.props.returning_id}
+              Constancia de devolución #{this.props.returning_id}
             </span>
             <img
               className='global-modal-icon'
@@ -139,6 +122,12 @@ class Modal extends Component {
                 {this.state.warehouse_name}
               </span>
             </div>
+            <div className='global-modal-group-container'>
+              <span className='global-form-label'>ID préstamo</span>
+              <span className='global-modal-text'>
+                {this.state.borrowing_fk}
+              </span>
+            </div>
             <div
               className='global-modal-group-container'
               style={{ alignItems: 'flex-start' }}
@@ -147,26 +136,12 @@ class Modal extends Component {
               <ul>{article_list}</ul>
             </div>
             <div className='global-modal-group-container'>
+              <span className='global-form-label'>Estado de los artículos</span>
+              <span className='global-modal-text'>{this.state.state}</span>
+            </div>
+            <div className='global-modal-group-container'>
               <span className='global-form-label'>Observaciones</span>
               <span className='global-modal-text'>{this.state.obs}</span>
-            </div>
-            <div className='global-modal-button-container'>
-              <button
-                id='reject'
-                className='global-form-outline-button'
-                style={{ height: '30px' }}
-                onClick={this.authorize}
-              >
-                Denegar
-              </button>
-              <button
-                id='approve'
-                className='global-form-solid-button'
-                style={{ height: '30px' }}
-                onClick={this.authorize}
-              >
-                Aprobar
-              </button>
             </div>
           </div>
         </div>

@@ -93,8 +93,8 @@ export function getArticleTypes(classif, responseHandler) {
     case 'Elementos de cocina':
       session_classif = 'kitchen'
       break
-    case 'Elementos de limpieza':
-      session_classif = 'cleaning'
+    case 'Elementos de programa':
+      session_classif = 'prog'
       break
     case 'Elementos para acampar':
       session_classif = 'camp'
@@ -331,6 +331,33 @@ export function getElements(key, path, responseHandler) {
       sessionStorage.setItem(key, json)
 
       return responseHandler('success', rows)
+    })
+    .catch((error) => responseHandler('error', error))
+}
+
+export function getFile(path, responseHandler) {
+  // Path should have id as param
+  let url = HOST + path
+
+  fetch(url, {
+    method: 'GET',
+    headers: {
+      token: sessionStorage.getItem('token'),
+    },
+  })
+    .then(handleErrors)
+    .then((response) => {
+      if (response.hasOwnProperty('error')) {
+        return responseHandler('error', response.error)
+      }
+
+      return response
+    })
+    .then((response) => {
+      return response.blob()
+    })
+    .then((blob) => {
+      return responseHandler('success', blob)
     })
     .catch((error) => responseHandler('error', error))
 }

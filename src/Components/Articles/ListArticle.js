@@ -1,15 +1,18 @@
 import React, { Component } from 'react'
+import { saveAs } from 'file-saver'
 import './Styles.css'
 
 import Alert from '../Alerts/Alert'
 import Modal from './Modal'
 import {
+  getFile,
   getArticles,
   getWarehouses,
   getAllArticleTypes,
 } from '../../Functions/Get'
 import { setSelectOptions } from '../../Functions/Helpers'
 import {
+  GET_FILE_ARTICLE,
   AVAILABILITIES,
   ALERT_TIMEOUT,
   NO_ITEM_MESSAGE,
@@ -33,6 +36,19 @@ class ListArticle extends Component {
       alert: '',
       timeout: '',
     }
+  }
+
+  componentDidMount() {
+    let warehouse = ''
+    let article_type_fk = ''
+
+    getArticles(warehouse, article_type_fk, this.state.value, this.setArticles)
+    getWarehouses(this.setWarehouses)
+    getAllArticleTypes(this.setArticleTypes)
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.state.timeout)
   }
 
   // Functions to handle states
@@ -73,20 +89,26 @@ class ListArticle extends Component {
     return this.setState({ [attribute]: value })
   }
 
-  componentDidMount() {
-    let warehouse = ''
-    let article_type_fk = ''
+  routeEdit = (event) => {
+    let id = event.target.id.split('-')
+    let articles = this.state.articles
+    let article = {}
 
-    getArticles(warehouse, article_type_fk, this.state.value, this.setArticles)
-    getWarehouses(this.setWarehouses)
-    getAllArticleTypes(this.setArticleTypes)
+    for (let i = 0; i < articles.length; i++) {
+      let obj = articles[i]
+      if (parseInt(id[1]) == obj.id) {
+        article = obj
+        continue
+      }
+    }
+
+    let json = JSON.stringify(article)
+    sessionStorage.setItem('edit_article', json)
+
+    return this.props.changeSelected(8)
   }
 
-  componentWillUnmount() {
-    clearTimeout(this.state.timeout)
-  }
-
-  // Functions to handle states
+  // Functions related to requests
   setArticles = async (response, body) => {
     if (response == 'success') {
       let temp = []
@@ -95,7 +117,10 @@ class ListArticle extends Component {
           return this.setState({ articles: body })
         } else {
           for (let z = 0; z < body.length; z++) {
-            if (body[z]['available_state'] == this.state.available_state_fk) {
+            if (
+              body[z]['available_state'].toLowerCase() ==
+              this.state.available_state_fk.toLowerCase()
+            ) {
               temp.push(body[z])
             }
           }
@@ -108,7 +133,10 @@ class ListArticle extends Component {
           if (!this.state.available_state_fk) {
             temp.push(body[x])
           } else {
-            if (body[x]['available_state'] == this.state.available_state_fk) {
+            if (
+              body[x]['available_state'].toLowerCase() ==
+              this.state.available_state_fk.toLowerCase()
+            ) {
               temp.push(body[x])
             }
           }
@@ -164,25 +192,27 @@ class ListArticle extends Component {
     return this.buildAlert('error', ERROR_MESSAGE)
   }
 
-  routeEdit = (event) => {
-    let id = event.target.id.split('-')
-    let articles = this.state.articles
-    let article = {}
+  responseHandler = (response, blob) => {
+    if (response == 'success') {
+      let date = new Date()
+      let year = date.getFullYear()
+      let month = date.getMonth() + 1
+      let day = date.getDate()
 
-    for (let i = 0; i < articles.length; i++) {
-      let obj = articles[i]
-      if (parseInt(id[1]) == obj.id) {
-        article = obj
-        continue
-      }
+      return saveAs(
+        blob,
+        year + '_' + month + '_' + day + '_' + 'articulos.xlsx'
+      )
     }
 
-    let json = JSON.stringify(article)
-    sessionStorage.setItem('edit_article', json)
-
-    return this.props.changeSelected(8)
+    return this.buildAlert('error', ERROR_MESSAGE)
   }
 
+  export = () => {
+    return getFile(GET_FILE_ARTICLE, this.responseHandler)
+  }
+
+  // Functions to handle alerts
   close = () => {
     return this.setState({ alert: '' })
   }
@@ -197,6 +227,17 @@ class ListArticle extends Component {
     return this.setState({
       alert: <Alert type={type} text={text} close={this.close} />,
     })
+  }
+
+  // Functions to handle modal
+  showModal(name, label, obs) {
+    return this.props.showModal(
+      <Modal name={name} label={label} obs={obs} closeModal={this.closeModal} />
+    )
+  }
+
+  closeModal = () => {
+    return this.props.closeModal()
   }
 
   // Auxiliary functions
@@ -222,7 +263,7 @@ class ListArticle extends Component {
           <td>{obj.classif}</td>
           <td>{obj.name}</td>
           <td>{obj.branch}</td>
-          <td>{obj.available_state}</td>
+          <td style={{ textTransform: 'capitalize' }}>{obj.available_state}</td>
           <td>{obj.physical_state}</td>
           {obj.obs ? (
             <td>
@@ -261,7 +302,7 @@ class ListArticle extends Component {
       <table>
         <tbody>
           <tr>
-            <th>Rótulo</th>
+            <th>Etiqueta</th>
             <th>Clasificación</th>
             <th>Tipo de artículo</th>
             <th>Rama</th>
@@ -278,18 +319,34 @@ class ListArticle extends Component {
     return table
   }
 
-  showModal(name, label, obs) {
-    return this.props.showModal(
-      <Modal name={name} label={label} obs={obs} closeModal={this.closeModal} />
-    )
-  }
+  setExport() {
+    let rol = sessionStorage.getItem('user_rol')
+    let array = []
 
-  closeModal = () => {
-    return this.props.closeModal()
+    if (rol == 'jefe de rama') {
+      return array
+    }
+
+    array.push(
+      <span className='global-comp-sub-title'>EXPORTAR INVENTARIO</span>
+    )
+    array.push(
+      <span className='global-body-text'>
+        Para exportar toda la información de los artículos del inventario, por
+        favor de{' '}
+        <span className='global-table-link' onClick={this.export}>
+          clic aquí
+        </span>
+        .
+      </span>
+    )
+
+    return array
   }
 
   render() {
     let table = this.setTable()
+    let exportComp = this.setExport()
 
     return (
       <div className='cu-container'>
@@ -300,6 +357,10 @@ class ListArticle extends Component {
           listas desplegables para filtrar los elementos.
         </span>
         <div className='global-comp-form-container'>
+          {exportComp}
+          <span className='global-comp-sub-title'>
+            LISTADO DE ARTÍCULOS FILTRADO
+          </span>
           <div className='global-special-form-group'>
             <select
               id='warehouse_fk'
