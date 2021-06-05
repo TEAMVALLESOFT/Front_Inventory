@@ -117,7 +117,10 @@ class ListArticle extends Component {
           return this.setState({ articles: body })
         } else {
           for (let z = 0; z < body.length; z++) {
-            if (body[z]['available_state'] == this.state.available_state_fk) {
+            if (
+              body[z]['available_state'].toLowerCase() ==
+              this.state.available_state_fk.toLowerCase()
+            ) {
               temp.push(body[z])
             }
           }
@@ -130,7 +133,10 @@ class ListArticle extends Component {
           if (!this.state.available_state_fk) {
             temp.push(body[x])
           } else {
-            if (body[x]['available_state'] == this.state.available_state_fk) {
+            if (
+              body[x]['available_state'].toLowerCase() ==
+              this.state.available_state_fk.toLowerCase()
+            ) {
               temp.push(body[x])
             }
           }
@@ -257,7 +263,7 @@ class ListArticle extends Component {
           <td>{obj.classif}</td>
           <td>{obj.name}</td>
           <td>{obj.branch}</td>
-          <td>{obj.available_state}</td>
+          <td style={{ textTransform: 'capitalize' }}>{obj.available_state}</td>
           <td>{obj.physical_state}</td>
           {obj.obs ? (
             <td>

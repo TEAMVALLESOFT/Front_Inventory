@@ -138,7 +138,7 @@ class ListReturnings extends Component {
 
     for (let i = 0; i < array.length; i++) {
       let obj = array[i]
-      if (obj.auth_state == value) {
+      if (obj.auth_state.toLowerCase() == value.toLowerCase()) {
         filtered_array.push(obj)
       }
     }
@@ -169,7 +169,7 @@ class ListReturnings extends Component {
           <td>{obj.id}</td>
           <td>{obj.evaluador.user_name}</td>
           <td>{formatDateToLocal(obj.createdAt)}</td>
-          <td>{obj.auth_state}</td>
+          <td style={{ textTransform: 'capitalize' }}>{obj.auth_state}</td>
           <td>
             <span
               id={'e-' + obj.id}
