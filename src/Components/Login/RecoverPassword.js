@@ -41,13 +41,12 @@ class RecoverPassword extends Component {
   }
 
   responseHandler = (response) => {
-    if (response == 'success') {
-      this.buildAlert('success', 'Petición realizada con éxito')
-      setTimeout(() => {
-        return this.props.changeView('Login')
-      } , 2000)
+    if (response != 'success') {
+      return this.buildAlert('error', ERROR_MESSAGE)
     }
-    return this.buildAlert('error', ERROR_MESSAGE)
+    setTimeout(() => {
+      return this.props.changeView('Login')
+    } , 2000)
   }
 
   // Functions to handle alerts
